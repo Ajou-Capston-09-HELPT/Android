@@ -1,15 +1,19 @@
-package com.ajou.helpt
+package com.ajou.helpt.auth
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentSetUserInfoBinding
+import com.ajou.helpt.home.HomeActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +50,23 @@ class SetUserInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var sex = ""
+        binding.confirmBtn.setOnClickListener {
+            Log.d("사용자 데이터","이름 ${binding.name.text} 키 ${binding.height.text} 체중 ${binding.weight.text} 성별 $sex 나이 ${binding.age.text}")
+            if (binding.name.text != null && binding.height.text != null && binding.weight.text != null && binding.age.text != null && sex != "") {
+                Log.d("사용자 데이터 모두 입력됨","이름 ${binding.name.text} 키 ${binding.height.text} 체중 ${binding.weight.text} 성별 $sex 나이 ${binding.age.text}")
+                val intent = Intent(mContext, HomeActivity::class.java)
+                startActivity(intent)
+            }else{
+                Toast.makeText(mContext,"모든 정보를 입력해주세요.",Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.manBtn.setOnClickListener {
+            sex = "남성"
+        }
+        binding.womanBtn.setOnClickListener {
+            sex = "여성"
+        }
 
     }
 

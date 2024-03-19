@@ -1,4 +1,4 @@
-package com.ajou.helpt
+package com.ajou.helpt.auth
 
 import android.content.ContentValues
 import android.content.Context
@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import com.ajou.helpt.R
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError

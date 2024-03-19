@@ -16,7 +16,10 @@
         android:theme="@style/Theme.HELPT"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".home.HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".auth.AuthActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

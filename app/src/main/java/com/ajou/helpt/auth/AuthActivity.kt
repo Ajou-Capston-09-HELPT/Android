@@ -1,18 +1,17 @@
-package com.ajou.helpt
+package com.ajou.helpt.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ajou.helpt.databinding.ActivityMainBinding
+import com.ajou.helpt.databinding.ActivityAuthBinding
 
-class MainActivity : AppCompatActivity() {
-    private var _binding : ActivityMainBinding ?= null
+class AuthActivity : AppCompatActivity() {
+    private var _binding : ActivityAuthBinding ?= null
     private val binding get() = _binding!!
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
     }
 }
