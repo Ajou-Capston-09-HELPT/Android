@@ -1,4 +1,4 @@
-package com.ajou.helpt.home
+package com.ajou.helpt.home.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ajou.helpt.NoticeData
+import com.ajou.helpt.home.model.NoticeData
 import com.ajou.helpt.R
+import com.ajou.helpt.home.adapter.NoticeAdapter
 
 class NoticeFragment : Fragment() {
 

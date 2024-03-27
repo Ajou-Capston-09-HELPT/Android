@@ -9,6 +9,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('apikey.properties').newDataInputStream())
 def native_api_key = properties.getProperty('native_api_key')
 def redirect_uri = properties.getProperty('redirect_uri')
+def tmap_api_key = properties.getProperty('tmap_api_key')
 
 android {
     namespace 'com.ajou.helpt'
@@ -25,6 +26,7 @@ android {
 
         buildConfigField "String", "NATIVE_API_KEY", native_api_key
         buildConfigField "String", "REDIRECT_URI", redirect_uri
+        buildConfigField "String", "TMAP_API_KEY", tmap_api_key
 
         manifestPlaceholders = [NATIVE_API_KEY : native_api_key]
     }
@@ -65,17 +67,21 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation files('libs/com.skt.Tmap_1.75.jar')
 
     //Retrofit
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-    def nav_version = "2.4.1"
+    def nav_version = "2.3.5"
 
     // navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // qr code
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

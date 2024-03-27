@@ -80,6 +80,10 @@ class LoginFragment : Fragment() {
                         }
                         Log.e(ContentValues.TAG, "로그인 성공 ${token.accessToken}")
                         Log.d(ContentValues.TAG,"카카오톡 로그인 정보 가져옴 ${token.refreshToken} ${token.accessTokenExpiresAt} ${token.refreshTokenExpiresAt}")
+                        UserApiClient.instance.me { user, error ->
+                            Log.d(ContentValues.TAG,"${user?.id}") // accessToken, user.id 추후에 보내면 됨.
+                            Log.d(ContentValues.TAG,"${user?.kakaoAccount?.email} ${user?.kakaoAccount?.profile?.nickname}")
+                        }
                     }
                 }
             } else {
