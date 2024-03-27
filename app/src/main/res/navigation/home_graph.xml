@@ -53,9 +53,9 @@
         tools:layout="@layout/fragment_pay_info" />
     <fragment
         android:id="@+id/QRCreateFragment"
-        android:name="com.ajou.helpt.home.view.QRCreateFragment"
+        android:name="com.ajou.helpt.home.view.QRCreateDialogFragment"
         android:label="fragment_q_r_create"
-        tools:layout="@layout/fragment_q_r_create" />
+        tools:layout="@layout/fragment_q_r_create_dialog" />
     <fragment
         android:id="@+id/searchGymFragment"
         android:name="com.ajou.helpt.home.view.SearchGymFragment"

@@ -63,5 +63,9 @@ class HomeFragment : Fragment() {
         binding.findGymBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
+        binding.idBtn.setOnClickListener {
+            val dialog = QRCreateDialogFragment()
+            dialog.show(childFragmentManager, "QRCreateDialog")
+        }
     }
 }

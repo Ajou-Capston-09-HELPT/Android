@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentPayInfoBinding
+import com.ajou.helpt.home.adapter.PayInfoRVAdapter
+import com.ajou.helpt.home.model.PayInfo
 
 class PayInfoFragment : Fragment() {
     private var _binding : FragmentPayInfoBinding?= null
@@ -33,6 +36,10 @@ class PayInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val list = listOf<PayInfo>(PayInfo("1개월","50000"),PayInfo("2개월","100000"),PayInfo("3개월","150000"))
+        binding.gymRv.adapter = PayInfoRVAdapter(mContext!!,list)
+        binding.gymRv.layoutManager = LinearLayoutManager(mContext)
 
     }
 }
