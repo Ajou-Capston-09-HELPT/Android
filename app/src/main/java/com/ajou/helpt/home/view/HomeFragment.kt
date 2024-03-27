@@ -1,4 +1,4 @@
-package com.ajou.helpt.home
+package com.ajou.helpt.home.view
 
 import android.content.Context
 import android.os.Bundle
@@ -59,6 +59,13 @@ class HomeFragment : Fragment() {
 
         binding.noticeBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
+        }
+        binding.findGymBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
+        }
+        binding.idBtn.setOnClickListener {
+            val dialog = QRCreateDialogFragment()
+            dialog.show(childFragmentManager, "QRCreateDialog")
         }
     }
 }

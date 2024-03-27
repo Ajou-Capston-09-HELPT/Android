@@ -1,11 +1,11 @@
-package com.ajou.helpt.home
+package com.ajou.helpt.home.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ajou.helpt.NoticeData
+import com.ajou.helpt.home.model.NoticeData
 import com.ajou.helpt.R
 
 class NoticeAdapter(private val noticeList: List<NoticeData>, private val onClick: (NoticeData) -> Unit) : RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder>() {
