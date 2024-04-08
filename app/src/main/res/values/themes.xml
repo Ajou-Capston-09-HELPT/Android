@@ -13,4 +13,19 @@
         <item name="windowNoTitle">true</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="PretendardTextViewStyle" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/pretendard</item>
+    </style>
+    <style name="PretendardButtonStyle" parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+        <item name="android:fontFamily">@font/pretendard</item>
+    </style>
+    <style name="PretendardEditTextStyle" parent="@android:style/Widget.DeviceDefault.EditText">
+        <item name="android:fontFamily">@font/pretendard</item>
+    </style>
+    <style name="PretendardRadioButtonStyle" parent="@android:style/Widget.DeviceDefault.CompoundButton.RadioButton">
+        <item name="android:fontFamily">@font/pretendard</item>
+    </style>
+    <style name="PretendardCheckboxStyle" parent="@android:style/Widget.DeviceDefault.CompoundButton.CheckBox">
+        <item name="android:fontFamily">@font/pretendard</item>
+    </style>
 </resources>
