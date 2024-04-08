@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".auth.LoginFragment">
+    tools:context=".auth.view.LoginFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:id="@+id/imageView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/all_logo"
+            android:src="@drawable/splash_logo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,11 +22,12 @@
             app:layout_constraintVertical_bias="0.33" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/nextBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
             android:background="@drawable/login_kakaobackground"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             app:layout_constraintVertical_bias="0.8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,9 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:src="@drawable/login_kakaoicon"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintBottom_toBottomOf="@+id/nextBtn"
+            app:layout_constraintStart_toStartOf="@+id/nextBtn"
+            app:layout_constraintTop_toTopOf="@+id/nextBtn" />
 
 
         <TextView
@@ -51,10 +52,10 @@
             android:text="카카오로 시작하기"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintBottom_toBottomOf="@+id/nextBtn"
+            app:layout_constraintEnd_toEndOf="@+id/nextBtn"
+            app:layout_constraintStart_toStartOf="@+id/nextBtn"
+            app:layout_constraintTop_toTopOf="@+id/nextBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

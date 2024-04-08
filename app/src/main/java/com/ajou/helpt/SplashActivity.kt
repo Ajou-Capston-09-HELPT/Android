@@ -1,12 +1,10 @@
 package com.ajou.helpt
 
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.VideoView
-import com.ajou.helpt.auth.AuthActivity
+import com.ajou.helpt.auth.view.AuthActivity
 import com.ajou.helpt.home.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,16 +20,18 @@ class SplashActivity : AppCompatActivity() {
         var accessToken : String ?= null
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken().toString()
+            val intent = Intent(this@SplashActivity, AuthActivity::class.java)
+            startActivity(intent)
             withContext(Dispatchers.Main){
-                if (accessToken != "null"){
-                    Log.d("Login!",accessToken.toString())
-                    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
-                    startActivity(intent)
-                }else{
-                    Log.d("Login 필요!","")
-                    val intent = Intent(this@SplashActivity, AuthActivity::class.java)
-                    startActivity(intent)
-                }
+//                if (accessToken != "null"){
+//                    Log.d("Login!",accessToken.toString())
+//                    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+//                    startActivity(intent)
+//                }else{
+//                    Log.d("Login 필요!","")
+//                    val intent = Intent(this@SplashActivity, AuthActivity::class.java)
+//                    startActivity(intent)
+//                }
             }
         }
 

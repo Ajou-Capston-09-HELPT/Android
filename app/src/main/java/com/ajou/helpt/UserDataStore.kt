@@ -20,6 +20,7 @@ class UserDataStore() {
     private object PreferencesKeys {
         val ACCESS_TOKEN = stringPreferencesKey("access_token")
         val HAS_TICKET = booleanPreferencesKey("has_ticket")
+        val USER_NAME = stringPreferencesKey("user_name")
     }
 
     suspend fun saveAccessToken(token : String) {
@@ -50,6 +51,19 @@ class UserDataStore() {
         }
     }
 
+    suspend fun saveUserName(name : String) {
+        withContext(Dispatchers.IO){
+            dataStore.edit { pref ->
+                pref[PreferencesKeys.USER_NAME] = name
+            }
+        }
+    }
+
+    suspend fun getUserName():String? {
+        return withContext(Dispatchers.IO) {
+            dataStore.data.first()[PreferencesKeys.USER_NAME]
+        }
+    }
     suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
             dataStore.edit { pref ->

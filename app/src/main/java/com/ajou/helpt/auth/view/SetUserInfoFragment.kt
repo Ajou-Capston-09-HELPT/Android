@@ -1,4 +1,4 @@
-package com.ajou.helpt.auth
+package com.ajou.helpt.auth.view
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
+import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentSetUserInfoBinding
 import com.ajou.helpt.home.HomeActivity
@@ -26,15 +27,18 @@ class SetUserInfoFragment : Fragment() {
     private var mContext : Context ?= null
     private val dataStore = UserDataStore()
     private var accessToken : String? = null
+    private var userName : String ?= null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CoroutineScope(Dispatchers.IO).launch(exceptionHandler){
             accessToken = dataStore.getAccessToken()
+            userName = dataStore.getUserName()
             Log.d("accessToken",accessToken.toString())
         }
     }
@@ -50,24 +54,11 @@ class SetUserInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var sex = ""
-        binding.confirmBtn.setOnClickListener {
-            Log.d("사용자 데이터","이름 ${binding.name.text} 키 ${binding.height.text} 체중 ${binding.weight.text} 성별 $sex 나이 ${binding.age.text}")
-            if (binding.name.text != null && binding.height.text != null && binding.weight.text != null && binding.age.text != null && sex != "") {
-                Log.d("사용자 데이터 모두 입력됨","이름 ${binding.name.text} 키 ${binding.height.text} 체중 ${binding.weight.text} 성별 $sex 나이 ${binding.age.text}")
-                val intent = Intent(mContext, HomeActivity::class.java)
-                startActivity(intent)
-            }else{
-                Toast.makeText(mContext,"모든 정보를 입력해주세요.",Toast.LENGTH_SHORT).show()
-            }
-        }
-        binding.manBtn.setOnClickListener {
-            sex = "남성"
-        }
-        binding.womanBtn.setOnClickListener {
-            sex = "여성"
-        }
+        binding.name.text = String.format(mContext!!.resources.getString(R.string.auth_set_greet1,userName))
 
+        binding.nextBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_setUserInfoFragment_to_setSexInfoFragment)
+        }
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->

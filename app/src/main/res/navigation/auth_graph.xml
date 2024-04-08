@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.ajou.helpt.auth.LoginFragment"
+        android:name="com.ajou.helpt.auth.view.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -16,7 +16,25 @@
     </fragment>
     <fragment
         android:id="@+id/setUserInfoFragment"
-        android:name="com.ajou.helpt.auth.SetUserInfoFragment"
+        android:name="com.ajou.helpt.auth.view.SetUserInfoFragment"
         android:label="fragment_set_user_info"
-        tools:layout="@layout/fragment_set_user_info" />
+        tools:layout="@layout/fragment_set_user_info" >
+        <action
+            android:id="@+id/action_setUserInfoFragment_to_setSexInfoFragment"
+            app:destination="@id/setSexInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setSexInfoFragment"
+        android:name="com.ajou.helpt.auth.view.SetSexInfoFragment"
+        android:label="fragment_set_sex_info"
+        tools:layout="@layout/fragment_set_sex_info" >
+        <action
+            android:id="@+id/action_setSexInfoFragment_to_setPhysicInfoFragment"
+            app:destination="@id/setPhysicInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setPhysicInfoFragment"
+        android:name="com.ajou.helpt.auth.view.SetPhysicInfoFragment"
+        android:label="fragment_set_physic_info"
+        tools:layout="@layout/fragment_set_physic_info" />
 </navigation>

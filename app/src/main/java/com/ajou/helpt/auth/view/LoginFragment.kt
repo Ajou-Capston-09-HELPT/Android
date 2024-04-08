@@ -1,4 +1,4 @@
-package com.ajou.helpt.auth
+package com.ajou.helpt.auth.view
 
 import android.content.ContentValues
 import android.content.Context
@@ -20,11 +20,11 @@ import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.*
 
 class LoginFragment : Fragment() {
-    private var _binding : FragmentLoginBinding ?= null
+    private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private var mContext : Context ?= null
+    private var mContext: Context? = null
     private val dataStore = UserDataStore()
-    private var accessToken : String? = null
+    private var accessToken: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,10 +46,10 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.button.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             // 카카오톡 설치 확인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(mContext!!)) {
-                Log.d(ContentValues.TAG,"유저가 카카오톡 설치했음")
+                Log.d(ContentValues.TAG, "유저가 카카오톡 설치했음")
                 // 카카오톡 로그인
                 UserApiClient.instance.loginWithKakaoTalk(mContext!!) { token, error ->
                     // 로그인 실패 부분
@@ -61,8 +61,8 @@ class LoginFragment : Fragment() {
                         }
                         // 다른 오류
                         else {
-                            Log.d(ContentValues.TAG,"${error.message}")
-                            Log.d(ContentValues.TAG,"유저가 카카오톡으로 로그인하기 실패함")
+                            Log.d(ContentValues.TAG, "${error.message}")
+                            Log.d(ContentValues.TAG, "유저가 카카오톡으로 로그인하기 실패함")
                             UserApiClient.instance.loginWithKakaoAccount(
                                 mContext!!,
                                 callback = mCallback
@@ -71,24 +71,38 @@ class LoginFragment : Fragment() {
                     }
                     // 로그인 성공 부분
                     else if (token != null) {
-                        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-                            dataStore.saveAccessToken(token.accessToken)
-                            withContext(Dispatchers.Main){
-                                findNavController().navigate(R.id.action_loginFragment_to_setUserInfoFragment)
-//                                findNavController().navigate(R.id.action_loginFragment_to_setUserInfoFragment)
+                        UserApiClient.instance.me { user, error ->
+                            CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+                                Log.d(
+                                    ContentValues.TAG,
+                                    "${user?.id}"
+                                ) // accessToken, user.id 추후에 보내면 됨.
+                                Log.d(
+                                    ContentValues.TAG,
+                                    "${user?.kakaoAccount?.email} ${user?.kakaoAccount?.profile?.nickname}"
+                                )
+
+                                dataStore.saveAccessToken(token.accessToken)
+                                dataStore.saveUserName(user?.kakaoAccount?.profile?.nickname.toString())
+                                withContext(Dispatchers.Main) {
+                                    findNavController().navigate(R.id.action_loginFragment_to_setUserInfoFragment)
+                                }
                             }
                         }
                         Log.e(ContentValues.TAG, "로그인 성공 ${token.accessToken}")
-                        Log.d(ContentValues.TAG,"카카오톡 로그인 정보 가져옴 ${token.refreshToken} ${token.accessTokenExpiresAt} ${token.refreshTokenExpiresAt}")
-                        UserApiClient.instance.me { user, error ->
-                            Log.d(ContentValues.TAG,"${user?.id}") // accessToken, user.id 추후에 보내면 됨.
-                            Log.d(ContentValues.TAG,"${user?.kakaoAccount?.email} ${user?.kakaoAccount?.profile?.nickname}")
-                        }
+                        Log.d(
+                            ContentValues.TAG,
+                            "카카오톡 로그인 정보 가져옴 ${token.refreshToken} ${token.accessTokenExpiresAt} ${token.refreshTokenExpiresAt}"
+                        )
+
                     }
                 }
             } else {
-                Log.d(ContentValues.TAG,"유저가 카카오톡 설치안가")
-                UserApiClient.instance.loginWithKakaoAccount(mContext!!, callback = mCallback) // 카카오 이메일 로그인
+                Log.d(ContentValues.TAG, "유저가 카카오톡 설치안가")
+                UserApiClient.instance.loginWithKakaoAccount(
+                    mContext!!,
+                    callback = mCallback
+                ) // 카카오 이메일 로그인
             }
         }
     }
@@ -105,11 +119,12 @@ class LoginFragment : Fragment() {
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        Log.d("exceptionHandler",exception.message.toString())
+        Log.d("exceptionHandler", exception.message.toString())
         showErrorDialog()
     }
+
     private fun showErrorDialog() {
-        requireActivity().runOnUiThread{
+        requireActivity().runOnUiThread {
             AlertDialog.Builder(mContext!!).apply {
                 setTitle("Error")
                 setMessage("Network request failed.")
