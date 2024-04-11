@@ -13,6 +13,7 @@ import com.ajou.helpt.databinding.FragmentHomeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -41,31 +42,45 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
-        var hasTicket = true
-//        CoroutineScope(Dispatchers.IO).launch {
+        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
+//        var hasTicket = true
+        var name = ""
+        CoroutineScope(Dispatchers.IO).launch {
 //            hasTicket = dataStore.getHasTicket()
-//        }
-        if (hasTicket) {
-            binding.findGymBtn.visibility = View.VISIBLE
-            binding.idExistBtn.visibility = View.VISIBLE
-            binding.idExistText.visibility = View.VISIBLE
-            binding.noticeBtn.visibility = View.VISIBLE
-            binding.idBtn.visibility = View.VISIBLE
-        } else {
-            binding.idNotExistText.visibility = View.VISIBLE
-            binding.enrollBtn.visibility = View.VISIBLE
+            name = dataStore.getUserName().toString()
+            withContext(Dispatchers.Main){
+                if(hasTicket) {
+                    binding.ticketBack.visibility = View.VISIBLE
+                    binding.ticketImg.visibility = View.VISIBLE
+                    binding.ticketTitle.visibility = View.VISIBLE
+                    binding.greetMsg.text =
+                        String.format(mContext!!.resources.getString(R.string.home_greet, name))
+                } else {
+                    binding.greetMsg.text =
+                        String.format(mContext!!.resources.getString(R.string.home_greet_no, name))
+                    binding.nonTicketImg.visibility = View.VISIBLE
+                    binding.nonTicketText.visibility = View.VISIBLE
+                    binding.nonticketBack.visibility = View.VISIBLE
+                    binding.nonTicketTitle.visibility = View.VISIBLE
+                }
+            }
         }
-
-        binding.noticeBtn.setOnClickListener {
+        binding.mainNotice.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
         }
-        binding.findGymBtn.setOnClickListener {
+        binding.gym.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
-        binding.idBtn.setOnClickListener {
-            val dialog = QRCreateDialogFragment()
-            dialog.show(childFragmentManager, "QRCreateDialog")
+        binding.searchBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
+
+//        binding.findGymBtn.setOnClickListener {
+//
+//        }
+//        binding.idBtn.setOnClickListener {
+//            val dialog = QRCreateDialogFragment()
+//            dialog.show(childFragmentManager, "QRCreateDialog")
+//        }
     }
 }
