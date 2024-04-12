@@ -13,6 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentLoginBinding
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.MemberService
+import com.ajou.helpt.network.model.Member
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -25,6 +28,7 @@ class LoginFragment : Fragment() {
     private var mContext: Context? = null
     private val dataStore = UserDataStore()
     private var accessToken: String? = null
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -81,9 +85,9 @@ class LoginFragment : Fragment() {
                                     ContentValues.TAG,
                                     "${user?.kakaoAccount?.email} ${user?.kakaoAccount?.profile?.nickname}"
                                 )
-
-                                dataStore.saveAccessToken(token.accessToken)
                                 dataStore.saveUserName(user?.kakaoAccount?.profile?.nickname.toString())
+                                dataStore.saveKakaoId(user?.id.toString())
+
                                 withContext(Dispatchers.Main) {
                                     findNavController().navigate(R.id.action_loginFragment_to_setUserInfoFragment)
                                 }

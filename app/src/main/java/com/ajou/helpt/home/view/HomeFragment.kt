@@ -42,8 +42,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
-//        var hasTicket = true
+//        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
+        var hasTicket = true
         var name = ""
         CoroutineScope(Dispatchers.IO).launch {
 //            hasTicket = dataStore.getHasTicket()

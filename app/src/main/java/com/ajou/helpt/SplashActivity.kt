@@ -17,21 +17,21 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         val dataStore = UserDataStore()
-        var accessToken : String ?= null
+        var accessToken : String? = null
+        var refreshToken : String? = null
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken().toString()
-            val intent = Intent(this@SplashActivity, AuthActivity::class.java)
-            startActivity(intent)
+            refreshToken = dataStore.getRefreshToken().toString()
             withContext(Dispatchers.Main){
-//                if (accessToken != "null"){
-//                    Log.d("Login!",accessToken.toString())
-//                    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
-//                    startActivity(intent)
-//                }else{
-//                    Log.d("Login 필요!","")
-//                    val intent = Intent(this@SplashActivity, AuthActivity::class.java)
-//                    startActivity(intent)
-//                }
+                if (accessToken != null && refreshToken != null){
+                    Log.d("Login!",accessToken.toString())
+                    val intent = Intent(this@SplashActivity, HomeActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    Log.d("Login 필요!","")
+                    val intent = Intent(this@SplashActivity, AuthActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 

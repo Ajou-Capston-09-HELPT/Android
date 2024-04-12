@@ -9,13 +9,13 @@ class UserInfoViewModel : ViewModel() {
     val sex : LiveData<String>
         get() = _sex
 
-    private val _height = MutableLiveData<Int>()
-    val height : LiveData<Int>
-        get() = _height
-
-    private val _weight = MutableLiveData<Int>()
-    val weight : LiveData<Int>
-        get() = _weight
+//    private val _height = MutableLiveData<Int>()
+//    val height : LiveData<Int>
+//        get() = _height
+//
+//    private val _weight = MutableLiveData<Int>()
+//    val weight : LiveData<Int>
+//        get() = _weight
 
     private val _done = MutableLiveData<Boolean>(false)
     val done : LiveData<Boolean>
@@ -25,13 +25,13 @@ class UserInfoViewModel : ViewModel() {
         _sex.postValue(data)
     }
 
-    fun setWeight(data: Int) {
-        _weight.postValue(data)
-    }
-
-    fun setHeight(data: Int) {
-        _height.postValue(data)
-    }
+//    fun setWeight(data: Int) {
+//        _weight.postValue(data)
+//    }
+//
+//    fun setHeight(data: Int) {
+//        _height.postValue(data)
+//    }
 
     fun setDone(data: Boolean){
         _done.postValue(data)

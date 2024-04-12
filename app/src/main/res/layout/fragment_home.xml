@@ -77,7 +77,6 @@
             app:layout_constraintStart_toEndOf="@+id/imageView8"
             app:layout_constraintTop_toTopOf="@+id/searchBtn" />
 
-
         <TextView
             android:id="@+id/greetMsg"
             android:layout_width="0dp"
