@@ -4,130 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".auth.SetUserInfoFragment">
+    tools:context=".auth.view.SetUserInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="회원가입"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/nameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="성함"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="성함"
+            android:lineSpacingExtra="6sp"
+            android:text="@string/auth_set_greet2"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:translationY="-3sp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameText" />
-
-        <TextView
-            android:id="@+id/heightText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="키"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name" />
 
-        <EditText
-            android:id="@+id/height"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="160cm"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/heightText" />
-
-        <TextView
-            android:id="@+id/weightText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="체중"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/height" />
-
-        <EditText
-            android:id="@+id/weight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="50kg"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weightText" />
-
-        <TextView
-            android:id="@+id/sexText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="성별"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weight" />
-
         <Button
-            android:id="@+id/manBtn"
+            android:id="@+id/nextBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="남성"
-            app:layout_constraintEnd_toStartOf="@+id/womanBtn"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sexText" />
-
-        <Button
-            android:id="@+id/womanBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="여성"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/manBtn"
-            app:layout_constraintTop_toTopOf="@+id/manBtn" />
-
-        <TextView
-            android:id="@+id/ageText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="나이"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/manBtn" />
-
-        <EditText
-            android:id="@+id/age"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="만 20세"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ageText" />
-
-        <Button
-            android:id="@+id/confirmBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="완료"
+            android:background="@drawable/auth_btn"
+            android:text="시작하기"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/age" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
