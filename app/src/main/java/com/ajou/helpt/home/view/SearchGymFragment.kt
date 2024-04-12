@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajou.helpt.databinding.FragmentSearchGymBinding
@@ -38,27 +39,32 @@ class SearchGymFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val equipList = listOf<String>("덤벨 숄더 프레스","랫 풀 다운","덤벨 숄더 프레스","랫 풀 다운","덤벨 숄더 프레스","랫 풀 다운")
-        val dataList = listOf(Gym("헬스장1","경기도 수원시 영통구 영통로 127 302호",equipList),Gym("헬스장2","경기도 수원시 영통구 영통로 127 302호",equipList),Gym("헬스장3","경기도 수원시 영통구 영통로 127 302호",equipList))
+        val equipList =
+            listOf<String>("덤벨 숄더 프레스", "랫 풀 다운", "덤벨 숄더 프레스", "랫 풀 다운", "덤벨 숄더 프레스", "랫 풀 다운")
+        val dataList = listOf(
+            Gym("헬스장1", "경기도 수원시 영통구 영통로 127 302호", equipList),
+            Gym("헬스장2", "경기도 수원시 영통구 영통로 127 302호", equipList),
+            Gym("헬스장3", "경기도 수원시 영통구 영통로 127 302호", equipList)
+        )
         val link = AdapterToFragment()
         var adapter : SearchGymRVAdapter = SearchGymRVAdapter(mContext!!, dataList, link) // TODO 서버 연결 후에는 listOf()로 변경 후, 통신 이후에 list를 채워주는 방식으로 LNG
-        var gymName : String = ""
 
 //        binding.gymRv.adapter = adapter
 //        binding.gymRv.layoutManager = LinearLayoutManager(mContext)
 
-        binding.searchBtn.setOnClickListener {
-            gymName = binding.gym.text.toString()
-            // 추후에 get 통신 추가
-            binding.gymRv.adapter = adapter
-            binding.gymRv.layoutManager = LinearLayoutManager(mContext) // 현재는 테스트 위해서 이 안에 배치이나 이후 변경 예정
-        }
-
+//        binding.searchBtn.setOnClickListener {
+//            gymName = binding.gym.text.toString()
+//            // 추후에 get 통신 추가
+//            binding.gymRv.adapter = adapter
+//            binding.gymRv.layoutManager = LinearLayoutManager(mContext) // 현재는 테스트 위해서 이 안에 배치이나 이후 변경 예정
+//        }
+//
         binding.gym.setOnEditorActionListener { view, id, keyEvent ->
-            if (id == EditorInfo.IME_ACTION_DONE){
-                gymName = binding.gym.text.toString()
+            if (id == EditorInfo.IME_ACTION_SEARCH){
                 binding.gymRv.adapter = adapter
                 binding.gymRv.layoutManager = LinearLayoutManager(mContext) // 위와 동일
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireActivity().window.decorView.applicationWindowToken, 0)
                 return@setOnEditorActionListener true
             }else return@setOnEditorActionListener false
         }

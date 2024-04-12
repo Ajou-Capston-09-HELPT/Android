@@ -75,12 +75,9 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
 
-//        binding.findGymBtn.setOnClickListener {
-//
-//        }
 //        binding.idBtn.setOnClickListener {
 //            val dialog = QRCreateDialogFragment()
 //            dialog.show(childFragmentManager, "QRCreateDialog")
-//        }
+//        } // TODO 추후에 이용권 UI 완성 후 연결 예정
     }
 }
