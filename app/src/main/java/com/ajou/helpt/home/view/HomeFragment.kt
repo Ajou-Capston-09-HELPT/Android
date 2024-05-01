@@ -59,6 +59,8 @@ class HomeFragment : Fragment() {
                     binding.ticketTitle.visibility = View.VISIBLE
                     binding.greetMsg.text =
                         String.format(mContext!!.resources.getString(R.string.home_greet, name))
+                    binding.ticket.visibility = View.VISIBLE
+                    // TODO 회원증의 정보 주입하기
                 } else {
                     binding.greetMsg.text =
                         String.format(mContext!!.resources.getString(R.string.home_greet_no, name))
@@ -99,6 +101,7 @@ class HomeFragment : Fragment() {
 //                }
 //            }
         } // 탈퇴 테스트 용
+
 
 //        binding.idBtn.setOnClickListener {
 //            val dialog = QRCreateDialogFragment()
