@@ -7,34 +7,43 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.ajou.helpt.auth.view.LoginFragment"
+        android:name="com.ajou.helpt.auth.view.fragment.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_setUserInfoFragment"
-            app:destination="@id/setUserInfoFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/setUserInfoFragment"
-        android:name="com.ajou.helpt.auth.view.SetUserInfoFragment"
-        android:label="fragment_set_user_info"
-        tools:layout="@layout/fragment_set_user_info" >
-        <action
-            android:id="@+id/action_setUserInfoFragment_to_setSexInfoFragment"
-            app:destination="@id/setSexInfoFragment" />
+            android:id="@+id/action_loginFragment_to_startSetInfoFragment"
+            app:destination="@id/startSetInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/setSexInfoFragment"
-        android:name="com.ajou.helpt.auth.view.SetSexInfoFragment"
+        android:name="com.ajou.helpt.auth.view.fragment.SetSexInfoFragment"
         android:label="fragment_set_sex_info"
         tools:layout="@layout/fragment_set_sex_info" >
         <action
-            android:id="@+id/action_setSexInfoFragment_to_setPhysicInfoFragment"
-            app:destination="@id/setPhysicInfoFragment" />
+            android:id="@+id/action_setSexInfoFragment_to_setUserInfoFragment"
+            app:destination="@id/setUserInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPhysicInfoFragment"
-        android:name="com.ajou.helpt.auth.view.SetPhysicInfoFragment"
+        android:name="com.ajou.helpt.auth.view.fragment.SetPhysicInfoFragment"
         android:label="fragment_set_physic_info"
         tools:layout="@layout/fragment_set_physic_info" />
+    <fragment
+        android:id="@+id/startSetInfoFragment"
+        android:name="com.ajou.helpt.auth.view.fragment.StartSetInfoFragment"
+        android:label="fragment_start_set_info"
+        tools:layout="@layout/fragment_start_set_info" >
+        <action
+            android:id="@+id/action_startSetInfoFragment_to_setSexInfoFragment"
+            app:destination="@id/setSexInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setUserInfoFragment"
+        android:name="com.ajou.helpt.auth.view.fragment.SetUserInfoFragment"
+        android:label="fragment_set_user_info"
+        tools:layout="@layout/fragment_set_user_info" >
+        <action
+            android:id="@+id/action_setUserInfoFragment_to_setPhysicInfoFragment"
+            app:destination="@id/setPhysicInfoFragment" />
+    </fragment>
 </navigation>

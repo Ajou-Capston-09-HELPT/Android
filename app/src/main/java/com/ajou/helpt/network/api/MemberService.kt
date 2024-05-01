@@ -4,6 +4,7 @@ import com.ajou.helpt.network.model.Member
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Header
 import retrofit2.http.POST
 
@@ -20,4 +21,9 @@ interface MemberService {
     suspend fun login(
         @Body memberInfo : Member
     ) : Response<ResponseBody>
+
+    @DELETE("members")
+    suspend fun quit(
+        @Header("Authorization") accessToken : String
+    ):Response<ResponseBody>
 }

@@ -2,6 +2,7 @@ package com.ajou.helpt.home.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
@@ -9,13 +10,35 @@ import com.ajou.helpt.databinding.ItemPayInfoBinding
 import com.ajou.helpt.home.model.PayInfo
 import java.text.DecimalFormat
 
-class PayInfoRVAdapter(val context: Context, val list: List<PayInfo>): RecyclerView.Adapter<PayInfoRVAdapter.ViewHolder>() {
+class PayInfoRVAdapter(val context: Context, val list: List<PayInfo>) :
+    RecyclerView.Adapter<PayInfoRVAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemPayInfoBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(item: PayInfo){
-            val dec = DecimalFormat("#,###")
-            binding.period.text = item.period
-            binding.price.text = String.format(context.resources.getString(R.string.price,dec.format(item.price.toInt())))
+    inner class ViewHolder(val binding: ItemPayInfoBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: PayInfo) {
+            binding.period.text = String.format(
+                context.resources.getString(
+                    R.string.home_gym_pay_title,
+                    item.period
+                )
+            )
+            binding.price.text = String.format(
+                context.resources.getString(
+                    R.string.home_gym_pay_price,
+                    item.price.toInt()
+                )
+            )
+
+            binding.mPrice.text = String.format(
+                context.resources.getString(
+                    R.string.home_gym_pay_mprice,
+                    item.price.toInt() / item.period.toInt()
+                )
+            )
+
+            if (item.period.toInt() == 1) {
+                binding.mPrice.visibility = View.GONE
+            }
         }
     }
 

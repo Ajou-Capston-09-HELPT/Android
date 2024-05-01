@@ -1,6 +1,8 @@
 package com.ajou.helpt.home.view
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,11 +11,10 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
+import com.ajou.helpt.auth.view.dialog.LogOutDialog
+import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentHomeBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
 
@@ -22,6 +23,9 @@ class HomeFragment : Fragment() {
     private var mContext : Context?= null
     private val dataStore = UserDataStore()
     private var accessToken : String? = null
+    private var refreshToken: String? = null
+    private lateinit var logOutDialog : LogOutDialog
+    private lateinit var quitDialog: QuitDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -74,6 +78,27 @@ class HomeFragment : Fragment() {
         binding.searchBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
+        binding.logo.setOnClickListener {
+            logOutDialog = LogOutDialog(mContext!!)
+            logOutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            logOutDialog.show()
+        } // 로그아웃 테스트 용
+
+        binding.greetMsg.setOnClickListener {
+            quitDialog = QuitDialog(mContext!!)
+            quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            quitDialog.show()
+//            CoroutineScope(Dispatchers.IO).launch {
+//                dataStore.deleteAll()
+//                val quitDeferred = async { memberService.quit(accessToken!!) }
+//                val quitResponse = quitDeferred.await()
+//                if (quitResponse.isSuccessful){
+//                    Log.d("탈퇴하기 성공","탈퇴하기")
+//                }else{
+//                    Log.d("탈퇴하기 실패",quitResponse.errorBody()?.string().toString())
+//                }
+//            }
+        } // 탈퇴 테스트 용
 
 //        binding.idBtn.setOnClickListener {
 //            val dialog = QRCreateDialogFragment()

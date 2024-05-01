@@ -6,8 +6,16 @@ import androidx.lifecycle.ViewModel
 
 class UserInfoViewModel : ViewModel() {
     private val _sex = MutableLiveData<String>()
-    val sex : LiveData<String>
+    val sex: LiveData<String>
         get() = _sex
+
+    private val _birth = MutableLiveData<String>()
+    val birth: LiveData<String>
+        get() = _birth
+
+    private val _phoneNum = MutableLiveData<String>()
+    val phoneNum: LiveData<String>
+        get() = _phoneNum
 
 //    private val _height = MutableLiveData<Int>()
 //    val height : LiveData<Int>
@@ -23,6 +31,14 @@ class UserInfoViewModel : ViewModel() {
 
     fun setSexInfo(data: String) {
         _sex.postValue(data)
+    }
+
+    fun setBirthInfo(data: String) {
+        _birth.postValue(data)
+    }
+
+    fun setPhoneNumInfo(data: String) {
+        _phoneNum.postValue(data)
     }
 
 //    fun setWeight(data: Int) {

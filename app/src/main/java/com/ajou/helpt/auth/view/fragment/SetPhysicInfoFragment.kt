@@ -1,4 +1,4 @@
-package com.ajou.helpt.auth.view
+package com.ajou.helpt.auth.view.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -13,22 +13,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgs
-import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
+import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentSetPhysicInfoBinding
 import com.ajou.helpt.home.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.network.model.Member
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.json.JSONObject
-import kotlin.math.log
 
 class SetPhysicInfoFragment : Fragment() {
     private var _binding: FragmentSetPhysicInfoBinding? = null
@@ -77,9 +70,11 @@ class SetPhysicInfoFragment : Fragment() {
             override fun afterTextChanged(str: Editable?) {
                 if(str!!.isNotEmpty()) {
                     weight = str.toString().toInt()
+                    binding.height.isSelected = true
                     viewModel.setDone(true)
                 }else{
                     weight = 0
+                    binding.height.isSelected = false
                     viewModel.setDone(false)
                 }
             }
@@ -95,9 +90,11 @@ class SetPhysicInfoFragment : Fragment() {
             override fun afterTextChanged(str: Editable?) {
                 if(str!!.isNotEmpty()) {
                     height = str.toString().toInt()
+                    binding.height.isSelected = true
                     viewModel.setDone(true)
                 }else{
                     height = 0
+                    binding.height.isSelected = false
                     viewModel.setDone(false)
                 }
             }
@@ -133,10 +130,12 @@ class SetPhysicInfoFragment : Fragment() {
             if (loginResponse.isSuccessful) {
                 val tokenBody = JSONObject(loginResponse.body()?.string())
                 Log.d("tokenBody",tokenBody.toString())
-                dataStore.saveAccessToken(tokenBody.get("accessToken").toString())
-                dataStore.saveRefreshToken(tokenBody.get("refreshToken").toString())
-                val intent = Intent(mContext, HomeActivity::class.java)
-                startActivity(intent)
+                dataStore.saveAccessToken("Bearer " + tokenBody.get("accessToken").toString())
+                dataStore.saveRefreshToken("Bearer " + tokenBody.get("refreshToken").toString())
+                withContext(Dispatchers.Main){
+                    val intent = Intent(mContext, HomeActivity::class.java)
+                    startActivity(intent)
+                }
             }else{
                 Log.d("fail",loginResponse.errorBody()?.string().toString())
             }
