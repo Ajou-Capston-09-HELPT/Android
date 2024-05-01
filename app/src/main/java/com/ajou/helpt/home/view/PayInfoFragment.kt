@@ -13,7 +13,7 @@ import com.ajou.helpt.home.adapter.PayInfoRVAdapter
 import com.ajou.helpt.home.model.PayInfo
 
 class PayInfoFragment : Fragment() {
-    private var _binding : FragmentPayInfoBinding?= null
+    private var _binding : FragmentPayInfoBinding? = null
     private val binding get() = _binding!!
     private var mContext : Context?= null
 

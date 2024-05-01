@@ -23,11 +23,13 @@ class SplashActivity : AppCompatActivity() {
             accessToken = dataStore.getAccessToken().toString()
             refreshToken = dataStore.getRefreshToken().toString()
             withContext(Dispatchers.Main){
-                if (accessToken != null && refreshToken != null){
-                    Log.d("Login!",accessToken.toString())
+                val intent = Intent(this@SplashActivity, AuthActivity::class.java)
+                startActivity(intent)
+                if (accessToken != null && refreshToken != null && accessToken != "null" && refreshToken != "null") {
+                    Log.d("Login!", accessToken.toString())
                     val intent = Intent(this@SplashActivity, HomeActivity::class.java)
                     startActivity(intent)
-                }else{
+                } else {
                     Log.d("Login 필요!","")
                     val intent = Intent(this@SplashActivity, AuthActivity::class.java)
                     startActivity(intent)

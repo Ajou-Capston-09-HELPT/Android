@@ -28,4 +28,25 @@
     <style name="PretendardCheckboxStyle" parent="@android:style/Widget.DeviceDefault.CompoundButton.CheckBox">
         <item name="android:fontFamily">@font/pretendard</item>
     </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="CustomDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.NumberPicker" parent="">
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorHighlight">@color/gray_text</item>
+        <item name="android:textSize">20sp</item>
+        <item name="selectableItemBackground">@color/black</item>
+        <item name="colorControlNormal">@color/primary</item>
+    </style>
+
 </resources>

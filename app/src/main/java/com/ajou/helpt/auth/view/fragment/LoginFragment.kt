@@ -1,4 +1,4 @@
-package com.ajou.helpt.auth.view
+package com.ajou.helpt.auth.view.fragment
 
 import android.content.ContentValues
 import android.content.Context
@@ -13,9 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentLoginBinding
-import com.ajou.helpt.network.RetrofitInstance
-import com.ajou.helpt.network.api.MemberService
-import com.ajou.helpt.network.model.Member
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -89,7 +86,7 @@ class LoginFragment : Fragment() {
                                 dataStore.saveKakaoId(user?.id.toString())
 
                                 withContext(Dispatchers.Main) {
-                                    findNavController().navigate(R.id.action_loginFragment_to_setUserInfoFragment)
+                                    findNavController().navigate(R.id.action_loginFragment_to_startSetInfoFragment)
                                 }
                             }
                         }

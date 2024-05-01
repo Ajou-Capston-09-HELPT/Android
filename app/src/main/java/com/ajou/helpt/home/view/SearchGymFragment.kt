@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -16,7 +17,7 @@ import com.ajou.helpt.home.adapter.SearchGymRVAdapter
 import com.ajou.helpt.home.model.Gym
 
 class SearchGymFragment : Fragment() {
-    private var _binding : FragmentSearchGymBinding ?= null
+    private var _binding : FragmentSearchGymBinding? = null
     private val binding get() = _binding!!
     private var mContext : Context?= null
 
@@ -59,6 +60,7 @@ class SearchGymFragment : Fragment() {
 //            binding.gymRv.layoutManager = LinearLayoutManager(mContext) // 현재는 테스트 위해서 이 안에 배치이나 이후 변경 예정
 //        }
 //
+
         binding.gym.setOnEditorActionListener { view, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_SEARCH){
                 binding.gymRv.adapter = adapter
@@ -66,9 +68,11 @@ class SearchGymFragment : Fragment() {
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().window.decorView.applicationWindowToken, 0)
                 return@setOnEditorActionListener true
-            }else return@setOnEditorActionListener false
+            } else {
+                Log.d("keyevent","it is else")
+                return@setOnEditorActionListener false
+            }
         }
-
     }
 
     inner class AdapterToFragment {

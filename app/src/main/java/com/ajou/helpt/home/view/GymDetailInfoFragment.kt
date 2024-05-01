@@ -13,6 +13,8 @@ import com.ajou.helpt.BuildConfig
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentGymDetailInfoBinding
 import com.ajou.helpt.home.adapter.GymDetailInfoRVAdapter
+import com.ajou.helpt.home.adapter.PayInfoRVAdapter
+import com.ajou.helpt.home.model.PayInfo
 import com.skt.Tmap.TMapView
 
 
@@ -47,16 +49,22 @@ class GymDetailInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val item = args.item
+
         binding.gymName.text = item.name
         binding.address.text = item.address
         binding.equipRV.adapter = GymDetailInfoRVAdapter(mContext!!, item.equipList!!)
-        binding.equipRV.layoutManager = LinearLayoutManager(mContext)
+        binding.equipRV.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)
 
         binding.mapContainer.addView(tmapView)
 
-        binding.registBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_gymDetailInfoFragment_to_payInfoFragment)
-        }
+        val list = listOf<PayInfo>(
+            PayInfo("1","50000"),
+            PayInfo("2","100000"),
+            PayInfo("3","150000")
+        )
+
+        binding.payRV.adapter = PayInfoRVAdapter(mContext!!,list)
+        binding.payRV.layoutManager = LinearLayoutManager(mContext)
 
     }
 

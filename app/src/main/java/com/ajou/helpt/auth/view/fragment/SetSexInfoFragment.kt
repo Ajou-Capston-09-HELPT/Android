@@ -1,4 +1,4 @@
-package com.ajou.helpt.auth.view
+package com.ajou.helpt.auth.view.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
+import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentSetSexInfoBinding
-import java.security.cert.TrustAnchor
 
 class SetSexInfoFragment : Fragment() {
     private var _binding: FragmentSetSexInfoBinding? = null
@@ -46,7 +46,7 @@ class SetSexInfoFragment : Fragment() {
             binding.manText.setTextColor(ContextCompat.getColor(mContext!!, R.color.primary))
             binding.womanBtn.setImageResource(R.drawable.auth_woman_off)
             binding.womanText.setTextColor(ContextCompat.getColor(mContext!!, R.color.gray_off))
-            viewModel.setSexInfo("man")
+            viewModel.setSexInfo("MAN")
             binding.nextBtn.isEnabled = true
         }
         binding.womanBtn.setOnClickListener {
@@ -54,12 +54,12 @@ class SetSexInfoFragment : Fragment() {
             binding.womanText.setTextColor(ContextCompat.getColor(mContext!!, R.color.primary))
             binding.manBtn.setImageResource(R.drawable.auth_man_off)
             binding.manText.setTextColor(ContextCompat.getColor(mContext!!, R.color.gray_off))
-            viewModel.setSexInfo("woman")
+            viewModel.setSexInfo("WOMEN")
             binding.nextBtn.isEnabled = true
         }
 
         binding.nextBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_setSexInfoFragment_to_setPhysicInfoFragment)
+            findNavController().navigate(R.id.action_setSexInfoFragment_to_setUserInfoFragment)
         }
     }
 }
