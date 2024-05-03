@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/train_graph">
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/train_graph"
+    app:startDestination="@id/defaultTrainFragment">
+    <fragment
+        android:id="@+id/defaultTrainFragment"
+        android:name="com.ajou.helpt.train.view.DefaultTrainFragment"
+        android:label="fragment_default_train"
+        tools:layout="@layout/fragment_default_train" >
+        <action
+            android:id="@+id/action_defaultTrainFragment_to_readyTrainFragment"
+            app:destination="@id/readyTrainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/readyTrainFragment"
+        android:name="com.ajou.helpt.train.view.ReadyTrainFragment"
+        android:label="fragment_ready_train"
+        tools:layout="@layout/fragment_ready_train" />
 </navigation>

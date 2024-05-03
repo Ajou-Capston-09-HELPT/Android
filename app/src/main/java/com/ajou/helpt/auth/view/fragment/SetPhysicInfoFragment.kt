@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentSetPhysicInfoBinding
-import com.ajou.helpt.home.HomeActivity
+import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.network.model.Member

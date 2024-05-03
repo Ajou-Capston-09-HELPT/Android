@@ -4,6 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".train.TrainActivity">
+    tools:context=".train.view.TrainActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/train_graph" />
+
+    <ImageView
+        android:id="@+id/bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/navigation_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/train"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/navigation_train_on"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        app:layout_constraintEnd_toStartOf="@+id/home"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bar" />
+
+    <ImageView
+        android:id="@+id/home"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/navigation_home_off"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        app:layout_constraintEnd_toStartOf="@+id/my"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/train"
+        app:layout_constraintTop_toTopOf="@+id/bar" />
+
+    <ImageView
+        android:id="@+id/my"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/navigation_my_off"
+        app:layout_constraintBottom_toBottomOf="@+id/bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/home"
+        app:layout_constraintTop_toTopOf="@+id/bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

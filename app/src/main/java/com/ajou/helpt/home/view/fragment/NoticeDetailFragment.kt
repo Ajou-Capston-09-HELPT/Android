@@ -1,4 +1,4 @@
-package com.ajou.helpt.home.view
+package com.ajou.helpt.home.view.fragment
 
 import android.os.Bundle
 import android.util.Log

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.databinding.ItemSearchGymBinding
-import com.ajou.helpt.home.view.SearchGymFragment
+import com.ajou.helpt.home.view.fragment.SearchGymFragment
 import com.ajou.helpt.home.model.Gym
 
 class SearchGymRVAdapter(val context: Context, var list : List<Gym>, val link : SearchGymFragment.AdapterToFragment):RecyclerView.Adapter<SearchGymRVAdapter.ViewHolder>() {

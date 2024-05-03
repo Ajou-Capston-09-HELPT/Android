@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".home.view.GymDetailInfoFragment">
+    tools:context=".home.view.fragment.GymDetailInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -177,6 +177,7 @@
                     android:background="@drawable/auth_btn"
                     android:textColor="@color/white"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     android:enabled="true"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="32dp"

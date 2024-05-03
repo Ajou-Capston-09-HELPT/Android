@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.ajou.helpt.auth.view.AuthActivity
-import com.ajou.helpt.home.HomeActivity
+import com.ajou.helpt.home.view.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

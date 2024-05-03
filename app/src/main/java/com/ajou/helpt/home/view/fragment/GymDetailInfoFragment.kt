@@ -1,4 +1,4 @@
-package com.ajou.helpt.home.view
+package com.ajou.helpt.home.view.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ajou.helpt.BuildConfig
-import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentGymDetailInfoBinding
 import com.ajou.helpt.home.adapter.GymDetailInfoRVAdapter
 import com.ajou.helpt.home.adapter.PayInfoRVAdapter

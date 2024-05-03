@@ -1,4 +1,4 @@
-package com.ajou.helpt.home.view
+package com.ajou.helpt.home.view.fragment
 
 import android.content.Context
 import android.os.Bundle

@@ -23,7 +23,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".train.TrainActivity"
+            android:name=".train.view.TrainActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.HomeActivity"
+            android:name=".home.view.HomeActivity"
             android:exported="false" />
         <activity
             android:name=".auth.view.AuthActivity"
