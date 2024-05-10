@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,14 @@ import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.auth.view.dialog.LogOutDialog
 import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentHomeBinding
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.GymService
+import com.ajou.helpt.network.api.MemberService
+import com.ajou.helpt.network.api.MemberShipService
 import kotlinx.coroutines.*
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import kotlin.math.*
 
 class HomeFragment : Fragment() {
 
@@ -26,6 +34,9 @@ class HomeFragment : Fragment() {
     private var refreshToken: String? = null
     private lateinit var logOutDialog : LogOutDialog
     private lateinit var quitDialog: QuitDialog
+    private val membershipService = RetrofitInstance.getInstance().create(MemberShipService::class.java)
+    private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
+    private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -52,8 +63,44 @@ class HomeFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
 //            hasTicket = dataStore.getHasTicket()
             name = dataStore.getUserName().toString()
-            withContext(Dispatchers.Main){
-                if(hasTicket) {
+            accessToken = dataStore.getAccessToken().toString()
+            refreshToken = dataStore.getRefreshToken().toString()
+            val ticketDeferred = async { membershipService.getMembershipDetail(accessToken!!) }
+            val ticketResponse = ticketDeferred.await()
+            if (ticketResponse.isSuccessful) {
+                val oneGymDeferred = async { gymService.getOneGym(accessToken!!,ticketResponse.body()?.data?.gymId!!) }
+                val oneGymResponse = oneGymDeferred.await()
+                if (oneGymResponse.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        var sf = SimpleDateFormat("yyyy-MM-dd")
+                        var startDate = sf.parse(ticketResponse.body()?.data?.startDate)
+                        var endDate = sf.parse(ticketResponse.body()?.data?.endDate)
+                        var calDate =
+                            "${ceil(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
+                        val period = "${ticketResponse.body()?.data?.startDate} ~ ${ticketResponse.body()?.data?.endDate}"
+                        val attendDate = "${ticketResponse.body()?.data?.attendanceDate}일"
+                        val remainDate = "${(((endDate.time - startDate.time) / (60 * 60 * 24 * 1000)))}일 남음"
+                        binding.period.text = period
+                        binding.ticketName.text = calDate
+                        binding.gymName.text = oneGymResponse.body()?.data?.gymName
+                        binding.attend.text = attendDate
+                        binding.remain.text = remainDate
+                    }
+                }
+            } else {
+                val errorBody = JSONObject(ticketResponse.errorBody()?.string())
+                if (errorBody.getString("status") == "error") {
+                    val tokenDeferred = async { memberService.getNewToken(refreshToken!!) }
+                    val tokenResponse = tokenDeferred.await()
+                    if (tokenResponse.isSuccessful) {
+                        Log.d("tokenResponse", tokenResponse.toString())
+                    } else {
+                        Log.d("tokenResponse fail", tokenResponse.errorBody()?.string().toString())
+                    }
+                }
+            }
+            withContext(Dispatchers.Main) {
+                if (hasTicket) {
                     binding.ticketBack.visibility = View.VISIBLE
                     binding.ticketImg.visibility = View.VISIBLE
                     binding.ticketTitle.visibility = View.VISIBLE

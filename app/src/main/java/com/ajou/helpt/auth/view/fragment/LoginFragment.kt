@@ -27,6 +27,8 @@ class LoginFragment : Fragment() {
     private var accessToken: String? = null
 
 
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
@@ -88,6 +90,7 @@ class LoginFragment : Fragment() {
                                 withContext(Dispatchers.Main) {
                                     findNavController().navigate(R.id.action_loginFragment_to_startSetInfoFragment)
                                 }
+                                // TODO login api cal 해야함
                             }
                         }
                         Log.e(ContentValues.TAG, "로그인 성공 ${token.accessToken}")

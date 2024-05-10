@@ -5,6 +5,7 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 
@@ -17,10 +18,15 @@ interface MemberService {
 //    fun registerMember(
 //
 //    )
-    @POST("members/login")
-    suspend fun login(
+    @POST("members/register")
+    suspend fun register(
         @Body memberInfo : Member
-    ) : Response<ResponseBody>
+    ): Response<ResponseBody>
+
+    @POST("api/auth/token/refresh")
+    suspend fun getNewToken(
+        @Header("Authorization") refreshToken : String
+    ): Response<ResponseBody>
 
     @DELETE("members")
     suspend fun quit(

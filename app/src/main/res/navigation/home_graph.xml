@@ -39,18 +39,10 @@
         android:name="com.ajou.helpt.home.view.fragment.GymDetailInfoFragment"
         android:label="fragment_gym_detail_info"
         tools:layout="@layout/fragment_gym_detail_info" >
-        <action
-            android:id="@+id/action_gymDetailInfoFragment_to_payInfoFragment"
-            app:destination="@id/payInfoFragment" />
         <argument
             android:name="item"
             app:argType="com.ajou.helpt.home.model.Gym" />
     </fragment>
-    <fragment
-        android:id="@+id/payInfoFragment"
-        android:name="com.ajou.helpt.home.view.fragment.PayInfoFragment"
-        android:label="fragment_pay_info"
-        tools:layout="@layout/fragment_pay_info" />
     <fragment
         android:id="@+id/QRCreateFragment"
         android:name="com.ajou.helpt.home.view.fragment.QRCreateDialogFragment"

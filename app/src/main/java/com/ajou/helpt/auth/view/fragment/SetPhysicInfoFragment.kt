@@ -125,13 +125,13 @@ class SetPhysicInfoFragment : Fragment() {
         Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId")
         val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!)
         CoroutineScope(Dispatchers.IO).launch{
-            val loginDeferred = async {memberService.login(memberInfo) }
+            val loginDeferred = async {memberService.register(memberInfo) }
             val loginResponse = loginDeferred.await()
             if (loginResponse.isSuccessful) {
                 val tokenBody = JSONObject(loginResponse.body()?.string())
                 Log.d("tokenBody",tokenBody.toString())
-                dataStore.saveAccessToken("Bearer " + tokenBody.get("accessToken").toString())
-                dataStore.saveRefreshToken("Bearer " + tokenBody.get("refreshToken").toString())
+                dataStore.saveAccessToken("Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString())
+                dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
                 withContext(Dispatchers.Main){
                     val intent = Intent(mContext, HomeActivity::class.java)
                     startActivity(intent)

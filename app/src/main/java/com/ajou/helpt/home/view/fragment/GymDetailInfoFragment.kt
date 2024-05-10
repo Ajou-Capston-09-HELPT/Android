@@ -31,7 +31,11 @@ class GymDetailInfoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initMap()
+
+        initMap(
+            args.item.gymRegisteredInfo.address.longitude,
+            args.item.gymRegisteredInfo.address.latitude
+        )
 
     }
 
@@ -48,30 +52,25 @@ class GymDetailInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val item = args.item
 
-        binding.gymName.text = item.name
-        binding.address.text = item.address
-        binding.equipRV.adapter = GymDetailInfoRVAdapter(mContext!!, item.equipList!!)
-        binding.equipRV.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)
+        binding.gymName.text = item.gymRegisteredInfo.gymName
+        binding.address.text = item.gymRegisteredInfo.address.fullAddress
+        binding.equipRV.adapter = GymDetailInfoRVAdapter(mContext!!, item.equipList)
+        binding.equipRV.layoutManager =
+            LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
 
         binding.mapContainer.addView(tmapView)
 
-        val list = listOf<PayInfo>(
-            PayInfo("1","50000"),
-            PayInfo("2","100000"),
-            PayInfo("3","150000")
-        )
-
-        binding.payRV.adapter = PayInfoRVAdapter(mContext!!,list)
+        binding.payRV.adapter = PayInfoRVAdapter(mContext!!,item.gymProduct)
         binding.payRV.layoutManager = LinearLayoutManager(mContext)
 
     }
 
-    private fun initMap(){
+    private fun initMap(longitude: String, latitude: String) {
         tmapView = TMapView(mContext!!)
         tmapView!!.setSKTMapApiKey(BuildConfig.TMAP_API_KEY)
         tmapView!!.zoomLevel = 15
-        tmapView!!.setLocationPoint(127.031846,37.278693) // icon으로 표시할 위치 설정
-        tmapView!!.setCenterPoint(127.031846,37.278693) // 지도의 중심 포인트 위치 설정
-        tmapView!!.setIconVisibility(true) // 현재 위치 표시 Icon은 추후에 변경 가능
+        tmapView!!.setLocationPoint(longitude.toDouble(), latitude.toDouble()) // icon으로 표시할 위치 설정
+        tmapView!!.setCenterPoint(longitude.toDouble(), latitude.toDouble()) // 지도의 중심 포인트 위치 설정
+//        tmapView!!.setIconVisibility(true) // 현재 위치 표시 Icon은 추후에 변경 가능
     }
 }

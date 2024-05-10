@@ -7,36 +7,37 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.ItemPayInfoBinding
+import com.ajou.helpt.home.model.GymProduct
 import com.ajou.helpt.home.model.PayInfo
 import java.text.DecimalFormat
 
-class PayInfoRVAdapter(val context: Context, val list: List<PayInfo>) :
+class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
     RecyclerView.Adapter<PayInfoRVAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemPayInfoBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: PayInfo) {
+        fun bind(item: GymProduct) {
             binding.period.text = String.format(
                 context.resources.getString(
                     R.string.home_gym_pay_title,
-                    item.period
+                    item.day
                 )
             )
             binding.price.text = String.format(
                 context.resources.getString(
                     R.string.home_gym_pay_price,
-                    item.price.toInt()
+                    item.price
                 )
             )
 
             binding.mPrice.text = String.format(
                 context.resources.getString(
                     R.string.home_gym_pay_mprice,
-                    item.price.toInt() / item.period.toInt()
+                    item.price / item.day
                 )
             )
 
-            if (item.period.toInt() == 1) {
+            if (item.day == 1) {
                 binding.mPrice.visibility = View.GONE
             }
         }
