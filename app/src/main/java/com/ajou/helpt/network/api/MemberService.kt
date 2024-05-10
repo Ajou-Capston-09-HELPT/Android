@@ -1,11 +1,10 @@
 package com.ajou.helpt.network.api
 
-import com.ajou.helpt.network.model.Member
+import com.ajou.helpt.auth.Member
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
-import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 

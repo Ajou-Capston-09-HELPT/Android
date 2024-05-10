@@ -12,7 +12,6 @@ import com.ajou.helpt.BuildConfig
 import com.ajou.helpt.databinding.FragmentGymDetailInfoBinding
 import com.ajou.helpt.home.adapter.GymDetailInfoRVAdapter
 import com.ajou.helpt.home.adapter.PayInfoRVAdapter
-import com.ajou.helpt.home.model.PayInfo
 import com.skt.Tmap.TMapView
 
 

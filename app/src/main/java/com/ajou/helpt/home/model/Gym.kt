@@ -1,8 +1,6 @@
 package com.ajou.helpt.home.model
 
 import android.os.Parcelable
-import com.ajou.helpt.network.model.GymEquipment
-import com.ajou.helpt.network.model.GymRegisteredInfo
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

@@ -1,5 +1,6 @@
 package com.ajou.helpt.network.model
 
+import com.ajou.helpt.home.model.Membership
 import com.google.gson.annotations.SerializedName
 
 data class MemberShipResponse(

@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.ItemPayInfoBinding
 import com.ajou.helpt.home.model.GymProduct
-import com.ajou.helpt.home.model.PayInfo
-import java.text.DecimalFormat
 
 class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
     RecyclerView.Adapter<PayInfoRVAdapter.ViewHolder>() {

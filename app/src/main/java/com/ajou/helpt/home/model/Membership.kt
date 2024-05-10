@@ -1,4 +1,4 @@
-package com.ajou.helpt.network.model
+package com.ajou.helpt.home.model
 
 import com.google.gson.annotations.SerializedName
 

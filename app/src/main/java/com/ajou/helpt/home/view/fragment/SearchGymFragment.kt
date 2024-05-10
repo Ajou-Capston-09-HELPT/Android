@@ -19,7 +19,7 @@ import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.GymService
 import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.network.api.ProductService
-import com.ajou.helpt.network.model.GymRegisteredInfo
+import com.ajou.helpt.home.model.GymRegisteredInfo
 import kotlinx.coroutines.*
 import org.json.JSONObject
 

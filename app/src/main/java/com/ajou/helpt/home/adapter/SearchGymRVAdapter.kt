@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.databinding.ItemSearchGymBinding
 import com.ajou.helpt.home.view.fragment.SearchGymFragment
-import com.ajou.helpt.home.model.Gym
-import com.ajou.helpt.network.model.GymRegisteredInfo
+import com.ajou.helpt.home.model.GymRegisteredInfo
 
 class SearchGymRVAdapter(val context: Context, var list : List<GymRegisteredInfo>, val link : SearchGymFragment.AdapterToFragment):RecyclerView.Adapter<SearchGymRVAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemSearchGymBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(item:GymRegisteredInfo){
+        fun bind(item: GymRegisteredInfo){
             binding.name.text = item.gymName
             binding.address.text = item.address.fullAddress
 

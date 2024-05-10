@@ -19,7 +19,7 @@ import com.ajou.helpt.databinding.FragmentSetPhysicInfoBinding
 import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
-import com.ajou.helpt.network.model.Member
+import com.ajou.helpt.auth.Member
 import kotlinx.coroutines.*
 import org.json.JSONObject
 

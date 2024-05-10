@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.databinding.ItemEquipBinding
-import com.ajou.helpt.network.model.GymEquipment
+import com.ajou.helpt.home.model.GymEquipment
 
 class GymDetailInfoRVAdapter(val context: Context, val list: List<GymEquipment>): RecyclerView.Adapter<GymDetailInfoRVAdapter.ViewHolder>() {
     inner class ViewHolder(val binding: ItemEquipBinding) : RecyclerView.ViewHolder(binding.root){

@@ -1,6 +1,6 @@
 package com.ajou.helpt.network.model
 
-import com.ajou.helpt.home.model.Gym
+import com.ajou.helpt.home.model.GymRegisteredInfo
 import com.google.gson.annotations.SerializedName
 
 data class GymResponse(
