@@ -1,22 +1,39 @@
 package com.ajou.helpt.home.view.fragment
 
 import android.R
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentQRCreateDialogBinding
+import com.ajou.helpt.network.RetrofitInstance
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import kotlinx.coroutines.*
+import org.json.JSONObject
+import retrofit2.create
 
 
 class QRCreateDialogFragment : DialogFragment() {
     private var _binding : FragmentQRCreateDialogBinding?= null
     private val binding get() = _binding!!
+    private val qrService = RetrofitInstance.getInstance().create(QrService::class.java)
+    private val dataStore = UserDataStore()
+    private lateinit var accessToken :String
+    private var mContext : Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -35,17 +52,31 @@ class QRCreateDialogFragment : DialogFragment() {
         // Inflate the layout for this fragment
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         _binding = FragmentQRCreateDialogBinding.inflate(inflater, container, false)
+        CoroutineScope(Dispatchers.IO).launch {
+            accessToken = dataStore.getAccessToken().toString()
+            val qrDeferred = async { qrService.getQr(accessToken) }
+            val qrResponse = qrDeferred.await()
+            if(qrResponse.isSuccessful){
+                val qrBody = JSONObject(qrResponse.body()?.string())
+                Log.d("qrResponse ",qrBody.toString())
+                val qrToken = qrBody.getJSONObject("data").getString("qrToken").toString()
+                Log.d("qrResponse qrToken",qrToken)
+                val barcodeEncoder = BarcodeEncoder()
+                val bitmap = barcodeEncoder.encodeBitmap(qrToken, BarcodeFormat.QR_CODE, 400, 400)
+                withContext(Dispatchers.Main){
+                    binding.qrCode.setImageBitmap(bitmap)
+                }
+            }else{
+                Log.d("qrResponse fail",qrResponse.errorBody()?.string().toString())
+            }
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val content = "회원id" // 추후에 각 회원의 고유 아이디 + random number
 
-        val barcodeEncoder = BarcodeEncoder()
-        val bitmap = barcodeEncoder.encodeBitmap(content, BarcodeFormat.QR_CODE, 400, 400)
-        binding.qrCode.setImageBitmap(bitmap)
 
         binding.exitBtn.setOnClickListener {
             dismiss()

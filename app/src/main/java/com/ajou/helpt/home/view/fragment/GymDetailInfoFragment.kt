@@ -2,6 +2,7 @@ package com.ajou.helpt.home.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +52,7 @@ class GymDetailInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val item = args.item
 
+        Log.d("item",item.toString())
         binding.gymName.text = item.gymRegisteredInfo.gymName
         binding.address.text = item.gymRegisteredInfo.address.fullAddress
         binding.equipRV.adapter = GymDetailInfoRVAdapter(mContext!!, item.equipList)

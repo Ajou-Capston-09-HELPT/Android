@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.auth.view.dialog.LogOutDialog
 import com.ajou.helpt.auth.view.dialog.SelectBirthDialog
@@ -64,6 +65,10 @@ class ReadyTrainFragment : Fragment() {
                 )
             }
             dialog.show(requireActivity().supportFragmentManager, "setting")
+        }
+
+        binding.nextBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_readyTrainFragment_to_trainFragment)
         }
     }
 

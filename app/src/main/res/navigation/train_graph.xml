@@ -17,5 +17,14 @@
         android:id="@+id/readyTrainFragment"
         android:name="com.ajou.helpt.train.view.ReadyTrainFragment"
         android:label="fragment_ready_train"
-        tools:layout="@layout/fragment_ready_train" />
+        tools:layout="@layout/fragment_ready_train" >
+        <action
+            android:id="@+id/action_readyTrainFragment_to_trainFragment"
+            app:destination="@id/trainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainFragment"
+        android:name="com.ajou.helpt.train.view.TrainFragment"
+        android:label="fragment_train"
+        tools:layout="@layout/fragment_train" />
 </navigation>

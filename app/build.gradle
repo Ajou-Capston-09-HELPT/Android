@@ -10,6 +10,10 @@ properties.load(project.rootProject.file('apikey.properties').newDataInputStream
 def native_api_key = properties.getProperty('native_api_key')
 def redirect_uri = properties.getProperty('redirect_uri')
 def tmap_api_key = properties.getProperty('tmap_api_key')
+def base_url = properties.getProperty('base_url')
+def pi_ip  = properties.getProperty('pi_ip')
+def pi_port = properties.getProperty('pi_port')
+
 
 android {
     namespace 'com.ajou.helpt'
@@ -27,6 +31,9 @@ android {
         buildConfigField "String", "NATIVE_API_KEY", native_api_key
         buildConfigField "String", "REDIRECT_URI", redirect_uri
         buildConfigField "String", "TMAP_API_KEY", tmap_api_key
+        buildConfigField "String", "BASE_URL", base_url
+        buildConfigField "String", "PI_IP", pi_ip
+        buildConfigField "String", "PI_PORT", pi_port
 
         manifestPlaceholders = [NATIVE_API_KEY : native_api_key]
     }
@@ -97,5 +104,11 @@ dependencies {
 
     // GIF
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
+
+    // youtube api
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0'
+
+    // indicator
+    implementation("com.tbuonomo:dotsindicator:5.0")
 
 }

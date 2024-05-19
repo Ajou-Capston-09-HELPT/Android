@@ -18,7 +18,7 @@ class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
             binding.period.text = String.format(
                 context.resources.getString(
                     R.string.home_gym_pay_title,
-                    item.day
+                    item.months
                 )
             )
             binding.price.text = String.format(
@@ -31,11 +31,11 @@ class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
             binding.mPrice.text = String.format(
                 context.resources.getString(
                     R.string.home_gym_pay_mprice,
-                    item.price / item.day
+                    item.price / item.months
                 )
             )
 
-            if (item.day == 1) {
+            if (item.months == 1) {
                 binding.mPrice.visibility = View.GONE
             }
         }

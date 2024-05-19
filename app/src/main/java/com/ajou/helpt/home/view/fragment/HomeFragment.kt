@@ -52,12 +52,7 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
+        //        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
         var hasTicket = true
         var name = ""
         CoroutineScope(Dispatchers.IO).launch {
@@ -67,8 +62,12 @@ class HomeFragment : Fragment() {
             refreshToken = dataStore.getRefreshToken().toString()
             val ticketDeferred = async { membershipService.getMembershipDetail(accessToken!!) }
             val ticketResponse = ticketDeferred.await()
-            if (ticketResponse.isSuccessful) {
-                val oneGymDeferred = async { gymService.getOneGym(accessToken!!,ticketResponse.body()?.data?.gymId!!) }
+            val myInfoDeferred = async { memberService.getMyInfo(accessToken!!) }
+            val myInfoResponse = myInfoDeferred.await()
+            if (myInfoResponse.isSuccessful && ticketResponse.isSuccessful) {
+                Log.d("gmyIdd",myInfoResponse.body()?.data.toString())
+                Log.d("gymId", myInfoResponse.body()?.data?.gymId.toString())
+                val oneGymDeferred = async { gymService.getOneGym(accessToken!!,myInfoResponse.body()?.data?.gymId!!) }
                 val oneGymResponse = oneGymDeferred.await()
                 if (oneGymResponse.isSuccessful) {
                     withContext(Dispatchers.Main) {
@@ -78,7 +77,7 @@ class HomeFragment : Fragment() {
                         var calDate =
                             "${ceil(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
                         val period = "${ticketResponse.body()?.data?.startDate} ~ ${ticketResponse.body()?.data?.endDate}"
-                        val attendDate = "${ticketResponse.body()?.data?.attendanceDate}일"
+                        val attendDate = "출석 ${ticketResponse.body()?.data?.attendanceDate}일"
                         val remainDate = "${(((endDate.time - startDate.time) / (60 * 60 * 24 * 1000)))}일 남음"
                         binding.period.text = period
                         binding.ticketName.text = calDate
@@ -86,6 +85,8 @@ class HomeFragment : Fragment() {
                         binding.attend.text = attendDate
                         binding.remain.text = remainDate
                     }
+                } else{
+                    Log.d("gymresponse faill",oneGymResponse.errorBody()?.string().toString())
                 }
             } else {
                 val errorBody = JSONObject(ticketResponse.errorBody()?.string())
@@ -118,6 +119,12 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.mainNotice.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
         }
@@ -127,32 +134,32 @@ class HomeFragment : Fragment() {
         binding.searchBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
-        binding.logo.setOnClickListener {
-            logOutDialog = LogOutDialog(mContext!!)
-            logOutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            logOutDialog.show()
-        } // 로그아웃 테스트 용
+//        binding.logo.setOnClickListener {
+//            logOutDialog = LogOutDialog(mContext!!)
+//            logOutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//            logOutDialog.show()
+//        } // 로그아웃 테스트 용
 
-        binding.greetMsg.setOnClickListener {
-            quitDialog = QuitDialog(mContext!!)
-            quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            quitDialog.show()
-//            CoroutineScope(Dispatchers.IO).launch {
-//                dataStore.deleteAll()
-//                val quitDeferred = async { memberService.quit(accessToken!!) }
-//                val quitResponse = quitDeferred.await()
-//                if (quitResponse.isSuccessful){
-//                    Log.d("탈퇴하기 성공","탈퇴하기")
-//                }else{
-//                    Log.d("탈퇴하기 실패",quitResponse.errorBody()?.string().toString())
-//                }
-//            }
-        } // 탈퇴 테스트 용
+//        binding.greetMsg.setOnClickListener {
+//            quitDialog = QuitDialog(mContext!!)
+//            quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+//            quitDialog.show()
+////            CoroutineScope(Dispatchers.IO).launch {
+////                dataStore.deleteAll()
+////                val quitDeferred = async { memberService.quit(accessToken!!) }
+////                val quitResponse = quitDeferred.await()
+////                if (quitResponse.isSuccessful){
+////                    Log.d("탈퇴하기 성공","탈퇴하기")
+////                }else{
+////                    Log.d("탈퇴하기 실패",quitResponse.errorBody()?.string().toString())
+////                }
+////            }
+//        } // 탈퇴 테스트 용
 
 
-//        binding.idBtn.setOnClickListener {
-//            val dialog = QRCreateDialogFragment()
-//            dialog.show(childFragmentManager, "QRCreateDialog")
-//        } // TODO 추후에 이용권 UI 완성 후 연결 예정
+        binding.ticket.setOnClickListener {
+            val dialog = QRCreateDialogFragment()
+            dialog.show(childFragmentManager, "QRCreateDialog")
+        } // TODO 추후에 이용권 UI 완성 후 연결 예정
     }
 }

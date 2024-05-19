@@ -81,7 +81,7 @@ class SearchGymFragment : Fragment() {
             val searchDeferred = async { gymService.searchGyms(accessToken!!, keyword) }
             val searchResponse = searchDeferred.await()
             if (searchResponse.isSuccessful) {
-                Log.d("searchResponse",searchResponse.toString())
+                Log.d("searchResponse",searchResponse.body()?.data.toString())
                 if (searchResponse.body()?.data?.size !=0){
                     withContext(Dispatchers.Main){
                         adapter.updateList(searchResponse.body()?.data!!)
@@ -119,7 +119,6 @@ class SearchGymFragment : Fragment() {
 
     inner class AdapterToFragment {
         fun getSelectedItem(data : GymRegisteredInfo) {
-            Log.d("gymId",data.gymId.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 val equipDeferred = async { gymService.getGymEquips(accessToken!!,data.gymId) }
                 val equipResponse = equipDeferred.await()
@@ -127,10 +126,14 @@ class SearchGymFragment : Fragment() {
                 val productResponse = productDeferred.await()
                 if (equipResponse.isSuccessful && productResponse.isSuccessful) {
                     withContext(Dispatchers.Main){
+                        Log.d("equipResponse",equipResponse.body().toString())
                         val gymInfo = Gym(data, equipResponse.body()?.data!!, productResponse.body()?.data!!)
                         val action = SearchGymFragmentDirections.actionSearchGymFragmentToGymDetailInfoFragment(gymInfo)
                         findNavController().navigate(action)
                     }
+                }else{
+                    Log.d("equipResponse faill",equipResponse.errorBody()?.string().toString())
+                    Log.d("productResponse faill",productResponse.errorBody()?.string().toString())
                 }
             }
         }

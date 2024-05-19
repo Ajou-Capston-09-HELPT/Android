@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.DialogSelectBirthBinding
 import com.ajou.helpt.databinding.DialogTrainSettingBinding
+import com.ajou.helpt.getWindowSize
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -29,6 +31,7 @@ class TrainSettingDialog(val setting: List<Int>, private val callback: (kotlin.c
         setStyle(STYLE_NORMAL, R.style.CustomDialog) // 배경 transparent
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +42,14 @@ class TrainSettingDialog(val setting: List<Int>, private val callback: (kotlin.c
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        val params: ViewGroup.LayoutParams? = dialog?.window?.attributes
+        val point = getWindowSize(mContext!!)
+        val deviceWidth = point.x
+        params?.width = (deviceWidth * 0.9).toInt()
+        dialog?.window?.attributes = params as WindowManager.LayoutParams
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,12 +75,12 @@ class TrainSettingDialog(val setting: List<Int>, private val callback: (kotlin.c
         binding.count.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
         binding.posBtn.setOnClickListener {
-            val list = listOf<Int>(binding.set.value, binding.weight.value, binding.count.value)
+            val list = listOf<Int>(binding.weight.value, binding.count.value, binding.set.value)
             callback(list)
             dialog?.dismiss()
         }
 
-        binding.negBtn.setOnClickListener {
+        binding.closeBtn.setOnClickListener {
             dialog?.dismiss()
         }
     }
