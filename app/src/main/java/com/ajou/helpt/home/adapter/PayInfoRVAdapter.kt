@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.ItemPayInfoBinding
 import com.ajou.helpt.home.model.GymProduct
+import com.ajou.helpt.home.view.fragment.GymDetailInfoFragment
+import com.ajou.helpt.home.view.fragment.SearchGymFragment
 
-class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
+class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>, var selectedItem: Int?, val link : GymDetailInfoFragment.AdapterToFragment) :
     RecyclerView.Adapter<PayInfoRVAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemPayInfoBinding) :
@@ -37,6 +39,13 @@ class PayInfoRVAdapter(val context: Context, val list: List<GymProduct>) :
 
             if (item.months == 1) {
                 binding.mPrice.visibility = View.GONE
+            }
+            binding.item.isSelected = position == selectedItem
+            binding.item.setOnClickListener {
+                selectedItem = bindingAdapterPosition
+                binding.item.isSelected = true
+                notifyDataSetChanged()
+                link.getSelectedItem(item.productId)
             }
         }
     }

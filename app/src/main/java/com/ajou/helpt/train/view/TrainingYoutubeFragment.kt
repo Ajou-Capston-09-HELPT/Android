@@ -37,7 +37,7 @@ class TrainingYoutubeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycle.addObserver(binding.youtubeView)
+//        lifecycle.addObserver(binding.youtubeView)
 
         binding.youtubeView.addYouTubePlayerListener(object :AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {

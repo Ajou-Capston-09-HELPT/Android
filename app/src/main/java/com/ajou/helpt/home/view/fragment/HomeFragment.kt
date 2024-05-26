@@ -1,20 +1,23 @@
 package com.ajou.helpt.home.view.fragment
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.auth.view.dialog.LogOutDialog
 import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentHomeBinding
+import com.ajou.helpt.home.HomeInfoViewModel
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.GymService
 import com.ajou.helpt.network.api.MemberService
@@ -22,28 +25,37 @@ import com.ajou.helpt.network.api.MemberShipService
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import kotlin.math.*
 
 class HomeFragment : Fragment() {
 
-    private var _binding : FragmentHomeBinding?= null
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var mContext : Context?= null
+    private var mContext: Context? = null
     private val dataStore = UserDataStore()
-    private var accessToken : String? = null
+    private var accessToken: String? = null
     private var refreshToken: String? = null
-    private lateinit var logOutDialog : LogOutDialog
+    private lateinit var logOutDialog: LogOutDialog
     private lateinit var quitDialog: QuitDialog
-    private val membershipService = RetrofitInstance.getInstance().create(MemberShipService::class.java)
+    private val membershipService =
+        RetrofitInstance.getInstance().create(MemberShipService::class.java)
     private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
     private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
+    private lateinit var viewModel: HomeInfoViewModel
+    private var name: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mContext = context
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.IO).launch {
+            name = dataStore.getUserName().toString()
+            accessToken = dataStore.getAccessToken()
+        }
     }
 
     override fun onCreateView(
@@ -52,73 +64,54 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        //        var hasTicket = false // 이용권 있는 페이지와 없는 페이지 테스트 용도
-        var hasTicket = true
-        var name = ""
-        CoroutineScope(Dispatchers.IO).launch {
-//            hasTicket = dataStore.getHasTicket()
-            name = dataStore.getUserName().toString()
-            accessToken = dataStore.getAccessToken().toString()
-            refreshToken = dataStore.getRefreshToken().toString()
-            val ticketDeferred = async { membershipService.getMembershipDetail(accessToken!!) }
-            val ticketResponse = ticketDeferred.await()
-            val myInfoDeferred = async { memberService.getMyInfo(accessToken!!) }
-            val myInfoResponse = myInfoDeferred.await()
-            if (myInfoResponse.isSuccessful && ticketResponse.isSuccessful) {
-                Log.d("gmyIdd",myInfoResponse.body()?.data.toString())
-                Log.d("gymId", myInfoResponse.body()?.data?.gymId.toString())
-                val oneGymDeferred = async { gymService.getOneGym(accessToken!!,myInfoResponse.body()?.data?.gymId!!) }
-                val oneGymResponse = oneGymDeferred.await()
-                if (oneGymResponse.isSuccessful) {
-                    withContext(Dispatchers.Main) {
-                        var sf = SimpleDateFormat("yyyy-MM-dd")
-                        var startDate = sf.parse(ticketResponse.body()?.data?.startDate)
-                        var endDate = sf.parse(ticketResponse.body()?.data?.endDate)
-                        var calDate =
-                            "${ceil(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
-                        val period = "${ticketResponse.body()?.data?.startDate} ~ ${ticketResponse.body()?.data?.endDate}"
-                        val attendDate = "출석 ${ticketResponse.body()?.data?.attendanceDate}일"
-                        val remainDate = "${(((endDate.time - startDate.time) / (60 * 60 * 24 * 1000)))}일 남음"
-                        binding.period.text = period
-                        binding.ticketName.text = calDate
-                        binding.gymName.text = oneGymResponse.body()?.data?.gymName
-                        binding.attend.text = attendDate
-                        binding.remain.text = remainDate
-                    }
-                } else{
-                    Log.d("gymresponse faill",oneGymResponse.errorBody()?.string().toString())
-                }
+        viewModel = ViewModelProvider(requireActivity())[HomeInfoViewModel::class.java]
+
+        viewModel.hasTicket.observe(viewLifecycleOwner, Observer {
+            Log.d("viewModel",viewModel.hasTicket.value.toString())
+            if (viewModel.hasTicket.value == false) {
+                binding.greetMsg.text =
+                    String.format(mContext!!.resources.getString(R.string.home_greet_no, name))
+                binding.nonTicketImg.visibility = View.VISIBLE
+                binding.nonTicketText.visibility = View.VISIBLE
+                binding.nonticketBack.visibility = View.VISIBLE
+                binding.nonTicketTitle.visibility = View.VISIBLE
             } else {
-                val errorBody = JSONObject(ticketResponse.errorBody()?.string())
-                if (errorBody.getString("status") == "error") {
-                    val tokenDeferred = async { memberService.getNewToken(refreshToken!!) }
-                    val tokenResponse = tokenDeferred.await()
-                    if (tokenResponse.isSuccessful) {
-                        Log.d("tokenResponse", tokenResponse.toString())
-                    } else {
-                        Log.d("tokenResponse fail", tokenResponse.errorBody()?.string().toString())
-                    }
-                }
+                binding.ticketBack.visibility = View.VISIBLE
+                binding.ticketImg.visibility = View.VISIBLE
+                binding.ticketTitle.visibility = View.VISIBLE
+                binding.greetMsg.text =
+                    String.format(mContext!!.resources.getString(R.string.home_greet, name))
+                binding.ticket.visibility = View.VISIBLE
             }
-            withContext(Dispatchers.Main) {
-                if (hasTicket) {
-                    binding.ticketBack.visibility = View.VISIBLE
-                    binding.ticketImg.visibility = View.VISIBLE
-                    binding.ticketTitle.visibility = View.VISIBLE
-                    binding.greetMsg.text =
-                        String.format(mContext!!.resources.getString(R.string.home_greet, name))
-                    binding.ticket.visibility = View.VISIBLE
-                    // TODO 회원증의 정보 주입하기
-                } else {
-                    binding.greetMsg.text =
-                        String.format(mContext!!.resources.getString(R.string.home_greet_no, name))
-                    binding.nonTicketImg.visibility = View.VISIBLE
-                    binding.nonTicketText.visibility = View.VISIBLE
-                    binding.nonticketBack.visibility = View.VISIBLE
-                    binding.nonTicketTitle.visibility = View.VISIBLE
-                }
+        })
+        viewModel.gymRegistered.observe(viewLifecycleOwner, Observer {
+            Log.d("viewModel",viewModel.membership.value.toString())
+            if (viewModel.membership.value != null) {
+                Log.d("viewModel",viewModel.gymRegistered.value.toString())
+                var sf = SimpleDateFormat("yyyy-MM-dd")
+                val today = sf.parse("${LocalDate.now().year}-${LocalDate.now().monthValue}-${LocalDate.now().dayOfMonth}")
+                Log.d("today",today.toString())
+                var startDate = sf.parse(viewModel.membership.value!!.startDate)
+                var endDate = sf.parse(viewModel.membership.value!!.endDate)
+                var calDate =
+                    "${ceil(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
+                val period =
+                    "${viewModel.membership.value!!.startDate} ~ ${viewModel.membership.value!!.endDate}"
+                val attendDate = "출석 ${viewModel.membership.value!!.attendanceDate}일"
+                val remainDate =
+                    "${(((endDate.time - today.time) / (60 * 60 * 24 * 1000)))}일 남음"
+                binding.period.text = period
+                binding.ticketName.text = calDate
+                binding.gymName.text = viewModel.gymRegistered.value!!.gymName
+                binding.attend.text = attendDate
+                binding.remain.text = remainDate
+            }else{
+                binding.nonTicketTitle.visibility = View.VISIBLE
+                binding.nonticketBack.visibility = View.VISIBLE
+                binding.nonTicketText.visibility =View.VISIBLE
+                binding.nonTicketImg.visibility = View.VISIBLE
             }
-        }
+        })
         return binding.root
     }
 
@@ -134,32 +127,26 @@ class HomeFragment : Fragment() {
         binding.searchBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchGymFragment)
         }
-//        binding.logo.setOnClickListener {
-//            logOutDialog = LogOutDialog(mContext!!)
-//            logOutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//            logOutDialog.show()
-//        } // 로그아웃 테스트 용
-
-//        binding.greetMsg.setOnClickListener {
-//            quitDialog = QuitDialog(mContext!!)
-//            quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//            quitDialog.show()
-////            CoroutineScope(Dispatchers.IO).launch {
-////                dataStore.deleteAll()
-////                val quitDeferred = async { memberService.quit(accessToken!!) }
-////                val quitResponse = quitDeferred.await()
-////                if (quitResponse.isSuccessful){
-////                    Log.d("탈퇴하기 성공","탈퇴하기")
-////                }else{
-////                    Log.d("탈퇴하기 실패",quitResponse.errorBody()?.string().toString())
-////                }
-////            }
-//        } // 탈퇴 테스트 용
-
-
+        binding.chatLink.setOnClickListener {
+            openChatLink()
+        }
         binding.ticket.setOnClickListener {
             val dialog = QRCreateDialogFragment()
             dialog.show(childFragmentManager, "QRCreateDialog")
-        } // TODO 추후에 이용권 UI 완성 후 연결 예정
+        }
+    }
+
+    private fun openChatLink(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val chatLinkDeferred = async { gymService.getGymChatLink(accessToken!!, viewModel.gymRegistered.value!!.gymId) }
+            val chatLinkResponse = chatLinkDeferred.await()
+            if (chatLinkResponse.isSuccessful) {
+                val url = JSONObject(chatLinkResponse.body()?.string()).getJSONObject("data").getString("chatLink").toString()
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(intent)
+            }else{
+                Log.d("chatLinkResponse",chatLinkResponse.errorBody()?.string().toString())
+            }
+        }
     }
 }

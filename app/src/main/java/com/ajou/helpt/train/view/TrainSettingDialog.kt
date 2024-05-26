@@ -53,21 +53,21 @@ class TrainSettingDialog(val setting: List<Int>, private val callback: (kotlin.c
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.set.minValue = 1
-        binding.set.maxValue = 2010
+        binding.set.minValue = 0
+        binding.set.maxValue = 30
         binding.set.value = setting[0]
 
         binding.set.wrapSelectorWheel = false
         binding.set.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
-        binding.weight.minValue = 1
+        binding.weight.minValue = 0
         binding.weight.maxValue = 60
         binding.weight.value = setting[1]
 
         binding.weight.wrapSelectorWheel = false
         binding.weight.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
-        binding.count.minValue = 1
+        binding.count.minValue = 0
         binding.count.maxValue = 100
         binding.count.value = setting[2]
 
@@ -75,7 +75,7 @@ class TrainSettingDialog(val setting: List<Int>, private val callback: (kotlin.c
         binding.count.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
 
         binding.posBtn.setOnClickListener {
-            val list = listOf<Int>(binding.weight.value, binding.count.value, binding.set.value)
+            val list = listOf<Int>(binding.set.value, binding.weight.value, binding.count.value)
             callback(list)
             dialog?.dismiss()
         }

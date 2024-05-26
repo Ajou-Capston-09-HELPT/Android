@@ -42,6 +42,9 @@
         <argument
             android:name="item"
             app:argType="com.ajou.helpt.home.model.Gym" />
+        <action
+            android:id="@+id/action_gymDetailInfoFragment_to_kakaoPayWebViewFragment"
+            app:destination="@id/kakaoPayWebViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/QRCreateFragment"
@@ -56,6 +59,16 @@
         <action
             android:id="@+id/action_searchGymFragment_to_gymDetailInfoFragment"
             app:destination="@id/gymDetailInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/kakaoPayWebViewFragment"
+        android:name="com.ajou.helpt.home.view.fragment.KakaoPayWebViewFragment"
+        android:label="fragment_kakao_pay_web_view"
+        tools:layout="@layout/fragment_kakao_pay_web_view" >
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

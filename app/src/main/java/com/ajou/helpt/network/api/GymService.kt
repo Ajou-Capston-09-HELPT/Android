@@ -29,4 +29,10 @@ interface GymService {
         @Header("Authorization") accessToken: String,
         @Path(value = "gymId") gymId : Int
     ): Response<GymEquipResponse>
+
+    @GET("gyms/{gymId}/chat-link")
+    suspend fun getGymChatLink(
+        @Header("Authorization") accessToken: String,
+        @Path(value = "gymId") gymId : Int
+    ): Response<ResponseBody>
 }

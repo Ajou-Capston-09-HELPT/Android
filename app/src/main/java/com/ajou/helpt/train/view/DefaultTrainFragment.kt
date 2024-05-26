@@ -59,16 +59,16 @@ class DefaultTrainFragment : Fragment() {
             pl.droidsonroids.gif.GifDrawable(mContext!!.resources, R.drawable.train_qr_guide)
         binding.qrGif.setImageDrawable(gifDrawable)
 
-        binding.qrGif.setOnClickListener {
-            findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
-        }
         binding.qrCode.setOnClickListener {
             qrScan()
         }
 
         viewModel.train.observe(viewLifecycleOwner, Observer {
             if (viewModel.train.value != null) {
+                Log.d("onBackpressed","navigate")
                 findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
+            }else{
+                Log.d("onBackpressed","navigate nooo")
             }
         })
     }
@@ -77,7 +77,7 @@ class DefaultTrainFragment : Fragment() {
         ScanContract()
     ) { result: ScanIntentResult ->
         if (result.contents == null) {
-            Log.d("contents", result.contents)
+
         } else {
             Log.d("contents", result.contents)
             getTrainInfo(result.contents.toInt())
@@ -98,7 +98,7 @@ class DefaultTrainFragment : Fragment() {
             val getSelectedTrainResponse = getSelectedTrainDeferred.await()
             if (getSelectedTrainResponse.isSuccessful) {
                 Log.d("getSelectedTrainResponse ", "")
-                getSelectedTrainResponse.body()!!.data
+                viewModel.setTrain(getSelectedTrainResponse.body()!!.data)
             } else {
                 Log.d(
                     "getSelectedTrainResponse faill",

@@ -21,10 +21,18 @@
         <action
             android:id="@+id/action_readyTrainFragment_to_trainFragment"
             app:destination="@id/trainFragment" />
+        <action
+            android:id="@+id/action_readyTrainFragment_to_trainGuideFragment"
+            app:destination="@id/trainGuideFragment" />
     </fragment>
     <fragment
         android:id="@+id/trainFragment"
         android:name="com.ajou.helpt.train.view.TrainFragment"
         android:label="fragment_train"
         tools:layout="@layout/fragment_train" />
+    <fragment
+        android:id="@+id/trainGuideFragment"
+        android:name="com.ajou.helpt.train.view.TrainGuideFragment"
+        android:label="fragment_train_guide"
+        tools:layout="@layout/fragment_train_guide" />
 </navigation>

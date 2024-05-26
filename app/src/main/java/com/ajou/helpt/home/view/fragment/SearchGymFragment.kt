@@ -69,10 +69,16 @@ class SearchGymFragment : Fragment() {
                 searchGymCallApi(binding.gym.text.toString())
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().window.decorView.applicationWindowToken, 0)
+                binding.loadingBar.show()
                 return@setOnEditorActionListener true
             } else {
                 return@setOnEditorActionListener false
             }
+        }
+
+        binding.removeBtn.setOnClickListener {
+            binding.gym.setText("")
+
         }
     }
 
@@ -81,12 +87,11 @@ class SearchGymFragment : Fragment() {
             val searchDeferred = async { gymService.searchGyms(accessToken!!, keyword) }
             val searchResponse = searchDeferred.await()
             if (searchResponse.isSuccessful) {
-                Log.d("searchResponse",searchResponse.body()?.data.toString())
-                if (searchResponse.body()?.data?.size !=0){
-                    withContext(Dispatchers.Main){
+                if (searchResponse.body()?.data?.size != 0) {
+                    withContext(Dispatchers.Main) {
+                        binding.loadingBar.hide()
                         adapter.updateList(searchResponse.body()?.data!!)
                     }
-
                 }else{
                     Log.d("data none","none")
                 }

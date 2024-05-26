@@ -1,4 +1,4 @@
-package com.ajou.helpt.home.view.fragment
+package com.ajou.helpt.network.api
 
 import okhttp3.ResponseBody
 import retrofit2.Response

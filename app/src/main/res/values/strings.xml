@@ -20,6 +20,33 @@
     <string name="train_setting_weight">%d kg</string>
     <string name="train_setting_count">%d 회</string>
 
+    <string name="train_band_bent_over_row_name">밴드 벤트 오버 로우</string>
+    <string name="train_band_bent_over_row_eng_name">Band Bent Over Row</string>
+    <string name="train_guide_band_bent_over_row">&lt;b>시작 자세&lt;/b>
+      &lt;br>&lt;/br>1. 다리는 어깨너비만큼 벌려주세요.
+
+&lt;br>&lt;/br>2. 밴드를 잡고 가슴을 펴주세요.
+
+&lt;br>&lt;/br>3. 무릎을 약간 굽힌 채로 상체를 숙여주세요.
+
+        &lt;br>&lt;/br>&lt;br>&lt;/br>&lt;b>운동 동작&lt;/b>
+&lt;br>&lt;/br>1. 밴드가 수직으로 올라갈 수 있게 배꼽 쪽으로 당겨주세요.
+
+&lt;br>&lt;/br>2. 날개뼈를 모으면서 자연스럽게 팔꿈치와 손을 당겨주세요.
+
+&lt;br>&lt;/br>3. 등의 힘으로 버티며 무릎 아래까지 손을 내려주세요.
+
+        &lt;br>&lt;/br>&lt;br>&lt;/br>&lt;b>호흡법&lt;/b>
+&lt;br>&lt;/br>팔을 당길 때 숨을 내쉬고, 팔을 펼 때 숨을 들이쉬세요.
+
+&lt;br>&lt;/br>&lt;br>&lt;/br>&lt;b>주의사항&lt;/b>
+&lt;br>&lt;/br>1. 팔꿈치가 벌어지지 않도록 주의해 주세요.
+
+        &lt;br>&lt;/br>2. 허리가 너무 세워지거나 위아래로 움직이지 않도록 주의해 주세요.
+
+&lt;br>&lt;/br>3. 허리가 말리지 않도록 코어에 힘을 주세요.</string>
+
+    <string name="training_count">%1$d/%2$d회</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,8 +1,6 @@
 package com.ajou.helpt.home.view.fragment
 
-import android.R
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,11 +13,11 @@ import androidx.fragment.app.DialogFragment
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentQRCreateDialogBinding
 import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.QrService
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import retrofit2.create
 
 
 class QRCreateDialogFragment : DialogFragment() {
@@ -59,7 +57,7 @@ class QRCreateDialogFragment : DialogFragment() {
             if(qrResponse.isSuccessful){
                 val qrBody = JSONObject(qrResponse.body()?.string())
                 Log.d("qrResponse ",qrBody.toString())
-                val qrToken = qrBody.getJSONObject("data").getString("qrToken").toString()
+                val qrToken = "Bearer " +qrBody.getJSONObject("data").getString("qrToken").toString()
                 Log.d("qrResponse qrToken",qrToken)
                 val barcodeEncoder = BarcodeEncoder()
                 val bitmap = barcodeEncoder.encodeBitmap(qrToken, BarcodeFormat.QR_CODE, 400, 400)
