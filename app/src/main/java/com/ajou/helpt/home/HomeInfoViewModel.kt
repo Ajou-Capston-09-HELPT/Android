@@ -53,7 +53,8 @@ class HomeInfoViewModel : ViewModel() {
                 Log.d("viewmodel membership",membershipResponse.body()?.data.toString())
                 if (membershipResponse.body()?.data == null) _hasTicket.value = false
                 else {
-                    setMembershipData(membershipResponse.body()!!.data)
+//                    setMembershipData(membershipResponse.body()!!.data)
+                    _membership.value = membershipResponse.body()!!.data
                    _hasTicket.value = true
                 }
                 Log.d("viewmodel hasticket",hasTicket.value.toString())

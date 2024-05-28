@@ -24,15 +24,31 @@
         <action
             android:id="@+id/action_readyTrainFragment_to_trainGuideFragment"
             app:destination="@id/trainGuideFragment" />
+        <action
+            android:id="@+id/action_readyTrainFragment_to_trainDoneFragment"
+            app:destination="@id/trainDoneFragment" />
     </fragment>
     <fragment
         android:id="@+id/trainFragment"
         android:name="com.ajou.helpt.train.view.TrainFragment"
         android:label="fragment_train"
-        tools:layout="@layout/fragment_train" />
+        tools:layout="@layout/fragment_train" >
+        <action
+            android:id="@+id/action_trainFragment_to_trainDoneFragment"
+            app:destination="@id/trainDoneFragment" />
+    </fragment>
     <fragment
         android:id="@+id/trainGuideFragment"
         android:name="com.ajou.helpt.train.view.TrainGuideFragment"
         android:label="fragment_train_guide"
         tools:layout="@layout/fragment_train_guide" />
+    <fragment
+        android:id="@+id/trainDoneFragment"
+        android:name="com.ajou.helpt.train.view.TrainDoneFragment"
+        android:label="fragment_train_done"
+        tools:layout="@layout/fragment_train_done" >
+        <action
+            android:id="@+id/action_trainDoneFragment_to_defaultTrainFragment"
+            app:destination="@id/defaultTrainFragment" />
+    </fragment>
 </navigation>

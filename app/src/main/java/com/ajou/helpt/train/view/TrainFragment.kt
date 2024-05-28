@@ -17,7 +17,6 @@ import com.ajou.helpt.databinding.FragmentTrainBinding
 import com.ajou.helpt.train.adapter.TrainingViewPagerAdapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.channels.Channel
 import java.io.DataOutputStream
 import java.io.IOException
 import java.io.OutputStream
@@ -162,7 +161,10 @@ class TrainFragment : Fragment() {
         binding.trainBtn.setOnClickListener {
             pauseTime = binding.chronometer.base - SystemClock.elapsedRealtime()
             binding.chronometer.stop()
-
+            viewModel.setTime(pauseTime.toString()) // TODO pauseTime 확인해보기
+            viewModel.setDoneCount(curCount)
+            viewModel.setDoneSet(curSet)
+            findNavController().navigate(R.id.action_trainFragment_to_trainDoneFragment)
         }
 
         binding.backBtn.setOnClickListener {

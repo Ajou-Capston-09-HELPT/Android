@@ -47,6 +47,8 @@
 &lt;br>&lt;/br>3. 허리가 말리지 않도록 코어에 힘을 주세요.</string>
 
     <string name="training_count">%1$d/%2$d회</string>
+    <string name="train_done_result">%1$s\t\t%2$d세트\t\t%3$d회</string>
+    <string name="train_done_percent">%d%</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

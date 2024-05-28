@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-
 class DefaultTrainFragment : Fragment() {
     private var _binding: FragmentDefaultTrainBinding? = null
     private val binding get() = _binding!!
@@ -63,16 +62,10 @@ class DefaultTrainFragment : Fragment() {
             qrScan()
         }
 
-        binding.qrGif.setOnClickListener {
-            findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
-        }
-
         viewModel.train.observe(viewLifecycleOwner, Observer {
             if (viewModel.train.value != null) {
-                Log.d("onBackpressed","navigate")
+                Log.d("onBackpressed", "navigate")
                 findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
-            } else {
-                Log.d("onBackpressed","navigate nooo")
             }
         })
     }
