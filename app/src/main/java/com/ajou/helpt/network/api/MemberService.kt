@@ -31,7 +31,7 @@ interface MemberService {
 
     @GET("members/me")
     suspend fun getMyInfo(
-        @Header("Authorization") refreshToken : String
+        @Header("Authorization") accessToken : String
     ): Response<MemberInfoResponse>
 
     @DELETE("members")

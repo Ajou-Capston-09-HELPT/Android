@@ -63,11 +63,15 @@ class DefaultTrainFragment : Fragment() {
             qrScan()
         }
 
+        binding.qrGif.setOnClickListener {
+            findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
+        }
+
         viewModel.train.observe(viewLifecycleOwner, Observer {
             if (viewModel.train.value != null) {
                 Log.d("onBackpressed","navigate")
                 findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
-            }else{
+            } else {
                 Log.d("onBackpressed","navigate nooo")
             }
         })

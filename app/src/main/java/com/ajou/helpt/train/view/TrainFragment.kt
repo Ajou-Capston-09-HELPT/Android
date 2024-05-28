@@ -15,10 +15,12 @@ import com.ajou.helpt.BuildConfig
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentTrainBinding
 import com.ajou.helpt.train.adapter.TrainingViewPagerAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.channels.Channel
+import java.io.DataOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.lang.Thread.sleep
 import java.net.Socket
 import java.net.SocketException
@@ -39,7 +41,10 @@ class TrainFragment : Fragment() {
     private var curCount: Int = 1
     private var curSet: Int = 0
     private val handler = Handler(Looper.myLooper()!!)
-    private lateinit var thread: Thread
+    private var isSpeaking: Boolean? = false
+    private var pendingText: String? = null
+    private var runnable: Runnable? = null
+    private val socketList = mutableListOf<Int>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -78,8 +83,6 @@ class TrainFragment : Fragment() {
             String.format(mContext!!.resources.getString(R.string.train_setting_set), 0)
         binding.count.text =
             String.format(mContext!!.resources.getString(R.string.training_count), 0, customCount)
-//        binding.progressbar.progress = 6 / customCount * 100
-
 
         tts = TextToSpeech(mContext, TextToSpeech.OnInitListener {
             if (it == TextToSpeech.SUCCESS) {
@@ -98,18 +101,53 @@ class TrainFragment : Fragment() {
                     val contents = "밴드벤트 운동을 시작하겠습니다. 먼저, 발의 위치를 확인하겠습니다. 두 발을 어깨너비로 두세요"
                     utterTTS(contents)
                 }
+                tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(p0: String?) {
+                        isSpeaking = true
+                    }
+
+                    override fun onDone(p0: String?) {
+                        isSpeaking = false;
+                        if (pendingText != null) {
+                            speakText(pendingText!!);
+                            pendingText = null;
+                        }
+                    }
+
+                    override fun onError(p0: String?) {
+                        isSpeaking = false
+                        pendingText = null
+                        shutDownTTS()
+                    }
+                })
             }
         })
 
-        thread = object : Thread() {
+        val handler = Handler(Looper.getMainLooper())
+        var curCount = 0
+
+        runnable = object : Runnable {
             override fun run() {
-                super.run()
-                curCount += 1
-                CoroutineScope(Dispatchers.IO).launch {
+                if (curCount == customCount) {
+                    curSet += 1
+                    binding.set.text = String.format(mContext!!.resources.getString(R.string.train_setting_set, curSet))
+                    binding.progressbar.progress = (curSet / customSet) * 100
+                    val contents = "한 세트가 종료되었습니다."
+                    utterTTS(contents)
+                }else{
+                    curCount += 1
                     utterTTS(curCount.toString())
+                    handler.postDelayed(this, 3000)
+                    binding.count.text = String.format(mContext!!.resources.getString(R.string.training_count,curCount,customCount))
                 }
-//                utterTTS(curCount.toString())
-                handler.postDelayed(this, 3000)
+                if (curSet == customSet) {
+                    handler.removeCallbacks(this)
+                    val message = Message.obtain()
+                    message.obj = "bandventend"
+                    sendHandler.sendMessage(message)
+                    val contents = "운동이 완료되었습니다. 수고하셨습니다."
+                    utterTTS(contents)
+                }
             }
         }
 
@@ -124,13 +162,19 @@ class TrainFragment : Fragment() {
         binding.trainBtn.setOnClickListener {
             pauseTime = binding.chronometer.base - SystemClock.elapsedRealtime()
             binding.chronometer.stop()
-            handler.removeCallbacks(thread)
+
         }
 
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
+    }
 
+    private suspend fun repeatTask(times: Int, delayMillis: Long, task: suspend () -> Unit) {
+        repeat(times) {
+            task()
+            delay(delayMillis)
+        }
     }
 
     inner class ReceiveThread : Thread() {
@@ -150,54 +194,118 @@ class TrainFragment : Fragment() {
                     when (buffer[0].toInt()) {
                         0 -> break
                         97 -> {
-                            val contents =
-                                "잘하셨습니다. 다음은 상체의 각도를 확인하겠습니다. 상체와 하체의 각도가 90도가 되도록 숙여 주세요."
-                            CoroutineScope(Dispatchers.IO).launch {
-                                utterTTS(contents)
-                                val message = Message.obtain()
-                                message.obj = "bodycheckstart"
-                                sendHandler.sendMessage(message)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents =
+                                    "잘하셨습니다. 다음은 상체의 각도를 확인하겠습니다. 상체와 하체의 각도가 90도가 되도록 숙여 주세요."
                                 Log.d("socket res", "footcheckend 97")
+                                withContext(Dispatchers.IO) {
+                                    if (!socketList.contains(97)) {
+                                        socketList.add(97)
+//                                        delay(5000)
+                                        utterTTS(contents)
+                                        val message = Message.obtain()
+                                        message.obj = "bodycheckstart"
+                                        sendHandler.sendMessage(message)
+                                        Log.d("sendMessage", "97")
+                                    }
+                                }
                             }
                         }
                         98 -> {
-                            val contents =
-                                "잘하셨습니다. 마지막으로 손의 위치를 확인하겠습니다. 손을 아래로 떨어뜨린 후 밴드를 잡아주세요"
-                            CoroutineScope(Dispatchers.IO).launch {
-                                utterTTS(contents)
-                                val message = Message.obtain()
-                                message.obj = "handcheckstart"
-                                sendHandler.sendMessage(message)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents =
+                                    "잘하셨습니다. 마지막으로 손의 위치를 확인하겠습니다. 손을 아래로 떨어뜨린 후 밴드를 잡아주세요"
                                 Log.d("socket res", "bodycheckend 98")
+                                withContext(Dispatchers.IO) {
+                                    if (!socketList.contains(98)) {
+                                        socketList.add(98)
+                                        utterTTS(contents)
+                                        val message = Message.obtain()
+                                        message.obj = "handcheckstart"
+                                        sendHandler.sendMessage(message)
+//                                        delay(5000)
+                                        Log.d("sendMessage", "98")
+                                    }
+                                }
                             }
                         }
                         99 -> {
-                            val contents =
-                                "완벽한 자세입니다. 이제 카운트에 맞게 운동을 시작해보겠습니다."
-                            CoroutineScope(Dispatchers.IO).launch {
-                                utterTTS(contents)
-                                val message = Message.obtain()
-                                message.obj = "bandventrunstart"
-                                sendHandler.sendMessage(message)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents =
+                                    "완벽한 자세입니다. 이제 카운트에 맞게 운동을 시작해보겠습니다."
                                 Log.d("socket res", "handcheckend 99")
-                                handler.postDelayed(thread, 2000)
+                                withContext(Dispatchers.IO) {
+                                    if (!socketList.contains(99)) {
+                                        socketList.add(99)
+                                        delay(5000)
+                                        utterTTS(contents)
+                                        val message = Message.obtain()
+                                        message.obj = "bandventrunstart"
+                                        sendHandler.sendMessage(message)
+                                        Log.d("sendMessage", "99")
+                                        delay(5000)
+                                        handler.postDelayed(runnable!!, 7000)
+                                    }
+                                }
                             }
-//                            handler.postDelayed(thread, 2000)
                         }
                         100 -> {
+                            val message = Message.obtain()
+                            message.obj = "socketclose"
+                            sendHandler.sendMessage(message)
                             Log.d("socket res", "bandventalldone 100")
+                            socket?.close()
+                            Log.d("socket res","close")
                         }
                         101 -> Log.d("socket res", "notfound 101")
                         102 -> Log.d("socket res", "standby 102")
                         108 -> {
-                            Log.d("socket res", "l")
-
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents = "왼쪽으로 치우쳐 있습니다. 자세를 확인해주세요."
+                                Log.d("socket res", "l")
+                                withContext(Dispatchers.IO) {
+                                    delay(1000)
+                                    if (socketList.contains(98) && socketList.contains(99)&& !socketList.contains(108)&&!socketList.contains(110)&&!socketList.contains(114)) {
+                                        socketList.add(108)
+                                        utterTTS(contents)
+//                                        speakText(contents)
+                                        delay(1000)
+                                        socketList.remove(108)
+                                    }
+                                }
+                            }
                         }
                         110 -> {
-                            Log.d("socket res", "n")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents = "올바른 자세로 잘하고 계십니다."
+                                Log.d("socket res", "n")
+                                withContext(Dispatchers.IO) {
+                                    delay(1000)
+                                    if (socketList.contains(98) && socketList.contains(99)&&!socketList.contains(108)&&!socketList.contains(110)&&!socketList.contains(114)) {
+                                        socketList.add(110)
+                                        utterTTS(contents)
+//                                        speakText(contents)
+                                        delay(1000)
+                                        socketList.remove(110)
+                                    }
+                                }
+                            }
                         }
                         114 -> {
-                            Log.d("socket res", "r")
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val contents = "오른쪽으로 치우쳐 있습니다. 자세를 확인해주세요."
+                                Log.d("socket res", "r")
+                                withContext(Dispatchers.IO) {
+                                    delay(1000)
+                                    if (socketList.contains(98) && socketList.contains(99)&&!socketList.contains(108)&&!socketList.contains(110)&&!socketList.contains(114)) {
+                                        socketList.add(114)
+                                        utterTTS(contents)
+//                                        speakText(contents)
+                                        delay(1000)
+                                        socketList.remove(114)
+                                    }
+                                }
+                            }
                         }
                         else -> {
                             Log.d("socket res else", buffer[0].toInt().toString())
@@ -207,11 +315,12 @@ class TrainFragment : Fragment() {
             } catch (e: SocketException) {
                 Log.d("socket fail socketexception", e.toString())
             } catch (e: Exception) {
-                Log.d("socket fail exception", e.toString()) // 모든 예외를 처리하기 위한 catch 블록
+                Log.d("socket fail exception", e.toString())
             }
         }
     }
 
+    //
     inner class SendThread : Thread() {
         private lateinit var dataOutputStream: DataOutputStream
         private lateinit var outputStream: OutputStream
@@ -253,7 +362,7 @@ class TrainFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(thread)
+        runnable?.let { handler.removeCallbacks(it) }
         if (socket != null) {
             socket?.close()
             socket = null
@@ -270,21 +379,24 @@ class TrainFragment : Fragment() {
         }
     }
 
-    private fun utterTTS(content: String) {
-        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-            override fun onStart(p0: String?) {
-            }
-
-            override fun onDone(p0: String?) {
-            }
-
-            override fun onError(p0: String?) {
-                Log.d("onerror", p0.toString())
-                shutDownTTS()
-            }
-        })
-        tts.speak(content, TextToSpeech.QUEUE_ADD, null, null)
-        //TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID
+    fun utterTTS(text: String) {
+        sleep(1000)
+        Log.d("tts text",text)
+        if (isSpeaking!!) {
+            pendingText = text
+        } else {
+            speakText(text)
+        }
     }
+
+    private fun speakText(text: String) {
+        tts.speak(text, TextToSpeech.QUEUE_ADD, null, "UTTERANCE_ID")
+    }
+
+//    private fun speakTextAdd(text: String) {
+//        Log.d("socket text","add $text")
+//        tts.speak(text, TextToSpeech.QUEUE_ADD, null, "UTTERANCE_ID")
+//    }
+
 
 }

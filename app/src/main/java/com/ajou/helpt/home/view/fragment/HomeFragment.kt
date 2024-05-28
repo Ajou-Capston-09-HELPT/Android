@@ -67,7 +67,6 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity())[HomeInfoViewModel::class.java]
 
         viewModel.hasTicket.observe(viewLifecycleOwner, Observer {
-            Log.d("viewModel",viewModel.hasTicket.value.toString())
             if (viewModel.hasTicket.value == false) {
                 binding.greetMsg.text =
                     String.format(mContext!!.resources.getString(R.string.home_greet_no, name))
@@ -85,12 +84,10 @@ class HomeFragment : Fragment() {
             }
         })
         viewModel.gymRegistered.observe(viewLifecycleOwner, Observer {
-            Log.d("viewModel",viewModel.membership.value.toString())
             if (viewModel.membership.value != null) {
                 Log.d("viewModel",viewModel.gymRegistered.value.toString())
                 var sf = SimpleDateFormat("yyyy-MM-dd")
                 val today = sf.parse("${LocalDate.now().year}-${LocalDate.now().monthValue}-${LocalDate.now().dayOfMonth}")
-                Log.d("today",today.toString())
                 var startDate = sf.parse(viewModel.membership.value!!.startDate)
                 var endDate = sf.parse(viewModel.membership.value!!.endDate)
                 var calDate =
