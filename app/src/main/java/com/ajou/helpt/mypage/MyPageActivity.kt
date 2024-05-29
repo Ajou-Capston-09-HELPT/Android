@@ -1,20 +1,23 @@
-package com.ajou.helpt.train.view
+package com.ajou.helpt.mypage
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ajou.helpt.databinding.ActivityTrainBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.ajou.helpt.R
+import com.ajou.helpt.databinding.ActivityHomeBinding
+import com.ajou.helpt.databinding.ActivityMyPageBinding
 import com.ajou.helpt.home.view.HomeActivity
-import com.ajou.helpt.mypage.MyPageActivity
+import com.ajou.helpt.train.view.TrainActivity
 
-class TrainActivity : AppCompatActivity() {
-
-    private var _binding : ActivityTrainBinding? = null
+class MyPageActivity : AppCompatActivity() {
+    private var _binding : ActivityMyPageBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityTrainBinding.inflate(layoutInflater)
+        _binding = ActivityMyPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.train.setOnClickListener {
@@ -31,5 +34,6 @@ class TrainActivity : AppCompatActivity() {
             val intent = Intent(this, MyPageActivity::class.java)
             startActivity(intent)
         }
+
     }
 }

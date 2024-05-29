@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.ajou.helpt.databinding.ActivityHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
+import com.ajou.helpt.mypage.MyPageActivity
 import com.ajou.helpt.train.view.TrainActivity
 
 class HomeActivity : AppCompatActivity() {
@@ -31,7 +32,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.my.setOnClickListener {
-
+            val intent = Intent(this, MyPageActivity::class.java)
+            startActivity(intent)
         }
 
         viewModel.isError.observe(this, Observer {

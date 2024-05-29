@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemRecord"
+    android:background="@drawable/rectangle_record_bg"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/tvExerciseRecordName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="28dp"
+        android:layout_marginStart="16dp"
+        android:text="운동 이름"
+        android:textAppearance="@style/styleExerciseRecordName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExerciseRecordSets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/stringExerciseRecordSets"
+        android:textAppearance="@style/styleExerciseRecordReps"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExerciseRecordSetsValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="1dp"
+        android:text="@string/stringExerciseRecordSetsValue"
+        android:textAppearance="@style/styleExerciseRecordReps"
+        app:layout_constraintEnd_toStartOf="@id/tvExerciseRecordSets"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExerciseRecordReps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="3dp"
+        android:text="@string/stringExerciseRecordReps"
+        android:textAppearance="@style/styleExerciseRecordReps"
+        app:layout_constraintEnd_toStartOf="@id/tvExerciseRecordSetsValue"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExerciseRecordRepsValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="1dp"
+        android:text="@string/stringExerciseRecordRepsValue"
+        android:textAppearance="@style/styleExerciseRecordReps"
+        app:layout_constraintEnd_toStartOf="@id/tvExerciseRecordReps"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvExerciseRecordTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/stringExerciseRecordTime"
+        android:textAppearance="@style/styleExerciseRecordTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvExerciseRecordReps" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
