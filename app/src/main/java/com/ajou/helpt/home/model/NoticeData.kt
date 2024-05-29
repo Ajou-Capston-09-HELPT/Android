@@ -1,3 +1,8 @@
 package com.ajou.helpt.home.model
 
-data class NoticeData(val title: String, val date: String, val content: String)
+data class NoticeData(
+    val noticeId: Int,
+    val title: String,
+    val content: String,
+    val createAt: String
+)

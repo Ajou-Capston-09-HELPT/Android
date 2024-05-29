@@ -1,5 +1,6 @@
 package com.ajou.helpt.network
 
+import com.ajou.helpt.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Converter
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
 
-    private const val BASE_URL = "http://54.180.211.41:8080/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     var builder = OkHttpClient().newBuilder()
 //

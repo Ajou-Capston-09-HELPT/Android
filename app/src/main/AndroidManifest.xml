@@ -4,6 +4,7 @@
     package="com.ajou.helpt">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
@@ -23,7 +24,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".train.TrainActivity"
+            android:name=".train.view.TrainActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
@@ -35,8 +36,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.HomeActivity"
-            android:exported="false" />
+            android:name=".home.view.HomeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".auth.view.AuthActivity"
             android:exported="false" />

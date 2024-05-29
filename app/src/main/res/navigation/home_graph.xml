@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.ajou.helpt.home.view.HomeFragment"
+        android:name="com.ajou.helpt.home.view.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/noticeFragment"
-        android:name="com.ajou.helpt.home.view.NoticeFragment"
+        android:name="com.ajou.helpt.home.view.fragment.NoticeFragment"
         android:label="fragment_notice"
         tools:layout="@layout/fragment_notice" >
         <action
@@ -31,39 +31,44 @@
     </fragment>
     <fragment
         android:id="@+id/noticeDetailFragment"
-        android:name="com.ajou.helpt.home.view.NoticeDetailFragment"
+        android:name="com.ajou.helpt.home.view.fragment.NoticeDetailFragment"
         android:label="fragment_notice_detail"
         tools:layout="@layout/fragment_notice_detail" />
     <fragment
         android:id="@+id/gymDetailInfoFragment"
-        android:name="com.ajou.helpt.home.view.GymDetailInfoFragment"
+        android:name="com.ajou.helpt.home.view.fragment.GymDetailInfoFragment"
         android:label="fragment_gym_detail_info"
         tools:layout="@layout/fragment_gym_detail_info" >
-        <action
-            android:id="@+id/action_gymDetailInfoFragment_to_payInfoFragment"
-            app:destination="@id/payInfoFragment" />
         <argument
             android:name="item"
             app:argType="com.ajou.helpt.home.model.Gym" />
+        <action
+            android:id="@+id/action_gymDetailInfoFragment_to_kakaoPayWebViewFragment"
+            app:destination="@id/kakaoPayWebViewFragment" />
     </fragment>
     <fragment
-        android:id="@+id/payInfoFragment"
-        android:name="com.ajou.helpt.home.view.PayInfoFragment"
-        android:label="fragment_pay_info"
-        tools:layout="@layout/fragment_pay_info" />
-    <fragment
         android:id="@+id/QRCreateFragment"
-        android:name="com.ajou.helpt.home.view.QRCreateDialogFragment"
+        android:name="com.ajou.helpt.home.view.fragment.QRCreateDialogFragment"
         android:label="fragment_q_r_create"
         tools:layout="@layout/fragment_q_r_create_dialog" />
     <fragment
         android:id="@+id/searchGymFragment"
-        android:name="com.ajou.helpt.home.view.SearchGymFragment"
+        android:name="com.ajou.helpt.home.view.fragment.SearchGymFragment"
         android:label="fragment_search_gym"
         tools:layout="@layout/fragment_search_gym" >
         <action
             android:id="@+id/action_searchGymFragment_to_gymDetailInfoFragment"
             app:destination="@id/gymDetailInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/kakaoPayWebViewFragment"
+        android:name="com.ajou.helpt.home.view.fragment.KakaoPayWebViewFragment"
+        android:label="fragment_kakao_pay_web_view"
+        tools:layout="@layout/fragment_kakao_pay_web_view" >
+        <argument
+            android:name="url"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>

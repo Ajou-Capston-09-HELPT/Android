@@ -16,10 +16,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentSetPhysicInfoBinding
-import com.ajou.helpt.home.HomeActivity
+import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
-import com.ajou.helpt.network.model.Member
+import com.ajou.helpt.auth.Member
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
@@ -125,13 +125,13 @@ class SetPhysicInfoFragment : Fragment() {
         Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId")
         val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!)
         CoroutineScope(Dispatchers.IO).launch{
-            val loginDeferred = async {memberService.login(memberInfo) }
+            val loginDeferred = async {memberService.register(memberInfo) }
             val loginResponse = loginDeferred.await()
             if (loginResponse.isSuccessful) {
                 val tokenBody = JSONObject(loginResponse.body()?.string())
                 Log.d("tokenBody",tokenBody.toString())
-                dataStore.saveAccessToken("Bearer " + tokenBody.get("accessToken").toString())
-                dataStore.saveRefreshToken("Bearer " + tokenBody.get("refreshToken").toString())
+                dataStore.saveAccessToken("Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString())
+                dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
                 withContext(Dispatchers.Main){
                     val intent = Intent(mContext, HomeActivity::class.java)
                     startActivity(intent)

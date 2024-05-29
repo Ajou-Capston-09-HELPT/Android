@@ -1,4 +1,4 @@
-package com.ajou.helpt.network.model
+package com.ajou.helpt.auth
 
 data class Member(
     val gymId : String?,

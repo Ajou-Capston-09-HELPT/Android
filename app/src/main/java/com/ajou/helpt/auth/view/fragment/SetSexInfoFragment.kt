@@ -17,7 +17,7 @@ class SetSexInfoFragment : Fragment() {
     private var _binding: FragmentSetSexInfoBinding? = null
     private val binding get() = _binding!!
     private var mContext: Context? = null
-    private lateinit var viewModel : UserInfoViewModel
+    private lateinit var viewModel: UserInfoViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

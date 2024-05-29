@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.databinding.ItemEquipBinding
+import com.ajou.helpt.home.model.GymEquipment
 
-class GymDetailInfoRVAdapter(val context: Context, val list: List<String>): RecyclerView.Adapter<GymDetailInfoRVAdapter.ViewHolder>() {
+class GymDetailInfoRVAdapter(val context: Context, val list: List<GymEquipment>): RecyclerView.Adapter<GymDetailInfoRVAdapter.ViewHolder>() {
     inner class ViewHolder(val binding: ItemEquipBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(item: String){
             binding.name.text = item
@@ -22,7 +23,7 @@ class GymDetailInfoRVAdapter(val context: Context, val list: List<String>): Recy
     }
 
     override fun onBindViewHolder(holder: GymDetailInfoRVAdapter.ViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position].equipmentName)
     }
 
     override fun getItemCount(): Int {
