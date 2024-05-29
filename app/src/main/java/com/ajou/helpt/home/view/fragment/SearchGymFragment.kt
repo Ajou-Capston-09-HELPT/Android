@@ -60,12 +60,12 @@ class SearchGymFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val link = AdapterToFragment()
-        adapter = SearchGymRVAdapter(mContext!!, emptyList(), link) // TODO 서버 연결 후에는 listOf()로 변경 후, 통신 이후에 list를 채워주는 방식으로 LNG
+        adapter = SearchGymRVAdapter(mContext!!, emptyList(), link)
 
         binding.gym.setOnEditorActionListener { view, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_SEARCH){
                 binding.gymRv.adapter = adapter
-                binding.gymRv.layoutManager = LinearLayoutManager(mContext) // 위와 동일
+                binding.gymRv.layoutManager = LinearLayoutManager(mContext)
                 searchGymCallApi(binding.gym.text.toString())
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().window.decorView.applicationWindowToken, 0)

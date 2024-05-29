@@ -15,14 +15,19 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentKakaoPayWebViewBinding
 import com.ajou.helpt.home.view.HomeActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URISyntaxException
 
 class KakaoPayWebViewFragment : Fragment() {
     private var _binding: FragmentKakaoPayWebViewBinding? = null
     private val binding get() = _binding!!
     private var mContext: Context? = null
+    private val dataStore = UserDataStore()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -102,6 +102,7 @@ class HomeFragment : Fragment() {
                 binding.gymName.text = viewModel.gymRegistered.value!!.gymName
                 binding.attend.text = attendDate
                 binding.remain.text = remainDate
+                binding.mainNotice.text = "'${viewModel.gymRegistered.value!!.gymName}'의 공지사항을 확인해주세요"
             }else{
                 binding.nonTicketTitle.visibility = View.VISIBLE
                 binding.nonticketBack.visibility = View.VISIBLE
@@ -130,6 +131,10 @@ class HomeFragment : Fragment() {
         binding.ticket.setOnClickListener {
             val dialog = QRCreateDialogFragment()
             dialog.show(childFragmentManager, "QRCreateDialog")
+        }
+
+        binding.mainNotice.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
         }
     }
 
