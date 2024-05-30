@@ -30,7 +30,7 @@ jobs:
 
     - name: Create apikey.properties
       run: |
-        echo "${{ secrets.API_KEYS }}" > ./app/apikey.properties
+        echo "${{ secrets.API_KEY }}" > ./app/apikey.properties
 
     - name: Build with Gradle
       run: ./gradlew build
