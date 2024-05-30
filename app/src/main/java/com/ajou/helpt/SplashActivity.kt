@@ -39,19 +39,16 @@ class SplashActivity : AppCompatActivity() {
                         val newTokenResponse = newTokenDeferred.await()
                         if (newTokenResponse.isSuccessful){
                             val tokenBody = JSONObject(newTokenResponse.body()?.string())
-                            Log.d("tokenBody",tokenBody.toString())
                             dataStore.saveAccessToken("Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString())
                             dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
                         }
                     }
                     withContext(Dispatchers.Main) {
                         if (accessToken != null && refreshToken != null && accessToken != "null" && refreshToken != "null") {
-                            Log.d("Login!", accessToken.toString())
                             val intent = Intent(this@SplashActivity, HomeActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
                         } else {
-                            Log.d("Login 필요!", "")
                             val intent = Intent(this@SplashActivity, AuthActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)

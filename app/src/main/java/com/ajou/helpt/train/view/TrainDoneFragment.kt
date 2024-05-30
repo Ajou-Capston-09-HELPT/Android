@@ -30,7 +30,6 @@ class TrainDoneFragment : Fragment() {
         mContext = context
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.d("backpressed", "")
                 findNavController().navigate(R.id.action_trainDoneFragment_to_defaultTrainFragment)
             }
         }

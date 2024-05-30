@@ -33,7 +33,6 @@ class ReadyTrainFragment : Fragment() {
         mContext = context
         callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.d("backpressed", "")
                 viewModel.setTrain(null)
                 findNavController().popBackStack()
             }

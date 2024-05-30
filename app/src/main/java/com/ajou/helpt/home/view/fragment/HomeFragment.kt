@@ -85,7 +85,6 @@ class HomeFragment : Fragment() {
         })
         viewModel.gymRegistered.observe(viewLifecycleOwner, Observer {
             if (viewModel.membership.value != null) {
-                Log.d("viewModel",viewModel.gymRegistered.value.toString())
                 var sf = SimpleDateFormat("yyyy-MM-dd")
                 val today = sf.parse("${LocalDate.now().year}-${LocalDate.now().monthValue}-${LocalDate.now().dayOfMonth}")
                 var startDate = sf.parse(viewModel.membership.value!!.startDate)

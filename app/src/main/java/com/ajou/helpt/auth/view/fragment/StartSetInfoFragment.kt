@@ -36,7 +36,6 @@ class StartSetInfoFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch(exceptionHandler){
             accessToken = dataStore.getAccessToken()
             userName = dataStore.getUserName()
-            Log.d("accessToken",accessToken.toString())
         }
     }
 

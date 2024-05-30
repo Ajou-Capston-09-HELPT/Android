@@ -56,9 +56,7 @@ class QRCreateDialogFragment : DialogFragment() {
             val qrResponse = qrDeferred.await()
             if(qrResponse.isSuccessful){
                 val qrBody = JSONObject(qrResponse.body()?.string())
-                Log.d("qrResponse ",qrBody.toString())
                 val qrToken = "Bearer " +qrBody.getJSONObject("data").getString("qrToken").toString()
-                Log.d("qrResponse qrToken",qrToken)
                 val barcodeEncoder = BarcodeEncoder()
                 val bitmap = barcodeEncoder.encodeBitmap(qrToken, BarcodeFormat.QR_CODE, 400, 400)
                 withContext(Dispatchers.Main){

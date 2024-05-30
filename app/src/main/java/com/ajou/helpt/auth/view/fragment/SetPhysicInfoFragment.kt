@@ -129,7 +129,6 @@ class SetPhysicInfoFragment : Fragment() {
             val loginResponse = loginDeferred.await()
             if (loginResponse.isSuccessful) {
                 val tokenBody = JSONObject(loginResponse.body()?.string())
-                Log.d("tokenBody",tokenBody.toString())
                 dataStore.saveAccessToken("Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString())
                 dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
                 withContext(Dispatchers.Main){
