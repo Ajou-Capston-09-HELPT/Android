@@ -51,4 +51,16 @@
     <string name="train_done_percent">%d%</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="stringMyPageTitle">마이 페이지</string>
+    <string name="stringMyPageName2">...</string>
+    <string name="stringMyPageName1">오늘도 득근득근!</string>
+    <string name="stringMyPageName3">님</string>
+    <string name="stringMyPageProfileName">프로필</string>
+    <string name="stringMyPageProfileCalendarTitle">%1$d월 %2$d일</string>
+    <string name="stringMyPageProfileCalendarTitle2">나의 운동</string>
+    <string name="stringExerciseRecordSets">세트</string>
+    <string name="stringExerciseRecordSetsValue">3</string>
+    <string name="stringExerciseRecordReps">회</string>
+    <string name="stringExerciseRecordRepsValue">10</string>
+    <string name="stringExerciseRecordTime">00:00:00</string>
 </resources>
