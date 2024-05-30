@@ -37,7 +37,6 @@ class NoticeDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("noticedetail",viewModel.notice.value.toString())
 
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()

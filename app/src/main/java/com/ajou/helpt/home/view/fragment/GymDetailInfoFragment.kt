@@ -118,14 +118,12 @@ class GymDetailInfoFragment : Fragment() {
 
         binding.registBtn.setOnSingleClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                Log.d("payment",productId.toString())
                 val paymentDeferred = async { paymentService.postPayment(accessToken!!, productId!!) }
                 val paymentResponse = paymentDeferred.await()
                 if (paymentResponse.isSuccessful) {
                     withContext(Dispatchers.Main) {
                         val body = JSONObject(paymentResponse.body()?.string())
                         val url = body.getJSONObject("data").getString("next_redirect_mobile_url").toString()
-                        Log.d("body",body.toString())
                         val action = GymDetailInfoFragmentDirections.actionGymDetailInfoFragmentToKakaoPayWebViewFragment(url)
                         findNavController().navigate(action)
                     }
@@ -158,7 +156,6 @@ class GymDetailInfoFragment : Fragment() {
             }
             val linkResponse = linkDeferred.await()
             if (linkResponse.isSuccessful) {
-                Log.d("linkResponse ", linkResponse.body().toString())
             } else {
                 Log.d("linkResponse faill", linkResponse.errorBody()?.string().toString())
             }

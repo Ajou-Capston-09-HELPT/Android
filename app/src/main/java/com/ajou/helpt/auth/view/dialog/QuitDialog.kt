@@ -34,7 +34,6 @@ class QuitDialog(@NonNull context : Context) : Dialog(context) {
                 val quitDeferred = async { memberService.quit(accessToken!!) }
                 val quitResponse = quitDeferred.await()
                 if (quitResponse.isSuccessful){
-                    Log.d("탈퇴하기 성공","탈퇴하기")
                     UserDataStore().deleteAll() // 유저 데이터 삭제
                 }else{
                     Log.d("탈퇴하기 실패",quitResponse.errorBody()?.string().toString())

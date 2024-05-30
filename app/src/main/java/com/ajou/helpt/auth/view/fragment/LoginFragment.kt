@@ -76,14 +76,6 @@ class LoginFragment : Fragment() {
                     else if (token != null) {
                         UserApiClient.instance.me { user, error ->
                             CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-                                Log.d(
-                                    ContentValues.TAG,
-                                    "${user?.id}"
-                                ) // accessToken, user.id 추후에 보내면 됨.
-                                Log.d(
-                                    ContentValues.TAG,
-                                    "${user?.kakaoAccount?.email} ${user?.kakaoAccount?.profile?.nickname}"
-                                )
                                 dataStore.saveUserName(user?.kakaoAccount?.profile?.nickname.toString())
                                 dataStore.saveKakaoId(user?.id.toString())
 

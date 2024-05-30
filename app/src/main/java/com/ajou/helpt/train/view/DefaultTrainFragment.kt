@@ -64,7 +64,6 @@ class DefaultTrainFragment : Fragment() {
 
         viewModel.train.observe(viewLifecycleOwner, Observer {
             if (viewModel.train.value != null) {
-                Log.d("onBackpressed", "navigate")
                 findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
             }
         })
@@ -76,7 +75,6 @@ class DefaultTrainFragment : Fragment() {
         if (result.contents == null) {
 
         } else {
-            Log.d("contents", result.contents)
             getTrainInfo(result.contents.toInt())
 //            viewModel.setTrain(result.contents)
 //            Log.d("contents",result.contents)
@@ -94,7 +92,6 @@ class DefaultTrainFragment : Fragment() {
                 async { gymEquipmentService.getSelectedTrain(accessToken!!, id) }
             val getSelectedTrainResponse = getSelectedTrainDeferred.await()
             if (getSelectedTrainResponse.isSuccessful) {
-                Log.d("getSelectedTrainResponse ", "")
                 viewModel.setTrain(getSelectedTrainResponse.body()!!.data)
             } else {
                 Log.d(
