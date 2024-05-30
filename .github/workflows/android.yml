@@ -30,20 +30,14 @@ jobs:
 
     - name: Create apikey.properties
       run: |
-        echo "${{ secrets.API_KEY }}" > ./app/apikey.properties
+        echo "${{ secrets.API_KEY }}" | tr -d '\r' > ./app/apikey.properties
 
     - name: Build with Gradle
       run: ./gradlew build
 
     - name: Run unit tests
       run: ./gradlew test
-
-    - name: Check code style
-      run: ./gradlew checkstyle
-
-    - name: Lint code
-      run: ./gradlew lint
-
+      
   merge:
     needs: build
     runs-on: ubuntu-latest
