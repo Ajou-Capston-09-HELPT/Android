@@ -383,7 +383,6 @@ class TrainFragment : Fragment() {
 
     fun utterTTS(text: String) {
         sleep(1000)
-        Log.d("tts text",text)
         if (isSpeaking!!) {
             pendingText = text
         } else {

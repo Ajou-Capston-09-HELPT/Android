@@ -81,7 +81,6 @@ class NoticeFragment : Fragment() {
                         adapter.updateList(noticeResponse.body()?.data!!)
                     }
                 } else {
-                    Log.d("data none", "none")
                 }
             }
         }

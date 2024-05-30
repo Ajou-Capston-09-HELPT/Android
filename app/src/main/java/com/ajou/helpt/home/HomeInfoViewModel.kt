@@ -55,13 +55,11 @@ class HomeInfoViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            Log.d("viewmodel", "checked")
             accessToken = dataStore.getAccessToken().toString()
             val membershipDeferred = async { membershipService.getMembershipDetail(accessToken!!) }
             val membershipResponse = membershipDeferred.await()
 
             if (membershipResponse.isSuccessful) {
-                Log.d("viewmodel membership", membershipResponse.body()?.data.toString())
                 if (membershipResponse.body()?.data == null) _hasTicket.value = false
                 else {
 //                    setMembershipData(membershipResponse.body()!!.data)
@@ -69,7 +67,6 @@ class HomeInfoViewModel : ViewModel() {
                     _hasTicket.value = true
                     dataStore.saveGymId(membershipResponse.body()!!.data.gymId)
                 }
-                Log.d("viewmodel hasticket", hasTicket.value.toString())
                 if (_hasTicket.value == true) {
                     val gymRegisteredDeferred =
                         async { gymService.getOneGym(accessToken!!, _membership.value!!.gymId) }
@@ -98,7 +95,6 @@ class HomeInfoViewModel : ViewModel() {
     }
 
     val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        Log.d("exceptionHandler", exception.message.toString())
         isError.postValue(true) // isError를 추적하다가 isError일 경우 dialog 뷰에서 띄우기
     }
 }

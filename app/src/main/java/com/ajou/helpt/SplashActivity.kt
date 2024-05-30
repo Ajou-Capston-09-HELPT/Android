@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
         val logoGif = findViewById<ImageView>(R.id.logo)
         val gifDrawable = pl.droidsonroids.gif.GifDrawable(resources, R.drawable.splash_logo)
         logoGif.setImageDrawable(gifDrawable)
-
+        
         // Delay and perform the necessary checks
         lifecycleScope.launch(Dispatchers.IO) {
             kotlinx.coroutines.delay(2000)

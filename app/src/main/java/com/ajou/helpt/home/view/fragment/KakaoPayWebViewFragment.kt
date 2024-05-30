@@ -72,9 +72,7 @@ class KakaoPayWebViewFragment : Fragment() {
         binding.webview.setNetworkAvailable(true)
         binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                Log.d("tokenbody url", url.toString())
                 if (url!!.contains("success")) {
-                    Log.d("url contains", "")
                     binding.webview.visibility = View.GONE
                     // TODO UI 꾸미기
                     val builder = AlertDialog.Builder(mContext)
@@ -94,13 +92,10 @@ class KakaoPayWebViewFragment : Fragment() {
                     var intent: Intent? = null
                     try {
                         intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                        Log.d("url", intent.toString())
                         val uri = Uri.parse(intent!!.dataString)
-                        Log.d("url", uri.toString())
                         startActivity(Intent(Intent.ACTION_VIEW, uri))
                         return true
                     } catch (e: ActivityNotFoundException) {
-                        Log.d("url e", e.message.toString())
                         val existPackage = intent?.`package`
                         val marketIntent = Intent(Intent.ACTION_VIEW);
                         marketIntent.data = Uri.parse("market://details?id=" + existPackage);
@@ -109,7 +104,6 @@ class KakaoPayWebViewFragment : Fragment() {
                             return true
                         }
                     } catch (e: URISyntaxException) {
-                        Log.d("url error", e.message.toString())
                         return false
                     }
                 }

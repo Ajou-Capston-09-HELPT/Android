@@ -93,7 +93,6 @@ class SearchGymFragment : Fragment() {
                         adapter.updateList(searchResponse.body()?.data!!)
                     }
                 }else{
-                    Log.d("data none","none")
                 }
 
             } else {
@@ -101,7 +100,6 @@ class SearchGymFragment : Fragment() {
                 val tokenResponse = tokenDeferred.await()
                 if (tokenResponse.isSuccessful) {
                     val tokenBody = JSONObject(tokenResponse.body()?.string())
-                    Log.d("tokenBody",tokenBody.toString())
                     val newAccessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
                     val newRefreshToken = "Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString()
                     dataStore.saveAccessToken(newAccessToken)
@@ -109,7 +107,6 @@ class SearchGymFragment : Fragment() {
                     val reSearchDeferred = async { gymService.searchGyms(newAccessToken, keyword) }
                     val reSearchResponse = reSearchDeferred.await()
                     if (reSearchResponse.isSuccessful) {
-                        Log.d("reeeesearchResponse", reSearchResponse.toString())
                     }else{
                         Log.d("reeeesearchResponse", reSearchResponse.errorBody()?.string().toString())
                     }
@@ -131,7 +128,6 @@ class SearchGymFragment : Fragment() {
                 val productResponse = productDeferred.await()
                 if (equipResponse.isSuccessful && productResponse.isSuccessful) {
                     withContext(Dispatchers.Main){
-                        Log.d("equipResponse",equipResponse.body().toString())
                         val gymInfo = Gym(data, equipResponse.body()?.data!!, productResponse.body()?.data!!)
                         val action = SearchGymFragmentDirections.actionSearchGymFragmentToGymDetailInfoFragment(gymInfo)
                         findNavController().navigate(action)

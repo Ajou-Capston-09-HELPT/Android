@@ -1,0 +1,73 @@
+name: Android CI/CD Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Create apikey.properties
+      run: echo "${{ secrets.API_KEY }}" | tr -d '\r' > ./app/apikey.properties
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Run unit tests
+      run: ./gradlew test
+      
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Merge pull request
+      run: |
+        PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+        curl -s -X PUT -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge \
+        -d '{"commit_title": "Automated merge by GitHub Actions", "merge_method": "squash"}'
+      env:
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  notify:
+    needs: [build, merge]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+      with:
+        message: |
+          CI/CD Pipeline has completed.
+          - PR #${{ github.event.pull_request.number }} merged.
+          - Commit: ${{ github.sha }}
+          - Branch: ${{ github.ref }}
