@@ -29,13 +29,20 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Create apikey.properties
-      run: echo "${{ secrets.API_KEY }}" > ./app/apikey.properties
+      run: |
+        echo "${{ secrets.API_KEYS }}" > ./app/apikey.properties
 
     - name: Build with Gradle
       run: ./gradlew build
 
     - name: Run unit tests
       run: ./gradlew test
+
+    - name: Check code style
+      run: ./gradlew checkstyle
+
+    - name: Lint code
+      run: ./gradlew lint
 
   merge:
     needs: build
@@ -64,7 +71,7 @@ jobs:
     - name: Send Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       with:
         message: |
           CI/CD Pipeline has completed.
