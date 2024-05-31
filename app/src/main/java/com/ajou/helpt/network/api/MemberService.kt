@@ -1,6 +1,7 @@
 package com.ajou.helpt.network.api
 
 import com.ajou.helpt.auth.Member
+import com.ajou.helpt.mypage.profile.MyInfo
 import com.ajou.helpt.network.model.MemberInfoResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -9,6 +10,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface MemberService {
 //    @POST("members/update")
@@ -39,5 +41,10 @@ interface MemberService {
         @Header("Authorization") accessToken : String
     ):Response<ResponseBody>
 
+    @PUT("members")
+    suspend fun updateMyInfo(
+        @Header("Authorization") accessToken : String,
+        @Body memberInfo : MyInfo
+    ): Response<ResponseBody>
 
 }
