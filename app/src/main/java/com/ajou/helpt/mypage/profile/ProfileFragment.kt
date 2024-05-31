@@ -88,8 +88,6 @@ class ProfileFragment : Fragment() {
 
         clickBackButton(binding.root)
         clickChangeButton(binding.root)
-        clickEditNameButton(binding.root)
-        clickEditGenderButton(binding.root)
         clickEditHeightButton(binding.root)
         clickEditWeightButton(binding.root)
 
@@ -98,7 +96,6 @@ class ProfileFragment : Fragment() {
             val result = bundle.getString("gender")
             binding.tvGenderContent.text = result
         }
-
         return binding.root
     }
 
@@ -173,31 +170,9 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-        // findNavController().popBackStack()
         }
     }
 
-    private fun clickEditNameButton(view: View) {
-        binding.ivEditName.setOnClickListener {
-            val alphaAnimator =
-                ObjectAnimator.ofFloat(binding.ivEditName, View.ALPHA, 0.5f, 1f).apply {
-                    duration = 100
-                }
-            alphaAnimator.start()
-            showEditNameDialog(binding.root)
-        }
-    }
-
-    private fun clickEditGenderButton(view: View) {
-        binding.ivEditGender.setOnClickListener {
-            val alphaAnimator =
-                ObjectAnimator.ofFloat(binding.ivEditGender, View.ALPHA, 0.5f, 1f).apply {
-                    duration = 100
-                }
-            alphaAnimator.start()
-            showEditGenderDialog(binding.root)
-        }
-    }
 
     private fun clickEditHeightButton(view: View) {
         binding.ivEditHeight.setOnClickListener {
@@ -219,47 +194,6 @@ class ProfileFragment : Fragment() {
             alphaAnimator.start()
             showEditWeightDialog(binding.root)
         }
-    }
-
-
-    private fun showEditNameDialog(view: View) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_name, null)
-        val editText = dialogView.findViewById<EditText>(R.id.editName)
-        val buttonClose = dialogView.findViewById<ImageView>(R.id.btnEditNameClose)
-        val buttonConfirm = dialogView.findViewById<TextView>(R.id.btnEditNameSave)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        buttonConfirm.setOnClickListener {
-            val alphaAnimator = ObjectAnimator.ofFloat(buttonConfirm, View.ALPHA, 0.5f, 1f).apply {
-                duration = 100
-            }
-            alphaAnimator.start()
-            val inputText = editText.text.toString()
-            if (inputText.isEmpty()) {
-                Toast.makeText(requireContext(), "이름을 입력해주세요", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            } else {
-                binding.tvNameContent.text = inputText
-                dialog.dismiss()
-            }
-        }
-
-        buttonClose.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    private fun showEditGenderDialog(view: View) {
-        val dialog = ProfileEditGenderDialog()
-        dialog.show(parentFragmentManager, "ProfileEditGenderDialog")
-
     }
 
     @SuppressLint("SetTextI18n")
