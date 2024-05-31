@@ -1,9 +1,11 @@
 package com.ajou.helpt.mypage.profile
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +18,17 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
-import com.ajou.helpt.databinding.DialogEditGenderBinding
+import com.ajou.helpt.auth.Member
 import com.ajou.helpt.databinding.FragmentProfileBinding
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.MemberService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+
 
 class ProfileFragment : Fragment() {
 
@@ -28,21 +36,54 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private var mContext: Context? = null
 
+    private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
     private val dataStore = UserDataStore()
     private lateinit var accessToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProfileBinding.inflate(layoutInflater, container, false)
-
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken().toString()
+            if(accessToken.isNotEmpty()) {
+                val memberInfoDeferred =
+                    async { memberService.getMyInfo(accessToken) }
+                val memberInfoResponse = memberInfoDeferred.await()
+                if (memberInfoResponse.isSuccessful) {
+                    val member = memberInfoResponse.body()!!.data
+                    val translateGender = when(member.gender){
+                        "WOMEN" -> "여성"
+                        "MAN" -> "남성"
+                        else -> member.gender
+                    }
+                    binding.tvNameContent.text = member.userName
+                    binding.tvGenderContent.text = translateGender
+                    binding.tvHeightContent.text = member.height.toString() + " cm"
+                    binding.tvWeightContent.text = member.weight.toString() + " kg"
+                }
+                else{
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(requireContext(), "프로필을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                    }
+
+                }
+            }
+            else{
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "프로필을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT)
+                        .show()
+                    findNavController().popBackStack()
+                }
+            }
         }
 
         clickBackButton(binding.root)
@@ -72,14 +113,67 @@ class ProfileFragment : Fragment() {
     }
 
     private fun clickChangeButton(view: View) {
-        // TODO : 프로필 변경 후 이전 프래그먼트 이동 구현 (프로필 수정 성공/실패 메시지 띄우기)
         binding.btnChange.setOnClickListener {
             binding.btnChange.alpha = 0.5f
             binding.btnChange.postDelayed({
                 binding.btnChange.alpha = 1f
             }, 100)
 
-            findNavController().popBackStack()
+            CoroutineScope(Dispatchers.IO).launch {
+                val accessToken = dataStore.getAccessToken().toString()
+                val gymId = dataStore.getGymId()
+                val kakaoId = dataStore.getKakaoId()
+                val name = binding.tvNameContent.text.toString()
+                val gender = binding.tvGenderContent.text.toString()
+                val translateGender = when (gender) {
+                    "여성" -> "WOMEN"
+                    "남성" -> "MAN"
+                    else -> gender
+                }
+
+                val height = extractNumber(binding.tvHeightContent.text.toString())
+                val weight = extractNumber(binding.tvWeightContent.text.toString())
+                val member = MyInfo(
+                    gymId = gymId!!,
+                    userName = name,
+                    gender = translateGender,
+                    height = height,
+                    weight = weight,
+                    kakaoId = kakaoId!!
+                )
+                Log.d("ProfileFragment", "Member: $member")
+
+                if (accessToken.isNotEmpty()) {
+                    val memberInfoDeferred =
+                        async { memberService.updateMyInfo(accessToken, member) }
+                    val memberInfoResponse = memberInfoDeferred.await()
+                    if (memberInfoResponse.isSuccessful) {
+                        val info = JSONObject(memberInfoResponse.body()!!.string())
+                        Log.d("ProfileFragment", "Member info: ${info}")
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(requireContext(), "프로필이 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+                    }
+                    else{
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                requireContext(),
+                                "프로필을 변경하는데 실패했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            findNavController().popBackStack()
+                        }
+                    }
+                } else{
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "프로필을 변경하는데 실패했습니다.", Toast.LENGTH_SHORT)
+                            .show()
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        // findNavController().popBackStack()
         }
     }
 
@@ -168,6 +262,7 @@ class ProfileFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showEditHeightDialog(view: View){
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_height, null)
         val editText = dialogView.findViewById<EditText>(R.id.editHeight)
@@ -190,7 +285,7 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "키를 입력해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else {
-                binding.tvHeightContent.text = inputText
+                binding.tvHeightContent.text = "$inputText cm"
                 dialog.dismiss()
             }
         }
@@ -203,6 +298,7 @@ class ProfileFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showEditWeightDialog(view: View) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_weight, null)
         val editText = dialogView.findViewById<EditText>(R.id.editWeight)
@@ -225,7 +321,7 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "몸무게를 입력해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else {
-                binding.tvWeightContent.text = inputText
+                binding.tvWeightContent.text = "$inputText kg"
                 dialog.dismiss()
             }
         }
@@ -237,4 +333,7 @@ class ProfileFragment : Fragment() {
         dialog.show()
     }
 
+    private fun extractNumber(input: String): Int{
+        return input.replace("[^0-9]".toRegex(), "").toInt()
+    }
 }
