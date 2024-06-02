@@ -69,11 +69,11 @@ class SetPhysicInfoFragment : Fragment() {
 
             override fun afterTextChanged(str: Editable?) {
                 if(str!!.isNotEmpty()) {
-                    weight = str.toString().toInt()
+                    height = str.toString().toInt()
                     binding.height.isSelected = true
                     viewModel.setDone(true)
                 }else{
-                    weight = 0
+                    height = 0
                     binding.height.isSelected = false
                     viewModel.setDone(false)
                 }
@@ -89,11 +89,11 @@ class SetPhysicInfoFragment : Fragment() {
 
             override fun afterTextChanged(str: Editable?) {
                 if(str!!.isNotEmpty()) {
-                    height = str.toString().toInt()
+                    weight = str.toString().toInt()
                     binding.height.isSelected = true
                     viewModel.setDone(true)
                 }else{
-                    height = 0
+                    weight = 0
                     binding.height.isSelected = false
                     viewModel.setDone(false)
                 }

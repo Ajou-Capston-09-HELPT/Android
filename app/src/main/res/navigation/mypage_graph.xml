@@ -10,9 +10,17 @@
         android:label="fragment_my_page"
         tools:layout="@layout/fragment_my_page">
         <action
+            android:id="@+id/action_myPageFragment_to_ProfileFragment"
+            app:destination="@id/ProfileFragment" />
+        <action
             android:id="@+id/action_myPageFragment_to_recordDetailFragment"
             app:destination="@id/recordDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ProfileFragment"
+        android:name="com.ajou.helpt.mypage.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/recordDetailFragment"
         android:name="com.ajou.helpt.mypage.view.RecordDetailFragment"

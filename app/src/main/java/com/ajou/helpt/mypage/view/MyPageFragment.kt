@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
@@ -64,8 +65,7 @@ class MyPageFragment : Fragment() {
             setupRecyclerView(binding.root)
             clickCalendarDate(binding.root)
         }
-
-
+        clickProfileEditButton(binding.root)
         return binding.root
     }
 
@@ -177,6 +177,16 @@ class MyPageFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun clickProfileEditButton(view: View) {
+        binding.imageViewMyPageProfile.setOnClickListener {
+            binding.imageViewMyPageProfile.alpha = 0.5f
+            binding.imageViewMyPageProfile.postDelayed({
+                binding.imageViewMyPageProfile.alpha = 1f
+            }, 100)
+            findNavController().navigate(R.id.action_myPageFragment_to_ProfileFragment)
         }
     }
 
