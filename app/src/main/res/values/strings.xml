@@ -49,6 +49,8 @@
     <string name="training_count">%1$d/%2$d회</string>
     <string name="train_done_result">%1$s\t\t%2$d세트\t\t%3$d회</string>
     <string name="train_done_percent">%d%</string>
+    <string name="record_detail_title">%1$d월 %2$d일 나의 운동</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="stringMyPageTitle">마이 페이지</string>

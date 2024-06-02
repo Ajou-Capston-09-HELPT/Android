@@ -2,11 +2,9 @@ package com.ajou.helpt.train.view
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Paint
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentTrainDoneBinding
 import com.ajou.helpt.home.view.HomeActivity
+import com.ajou.helpt.train.TrainInfoViewModel
 
 class TrainDoneFragment : Fragment() {
     private var _binding: FragmentTrainDoneBinding? = null

@@ -1,12 +1,16 @@
-package com.ajou.helpt.train.view
+package com.ajou.helpt.train
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ajou.helpt.home.model.GymEquipment
+import com.ajou.helpt.train.model.ExerciseDetail
 
 class TrainInfoViewModel : ViewModel() {
     private val _train = MutableLiveData<GymEquipment?>()
     val train get() = _train
+
+    private val _guide = MutableLiveData<ExerciseDetail?>()
+    val guide get() = _guide
 
     private val _time = MutableLiveData<String>()
     val time get() = _time
@@ -22,6 +26,10 @@ class TrainInfoViewModel : ViewModel() {
 
     fun setTrain(data: GymEquipment?) {
         _train.postValue(data)
+    }
+
+    fun setGuide(data: ExerciseDetail?) {
+        _guide.postValue(data)
     }
 
     fun setTime(data: String) {

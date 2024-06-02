@@ -3,14 +3,15 @@ package com.ajou.helpt.auth.view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.time.LocalDate
 
 class UserInfoViewModel : ViewModel() {
     private val _sex = MutableLiveData<String>()
     val sex: LiveData<String>
         get() = _sex
 
-    private val _birth = MutableLiveData<String>()
-    val birth: LiveData<String>
+    private val _birth = MutableLiveData<LocalDate>()
+    val birth: LiveData<LocalDate>
         get() = _birth
 
     private val _phoneNum = MutableLiveData<String>()
@@ -33,7 +34,7 @@ class UserInfoViewModel : ViewModel() {
         _sex.postValue(data)
     }
 
-    fun setBirthInfo(data: String) {
+    fun setBirthInfo(data: LocalDate) {
         _birth.postValue(data)
     }
 

@@ -1,4 +1,4 @@
-package com.ajou.helpt.mypage
+package com.ajou.helpt.mypage.view
 
 import android.content.Context
 import android.os.Bundle
@@ -7,11 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentMyPageBinding
+import com.ajou.helpt.home.adapter.MyPageViewModel
+import com.ajou.helpt.mypage.ExerciseRecord
+import com.ajou.helpt.mypage.ExerciseRecordAdapter
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.EquipmentService
 import com.ajou.helpt.network.api.RecordService
@@ -37,6 +41,7 @@ class MyPageFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var exerciseRecordAdapter: ExerciseRecordAdapter
+    private lateinit var viewModel : MyPageViewModel
 
     private val recordService = RetrofitInstance.getInstance().create(RecordService::class.java)
     private val equipmentService = RetrofitInstance.getInstance().create(EquipmentService::class.java)
@@ -49,6 +54,7 @@ class MyPageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(requireActivity())[MyPageViewModel::class.java]
         _binding = FragmentMyPageBinding.inflate(layoutInflater, container, false)
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -70,9 +76,10 @@ class MyPageFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
+        val link = DataSelection()
         recyclerView = binding.recyclerViewMyPageRecord
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        exerciseRecordAdapter = ExerciseRecordAdapter(requireContext(), emptyList())
+        exerciseRecordAdapter = ExerciseRecordAdapter(requireContext(), emptyList(), link)
         recyclerView.adapter = exerciseRecordAdapter
     }
 
@@ -123,36 +130,47 @@ class MyPageFragment : Fragment() {
 
                     Log.d("ExerciseRecord", "Exercise Record Response: $exerciseRecordResponse")
                     if (!exerciseRecordResponse.isNull("data")) {
-                        val jsonArray = exerciseRecordResponse.getJSONArray("data")
-                        val exerciseRecords = if (jsonArray != null) {
-                            List(jsonArray.length()) { i ->
-                                val jsonObject = jsonArray.getJSONObject(i)
-                                val equipmentResponse = equipmentService.getEquipment(accessToken, jsonObject.getInt("equipmentId"))
-                                val equipmentResponseBody = equipmentResponse.body()?.string()
-                                val equipmentName = if (equipmentResponseBody != null) {
-                                    val equipmentJSONObject = JSONObject(equipmentResponseBody)
-                                    Log.d("ExerciseRecord2", "Equipment Response: $equipmentJSONObject")
-                                    equipmentJSONObject.getJSONObject("data").getString("equipmentName")
-                                } else {
-                                    "장비 이름 없음"
-                                }
-
-                                val startTime = jsonObject.getString("startTime")
-                                val endTime = jsonObject.getString("endTime")
-                                val duration = calculateDuration(startTime, endTime)
-
-                                ExerciseRecord(
-                                    equipmentName,
-                                    jsonObject.getInt("count"),
-                                    jsonObject.getInt("setNumber"),
-                                    duration
-                                )
+                        if (exerciseRecordResponse.getJSONArray("data").length() == 0){
+                            withContext(Dispatchers.Main) {
+                                binding.noRecordBg.visibility = View.VISIBLE
+                                binding.noRecordText.visibility = View.VISIBLE
+                                binding.recyclerViewMyPageRecord.visibility = View.GONE
                             }
-                        } else {
-                            emptyList()
-                        }
-                        withContext(Dispatchers.Main) {
-                            exerciseRecordAdapter.submitList(exerciseRecords)
+                        }else {
+                            val jsonArray = exerciseRecordResponse.getJSONArray("data")
+                            val exerciseRecords = if (jsonArray != null) {
+                                List(jsonArray.length()) { i ->
+                                    val jsonObject = jsonArray.getJSONObject(i)
+                                    val equipmentResponse = equipmentService.getEquipment(accessToken, jsonObject.getInt("equipmentId"))
+                                    val equipmentResponseBody = equipmentResponse.body()?.string()
+                                    val equipmentName = if (equipmentResponseBody != null) {
+                                        val equipmentJSONObject = JSONObject(equipmentResponseBody)
+                                        Log.d("ExerciseRecord2", "Equipment Response: $equipmentJSONObject")
+                                        equipmentJSONObject.getJSONObject("data").getString("equipmentName")
+                                    } else {
+                                        "장비 이름 없음"
+                                    }
+
+                                    val startTime = jsonObject.getString("startTime")
+                                    val endTime = jsonObject.getString("endTime")
+                                    val duration = calculateDuration(startTime, endTime)
+
+//                                    ExerciseRecord(
+//                                        equipmentName,
+//                                        jsonObject.getInt("count"),
+//                                        jsonObject.getInt("setNumber"),
+//                                        duration
+//                                    )
+                                }
+                            } else {
+                                emptyList()
+                            }
+                            withContext(Dispatchers.Main) {
+                                binding.recyclerViewMyPageRecord.visibility = View.VISIBLE
+//                                exerciseRecordAdapter.submitList(exerciseRecords)
+                                binding.noRecordBg.visibility = View.GONE
+                                binding.noRecordText.visibility = View.GONE
+                            }
                         }
                     } else {
                         Log.d("ExerciseRecord", "No data in response")
@@ -173,5 +191,12 @@ class MyPageFragment : Fragment() {
         val hours = (durationMillis / (1000 * 60 * 60)) % 24
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    inner class DataSelection {
+        fun getSelectedItem(data: ExerciseRecord) {
+            Log.d("data", data.toString())
+            viewModel.setSelectedItem(data)
+        }
     }
 }

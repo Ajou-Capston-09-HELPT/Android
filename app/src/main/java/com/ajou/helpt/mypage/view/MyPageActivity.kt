@@ -1,12 +1,8 @@
-package com.ajou.helpt.mypage
+package com.ajou.helpt.mypage.view
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.ajou.helpt.R
-import com.ajou.helpt.databinding.ActivityHomeBinding
 import com.ajou.helpt.databinding.ActivityMyPageBinding
 import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.train.view.TrainActivity

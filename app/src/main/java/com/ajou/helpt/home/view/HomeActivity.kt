@@ -3,13 +3,12 @@ package com.ajou.helpt.home.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.ajou.helpt.databinding.ActivityHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
-import com.ajou.helpt.mypage.MyPageActivity
+import com.ajou.helpt.mypage.view.MyPageActivity
 import com.ajou.helpt.train.view.TrainActivity
 
 class HomeActivity : AppCompatActivity() {

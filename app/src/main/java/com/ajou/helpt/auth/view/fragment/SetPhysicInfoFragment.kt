@@ -123,7 +123,7 @@ class SetPhysicInfoFragment : Fragment() {
 
     private fun callLoginApi(weight: Int, height: Int) {
         Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId")
-        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!)
+        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!,viewModel.birth.value.toString())
         CoroutineScope(Dispatchers.IO).launch{
             val loginDeferred = async {memberService.register(memberInfo) }
             val loginResponse = loginDeferred.await()
