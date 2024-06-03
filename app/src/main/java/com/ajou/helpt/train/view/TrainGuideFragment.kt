@@ -47,8 +47,8 @@ class TrainGuideFragment : Fragment() {
             .mapIndexed { index, item -> "${index + 1}. $item" }
             .joinToString(separator = "\n")
         binding.name.text = viewModel.train.value!!.equipmentName
-//        binding.engName.text = viewModel.train.value!!.equipmentNameEng
-        binding.engName.text = "one arm dumbbell lateral raise"
+        binding.engName.text = viewModel.train.value!!.equipmentNameEng
+//        binding.engName.text = "one arm dumbbell lateral raise"
         binding.readyGuide.text = item.exerciseDescription
         binding.guide.text = result
         Glide.with(this)

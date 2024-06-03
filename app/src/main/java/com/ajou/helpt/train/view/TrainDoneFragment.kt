@@ -19,6 +19,7 @@ import com.ajou.helpt.databinding.FragmentTrainDoneBinding
 import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.mypage.model.ExerciseRecord
 import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.ExercisePosting
 import com.ajou.helpt.network.api.RecordService
 import com.ajou.helpt.train.TrainInfoViewModel
 import kotlinx.coroutines.*
@@ -26,6 +27,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.time.LocalDate
+import kotlin.reflect.typeOf
 
 class TrainDoneFragment : Fragment() {
     private var _binding: FragmentTrainDoneBinding? = null
@@ -63,8 +65,6 @@ class TrainDoneFragment : Fragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken()
-            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), "")
-            val snapshot = MultipartBody.Part.createFormData("snapshotFile", "", requestFile)
             val today = LocalDate.now()
 
             if (viewModel.rate.value!! < 50) {
@@ -79,18 +79,18 @@ class TrainDoneFragment : Fragment() {
                 comment = "한쪽으로 치우치지 않고 잘하고 있습니다."
             }
 
-            val data = ExerciseRecord(
-                viewModel.train.value!!.equipmentName,
+            val data = ExercisePosting(
+                viewModel.train.value!!.gymEquipmentId,
                 viewModel.doneCount.value!!,
                 viewModel.doneSet.value!!,
                 viewModel.train.value!!.customWeight,
                 viewModel.time.value!!,
-                today,
                 viewModel.rate.value!!,
                 comment!!,null
             )
+            Log.d("postRecord request type check", viewModel.train.value!!.gymEquipmentId.toString())
             Log.d("postRecord request","data: $data")
-            val postRecordDeferred = async { recordService.postRecord(accessToken!!,data,snapshot) }
+            val postRecordDeferred = async { recordService.postRecord(accessToken!!,data) }
             val postRecordResponse = postRecordDeferred.await()
 
             if (postRecordResponse.isSuccessful) {
@@ -117,9 +117,9 @@ class TrainDoneFragment : Fragment() {
             startActivity(intent)
         }
         binding.name.text = viewModel.train.value!!.equipmentName
-        binding.engName.text = "one arm dumbbell lateral raise"
-//        binding.engName.text =
-//            viewModel.train.value!!.equipmentNameEng
+//        binding.engName.text = "one arm dumbbell lateral raise"
+        binding.engName.text =
+            viewModel.train.value!!.equipmentNameEng
         binding.result.text = mContext?.resources?.getString(
             R.string.train_done_result,
             viewModel.time.value,

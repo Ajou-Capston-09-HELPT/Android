@@ -97,9 +97,10 @@ class DefaultTrainFragment : Fragment() {
             val getSelectedTrainDeferred =
                 async { gymEquipmentService.getSelectedTrain(accessToken!!, id) }
             val getSelectedTrainResponse = getSelectedTrainDeferred.await()
-            val getTrainDetailDeferred = async { exerciseService.getExerciseInfo(accessToken!!, 3) }
+            val getTrainDetailDeferred = async { exerciseService.getExerciseInfo(accessToken!!, id) }
             val getTrainDetailResponse = getTrainDetailDeferred.await()
-            if (getSelectedTrainResponse.isSuccessful) {
+
+            if (getSelectedTrainResponse.isSuccessful && getTrainDetailResponse.isSuccessful) {
                 viewModel.setTrain(getSelectedTrainResponse.body()!!.data)
                 viewModel.setGuide(getTrainDetailResponse.body()!!.data)
 //                        && getTrainDetailResponse.isSuccessful

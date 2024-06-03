@@ -37,7 +37,7 @@ class SetUserInfoFragment : Fragment() {
     private val dataStore = UserDataStore()
 //    private lateinit var calendarDialog: CalendarDialog
     private lateinit var birthDialog: SelectBirthDialog
-    private lateinit var launcher: ActivityResultLauncher<Intent>
+//    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,22 +47,22 @@ class SetUserInfoFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                val intent = checkNotNull(result.data)
-                val imageUri = intent.data // 갤러리에서 선택한 사진 받아옴
-                if (imageUri != null) {
-                    Log.d("check imageuri",imageUri.toString())
-                    viewModel.setProfileImg(imageUri)
-                    val fileName = getFileName(imageUri!!, requireActivity())
-                    binding.bizImg.text = fileName.toString()
-                    binding.bizImg.setTextColor(resources.getColor(R.color.black))
-                    binding.bizImgIcon.visibility = View.GONE
-                    binding.bizImgIconRemove.visibility = View.VISIBLE
-                    binding.bizImg.isSelected = true
-                }
-            }
-        }
+//        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+//                val intent = checkNotNull(result.data)
+//                val imageUri = intent.data // 갤러리에서 선택한 사진 받아옴
+//                if (imageUri != null) {
+//                    Log.d("check imageuri",imageUri.toString())
+//                    viewModel.setProfileImg(imageUri)
+//                    val fileName = getFileName(imageUri!!, requireActivity())
+//                    binding.bizImg.text = fileName.toString()
+//                    binding.bizImg.setTextColor(resources.getColor(R.color.black))
+//                    binding.bizImgIcon.visibility = View.GONE
+//                    binding.bizImgIconRemove.visibility = View.VISIBLE
+//                    binding.bizImg.isSelected = true
+//                }
+//            }
+//        }
 
     }
 
@@ -105,24 +105,24 @@ class SetUserInfoFragment : Fragment() {
 //            }
 //        })
 
-        binding.bizImg.setOnClickListener {
-            val intent = Intent().also { intent ->
-                intent.type = "image/"
-                intent.action = Intent.ACTION_GET_CONTENT
-            }
-            launcher.launch(intent)
-        }
-
-        binding.bizImgIconRemove.setOnClickListener {
-            viewModel.setProfileImg(null)
-            viewModel.setDone(false)
-
-            binding.bizImgIconRemove.visibility = View.GONE
-            binding.bizImgIcon.visibility = View.VISIBLE
-            binding.bizImg.text = "이미지를 업로드해주세요"
-            binding.bizImg.isSelected = false
-            // TODO imageuri 제거
-        }
+//        binding.bizImg.setOnClickListener {
+//            val intent = Intent().also { intent ->
+//                intent.type = "image/"
+//                intent.action = Intent.ACTION_GET_CONTENT
+//            }
+//            launcher.launch(intent)
+//        }
+//
+//        binding.bizImgIconRemove.setOnClickListener {
+//            viewModel.setProfileImg(null)
+//            viewModel.setDone(false)
+//
+//            binding.bizImgIconRemove.visibility = View.GONE
+//            binding.bizImgIcon.visibility = View.VISIBLE
+//            binding.bizImg.text = "이미지를 업로드해주세요"
+//            binding.bizImg.isSelected = false
+//            // TODO imageuri 제거
+//        }
 
         binding.birth.setOnClickListener {
             birthDialog = SelectBirthDialog() { value ->

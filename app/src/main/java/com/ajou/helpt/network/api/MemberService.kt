@@ -15,11 +15,9 @@ interface MemberService {
 //        @Body memberInfo : Member
 //    ): Response<ResponseBody>
 
-    @Multipart
     @POST("members/register")
     suspend fun register(
-        @Part("memberDto") memberInfo : Member,
-        @Part file: MultipartBody.Part
+        @Body memberInfo : Member,
     ): Response<ResponseBody>
 
     @POST("members/login")

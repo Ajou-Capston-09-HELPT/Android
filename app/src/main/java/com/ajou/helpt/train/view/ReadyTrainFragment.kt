@@ -65,9 +65,9 @@ class ReadyTrainFragment : Fragment() {
         binding.weight.text =
             String.format(resources.getString(R.string.train_setting_weight), setting[1])
         binding.name.text = viewModel.train.value!!.equipmentName
-        binding.engName.text = "one arm dumbbell lateral raise"
-//        binding.engName.text =
-//            viewModel.train.value!!.equipmentNameEng
+//        binding.engName.text = "one arm dumbbell lateral raise"
+        binding.engName.text =
+            viewModel.train.value!!.equipmentNameEng
         binding.trainSetting.setOnClickListener {
             dialog = TrainSettingDialog(setting) { value ->
                 setting = value

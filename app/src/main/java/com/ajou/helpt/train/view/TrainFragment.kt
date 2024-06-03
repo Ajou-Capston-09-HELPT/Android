@@ -21,6 +21,7 @@ import com.ajou.helpt.train.adapter.TrainingViewPagerAdapter
 import kotlinx.coroutines.*
 import java.io.DataOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 import java.net.SocketException
@@ -69,8 +70,8 @@ class TrainFragment : Fragment() {
         binding.contentsVp.adapter = TrainingViewPagerAdapter(requireActivity() as TrainActivity)
         binding.dotsIndicator.setViewPager2(binding.contentsVp)
         binding.name.text = viewModel.train.value!!.equipmentName
-        binding.engName.text = "one arm dumbbell lateral raise"
-//        binding.engName.text = viewModel.train.value!!.equipmentNameEng
+//        binding.engName.text = "one arm dumbbell lateral raise"
+        binding.engName.text = viewModel.train.value!!.equipmentNameEng
 
 //        if (viewModel.train.value!!.equipmentName == "")
         // TODO 운동 구분하기
@@ -78,8 +79,6 @@ class TrainFragment : Fragment() {
     }
 
 
-    // TODO 세트 끝나면 +1로 strings/train_setting_set로 글자 표기, progressbar의 progress는 현재 세트 수 / 전체 세트
-    // TODO 카운트는 +1씩 증가시키고, 현재 카운트 == 전체 카운트 되면 세트 +1시키기, 카운트는 training_count로 값 두 개 넣기
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -143,6 +142,7 @@ class TrainFragment : Fragment() {
         runnable = object : Runnable {
             override fun run() {
                 if (curCount == customCount) {
+                    Log.d("socket test count","$curCount $customCount")
                     curSet += 1
                     binding.set.text = String.format(
                         mContext!!.resources.getString(
@@ -155,6 +155,7 @@ class TrainFragment : Fragment() {
                     utterTTS(contents)
                     while (utterState == 0);
                     if (curSet == customSet) {
+                        Log.d("socket test set","$curSet $customSet")
                         handler.removeCallbacks(this)
                         val message = Message.obtain()
                         message.obj = "end"
@@ -209,7 +210,7 @@ class TrainFragment : Fragment() {
         binding.chronometer.start()
 
         binding.doneBtn.setOnClickListener {
-            pauseTime = binding.chronometer.base - SystemClock.elapsedRealtime()
+            pauseTime = SystemClock.elapsedRealtime() - binding.chronometer.base
             binding.chronometer.stop()
             val recordTime = getFormattedElapsedTime(pauseTime)
             Log.d("pauseTime", pauseTime.toString())
@@ -243,10 +244,19 @@ class TrainFragment : Fragment() {
                 while (true) {
                     while (socket?.getInputStream()?.available()!! < 0);
                     val buffer = ByteArray(1024 * 1024)
-//                    val input = socket!!.getInputStream()
-//                    input.read(buffer)
                     socket?.getInputStream()!!.read(buffer)
-//                    val byteArray = inputStream.readBytes()
+
+                    // 데이터 읽기
+//                    val buffer = ByteArray(1024 * 1024) // 1 MB buffer
+//                    var totalBytesRead = 0
+//                    var bytesRead: Int
+//
+//                    while (inputStream.read(buffer, totalBytesRead, buffer.size - totalBytesRead).also { bytesRead = it } != -1) {
+//                        totalBytesRead += bytesRead
+//                        if (totalBytesRead >= buffer.size) {
+//                            break
+//                        }
+//                    }
                     when (buffer[0].toInt()) {
                         0 -> break
                         97 -> {
@@ -379,22 +389,23 @@ class TrainFragment : Fragment() {
                                             utterTTS(contents)
                                         }
                                     }
-                                } else {
-                                    val img = buffer.copyOfRange(1, buffer.size)
-                                    Log.d("socket buffer ", img.toString())
-                                    takePhoto = true
-                                    if (img != null) {
-                                        val bmp: Bitmap =
-                                            BitmapFactory.decodeByteArray(img, 0, img.size)
-                                        withContext(Dispatchers.Main) {
-                                            binding.testImg.setImageBitmap(bmp)
-                                        }
-
-                                    } else {
-                                        Log.d("socket img", "null")
-                                    }
-
                                 }
+//                                else {
+//                                    val img = buffer.copyOfRange(1, buffer.size)
+//                                    Log.d("socket buffer ", img.toString())
+//                                    takePhoto = true
+//                                    if (img != null) {
+//                                        val bmp: Bitmap =
+//                                            BitmapFactory.decodeByteArray(img, 0, img.size)
+//                                        withContext(Dispatchers.Main) {
+//                                            binding.testImg.setImageBitmap(bmp)
+//                                        }
+//
+//                                    } else {
+//                                        Log.d("socket img", "null")
+//                                    }
+//
+//                                }
                             }
                             job.cancel()
                         }

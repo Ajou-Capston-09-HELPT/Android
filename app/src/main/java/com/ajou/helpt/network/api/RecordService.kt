@@ -15,11 +15,10 @@ interface RecordService {
         @Path("date") date : String
     ): Response<DailyRecordsResponse>
 
-    @Multipart
+
     @POST("records")
     suspend fun postRecord(
         @Header("Authorization") accessToken : String,
-        @Part("recordRequest") record : ExerciseRecord,
-        @Part snapshotFile : MultipartBody.Part?
+        @Body record : ExercisePosting,
     ): Response<ResponseBody>
 }

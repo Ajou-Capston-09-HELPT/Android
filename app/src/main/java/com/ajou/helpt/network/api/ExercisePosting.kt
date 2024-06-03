@@ -1,13 +1,12 @@
-package com.ajou.helpt.mypage.model
+package com.ajou.helpt.network.api
 
 import java.time.LocalDate
 
-data class ExerciseRecord(
-    val equipmentName: String,
+data class ExercisePosting(
+    val equipmentId: Int,
     val count: Int,
     val setNumber: Int,
     val weight: Int,
-    val recordDate: LocalDate,
     val recordTime: String,
     val successRate: Int,
     val comment: String,

@@ -128,11 +128,10 @@ class SetPhysicInfoFragment : Fragment() {
 
     private fun callLoginApi(weight: Int, height: Int) {
         Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId birth ${viewModel.birth.value.toString()}")
-        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!,viewModel.birth.value.toString())
-        val img = getMultipartFile(viewModel.profileImg.value!!, requireActivity(),"profileImage")
+        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!,viewModel.img.value!!,viewModel.birth.value.toString())
         binding.loadingBar.show()
         CoroutineScope(Dispatchers.IO).launch{
-            val loginDeferred = async {memberService.register(memberInfo, img) }
+            val loginDeferred = async {memberService.register(memberInfo) }
             val loginResponse = loginDeferred.await()
             if (loginResponse.isSuccessful) {
                 val tokenBody = JSONObject(loginResponse.body()?.string())
