@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
+import com.ajou.helpt.mypage.model.ExerciseRecord
 import com.ajou.helpt.mypage.view.MyPageFragment
 
 class ExerciseRecordAdapter(mContext: Context, emptyList: List<Any>, val link: MyPageFragment.DataSelection) :

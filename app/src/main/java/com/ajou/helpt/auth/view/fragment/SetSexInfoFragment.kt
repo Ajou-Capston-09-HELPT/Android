@@ -41,6 +41,10 @@ class SetSexInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         binding.manBtn.setOnClickListener {
             binding.manBtn.setImageResource(R.drawable.auth_man_on)
             binding.manText.setTextColor(ContextCompat.getColor(mContext!!, R.color.primary))

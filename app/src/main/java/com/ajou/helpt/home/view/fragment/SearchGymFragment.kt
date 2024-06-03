@@ -62,6 +62,9 @@ class SearchGymFragment : Fragment() {
         val link = AdapterToFragment()
         adapter = SearchGymRVAdapter(mContext!!, emptyList(), link)
 
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
         binding.gym.setOnEditorActionListener { view, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_SEARCH){
                 binding.gymRv.adapter = adapter

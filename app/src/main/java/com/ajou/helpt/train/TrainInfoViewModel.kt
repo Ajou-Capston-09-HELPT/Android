@@ -24,6 +24,9 @@ class TrainInfoViewModel : ViewModel() {
     private val _rate = MutableLiveData<Int>()
     val rate get() = _rate
 
+    private val _direction = MutableLiveData<Char>()
+    val direction get() = _direction
+
     fun setTrain(data: GymEquipment?) {
         _train.postValue(data)
     }
@@ -46,5 +49,9 @@ class TrainInfoViewModel : ViewModel() {
 
     fun setRate(data: Int) {
         _rate.postValue(data)
+    }
+
+    fun setDirection(data:Char){
+        _direction.postValue(data)
     }
 }

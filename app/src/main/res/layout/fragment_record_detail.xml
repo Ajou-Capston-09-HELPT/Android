@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:gravity="center"
-            android:text="@string/record_detail_title"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -117,43 +116,43 @@
             app:layout_constraintStart_toStartOf="@+id/result"
             app:layout_constraintTop_toBottomOf="@+id/result" />
 
-        <TextView
-            android:id="@+id/img"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="오늘의 운동 한 컷"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            app:layout_constraintStart_toStartOf="@+id/imageView7"
-            app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+<!--        <TextView-->
+<!--            android:id="@+id/img"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="오늘의 운동 한 컷"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginTop="24dp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/imageView7"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/imageView7" />-->
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/band_bent_over_row_img"
-            app:layout_constraintDimensionRatio="1:0.6"
-            app:layout_constraintEnd_toEndOf="@+id/imageView7"
-            app:layout_constraintStart_toStartOf="@+id/imageView7"
-            app:layout_constraintTop_toBottomOf="@+id/img" />
+<!--        <ImageView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:src="@drawable/band_bent_over_row_img"-->
+<!--            app:layout_constraintDimensionRatio="1:0.6"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/imageView7"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/imageView7"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/img" />-->
 
-        <Button
-            android:id="@+id/downloadBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/all_long_btn"
-            android:text="이미지 저장하기"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <Button-->
+<!--            android:id="@+id/downloadBtn"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="24dp"-->
+<!--            android:layout_marginEnd="24dp"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            android:layout_marginBottom="32dp"-->
+<!--            android:background="@drawable/all_long_btn"-->
+<!--            android:text="이미지 저장하기"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

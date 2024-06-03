@@ -6,14 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentTrainingImageBinding
+import com.ajou.helpt.train.TrainInfoViewModel
 import com.bumptech.glide.Glide
 
 class TrainingImageFragment : Fragment() {
     private var _binding : FragmentTrainingImageBinding? = null
     private val binding get() = _binding!!
     private var mContext : Context? = null
+    private lateinit var viewModel : TrainInfoViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -29,6 +32,7 @@ class TrainingImageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        viewModel = ViewModelProvider(requireActivity())[TrainInfoViewModel::class.java]
         _binding = FragmentTrainingImageBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -37,7 +41,7 @@ class TrainingImageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Glide.with(this)
-            .load(R.drawable.band_bent_over_row_img)
+            .load(viewModel.guide.value!!.topImage)
             .into(binding.image)
     }
 }

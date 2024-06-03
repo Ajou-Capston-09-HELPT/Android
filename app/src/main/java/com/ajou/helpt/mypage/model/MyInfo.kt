@@ -1,4 +1,4 @@
-package com.ajou.helpt.mypage.profile
+package com.ajou.helpt.mypage.model
 
 data class MyInfo(
     val gymId: Int,

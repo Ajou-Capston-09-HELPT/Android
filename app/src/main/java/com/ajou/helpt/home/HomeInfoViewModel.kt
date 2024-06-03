@@ -60,11 +60,15 @@ class HomeInfoViewModel : ViewModel() {
             val membershipResponse = membershipDeferred.await()
 
             if (membershipResponse.isSuccessful) {
-                if (membershipResponse.body()?.data == null) _hasTicket.value = false
+                if (membershipResponse.body()?.data == null){
+                    _hasTicket.value = false
+                    dataStore.saveHasTicket(false)
+                }
                 else {
 //                    setMembershipData(membershipResponse.body()!!.data)
                     _membership.value = membershipResponse.body()!!.data
                     _hasTicket.value = true
+                    dataStore.saveHasTicket(true)
                     dataStore.saveGymId(membershipResponse.body()!!.data.gymId)
                 }
                 if (_hasTicket.value == true) {

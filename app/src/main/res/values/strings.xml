@@ -5,7 +5,7 @@
     <string name="auth_set_greet2">회원님께 더 좋은 서비스를\n제공하기 위해 몇 가지 확인할 게 있어요</string>
     <string name="auth_set_sex">성별을 선택해주세요</string>
     <string name="auth_set_physic">키와 몸무게를 입력해주세요</string>
-    <string name="auth_set_info">생년월일과 전화번호를 입력해주세요</string>
+    <string name="auth_set_info">생년월일과 이미지를 입력해주세요</string>
 
 
     <string name="home_greet">어서 오세요, %s님!\n오늘도 즐겁게 운동해볼까요?</string>
@@ -48,7 +48,7 @@
 
     <string name="training_count">%1$d/%2$d회</string>
     <string name="train_done_result">%1$s\t\t%2$d세트\t\t%3$d회</string>
-    <string name="train_done_percent">%d%</string>
+    <string name="train_done_percent">%s %</string>
     <string name="record_detail_title">%1$d월 %2$d일 나의 운동</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -52,25 +52,31 @@ class RecordDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         viewModel = ViewModelProvider(requireActivity())[MyPageViewModel::class.java]
         _binding = FragmentRecordDetailBinding.inflate(layoutInflater, container, false)
+
+        val item = viewModel.selectedItem.value!!
+        binding.title.text = String.format(getString(R.string.record_detail_title),item.recordDate.month, item.recordDate.dayOfMonth)
+
+        binding.comment.text = viewModel.selectedItem.value!!.comment
+        binding.name.text = viewModel.selectedItem.value!!.equipmentName
+        binding.result.text = String.format(getString(R.string.train_done_result), item.recordTime, item.setNumber, item.count)
+        binding.rate.text = String.format(getString(R.string.train_done_percent), item.successRate)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-//        val fetchConfiguration = FetchConfiguration
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
+
         if (viewModel.selectedItem.value == null) {
-            // 선택된 아이템이 있을 경우에 상세화면 보여주기
             findNavController().popBackStack()
         }
 
-        binding.downloadBtn.setOnClickListener {
-            downloadImgFromUrl(viewModel.selectedItem.value!!.snapshotFile)
-        }
+//        binding.downloadBtn.setOnClickListener {
+//            downloadImgFromUrl(viewModel.selectedItem.value!!.snapshotFile)
+//        }
     }
 
     private fun downloadImgFromUrl(url: String) {

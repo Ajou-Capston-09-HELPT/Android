@@ -21,10 +21,10 @@ import kotlinx.coroutines.launch
 class StartSetInfoFragment : Fragment() {
     private var _binding : FragmentStartSetInfoBinding?= null
     private val binding get() = _binding!!
-    private var mContext : Context ?= null
+    private var mContext : Context? = null
     private val dataStore = UserDataStore()
     private var accessToken : String? = null
-    private var userName : String ?= null
+    private var userName : String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

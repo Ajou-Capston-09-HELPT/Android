@@ -1,4 +1,4 @@
-package com.ajou.helpt.mypage.profile
+package com.ajou.helpt.mypage.view
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -18,8 +18,8 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
-import com.ajou.helpt.auth.Member
 import com.ajou.helpt.databinding.FragmentProfileBinding
+import com.ajou.helpt.mypage.model.MyInfo
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
 import kotlinx.coroutines.CoroutineScope
@@ -59,6 +59,7 @@ class ProfileFragment : Fragment() {
                 val memberInfoResponse = memberInfoDeferred.await()
                 if (memberInfoResponse.isSuccessful) {
                     val member = memberInfoResponse.body()!!.data
+                    Log.d("member data",member.toString())
                     val translateGender = when(member.gender){
                         "WOMEN" -> "여성"
                         "MAN" -> "남성"
@@ -70,6 +71,7 @@ class ProfileFragment : Fragment() {
                     binding.tvWeightContent.text = member.weight.toString() + " kg"
                 }
                 else{
+                    Log.d("myInfo fail",memberInfoResponse.errorBody()?.string().toString())
                     withContext(Dispatchers.Main){
                         Toast.makeText(requireContext(), "프로필을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack()

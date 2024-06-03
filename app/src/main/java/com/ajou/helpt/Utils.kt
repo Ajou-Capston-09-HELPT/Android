@@ -1,10 +1,19 @@
 package com.ajou.helpt
 
+import android.app.Activity
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Point
+import android.net.Uri
 import android.os.SystemClock
+import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.view.View
 import android.view.WindowManager
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.time.DayOfWeek
 import java.time.Month
 import java.time.YearMonth
@@ -62,3 +71,42 @@ fun View.setOnSingleClickListener(onSingleClick: (View) -> Unit) {
     }
     setOnClickListener(oneClick)
 }
+
+fun getFileName(uri: Uri, activity: Activity): String? {
+    var result: String? = null
+    if (uri.scheme.equals("content")) {
+        val cursor: Cursor? = activity.contentResolver.query(uri, null, null, null, null)
+        cursor.use { cursor ->
+            if (cursor != null && cursor.moveToFirst()) {
+                result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            }
+        }
+    }
+    if (result == null) {
+        result = uri.path
+        val cut = result?.lastIndexOf('/')
+        if (cut != -1) {
+            if (cut != null) {
+                result = result?.substring(cut + 1)
+            }
+        }
+    }
+    return result
+}
+
+fun getMultipartFile(imageUri: Uri, activity: Activity, key: String): MultipartBody.Part {
+    val file = File(absolutelyPath(imageUri, activity)) // path 동일
+    val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+    val name = file.name
+    return MultipartBody.Part.createFormData(key, name, requestFile)
+}
+
+private fun absolutelyPath(path: Uri?, activity:Activity ): String {
+    var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+    var c: Cursor? = activity.contentResolver?.query(path!!, proj, null, null, null)
+    var index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+    c?.moveToFirst()
+
+    var result = c?.getString(index!!)
+    return result!!
+} // 절대경로로 변환하는 함수

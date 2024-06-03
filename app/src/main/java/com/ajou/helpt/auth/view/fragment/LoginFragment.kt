@@ -2,6 +2,7 @@ package com.ajou.helpt.auth.view.fragment
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,25 +10,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
+import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentLoginBinding
+import com.ajou.helpt.home.view.HomeActivity
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.MemberService
+import com.google.gson.JsonObject
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private var mContext: Context? = null
     private val dataStore = UserDataStore()
-    private var accessToken: String? = null
-
-
-
+    private lateinit var viewModel : UserInfoViewModel
+    private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,6 +51,7 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        viewModel = ViewModelProvider(requireActivity())[UserInfoViewModel::class.java]
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -78,14 +87,12 @@ class LoginFragment : Fragment() {
                             CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
                                 dataStore.saveUserName(user?.kakaoAccount?.profile?.nickname.toString())
                                 dataStore.saveKakaoId(user?.id.toString())
-
-                                withContext(Dispatchers.Main) {
-                                    findNavController().navigate(R.id.action_loginFragment_to_startSetInfoFragment)
-                                }
-                                // TODO login api cal 해야함
+                                viewModel.setImg(user?.kakaoAccount?.profile?.profileImageUrl.toString())
+                                Log.d("user imageurl",user?.kakaoAccount?.profile?.profileImageUrl.toString())
+                                checkLogin(user?.id.toString())
                             }
                         }
-                        Log.e(ContentValues.TAG, "로그인 성공 ${token.accessToken}")
+
                         Log.d(
                             ContentValues.TAG,
                             "카카오톡 로그인 정보 가져옴 ${token.refreshToken} ${token.accessTokenExpiresAt} ${token.refreshTokenExpiresAt}"
@@ -133,4 +140,32 @@ class LoginFragment : Fragment() {
             }
         }
     } // TODO 구체적인 오류 메세지로 변경하기
+
+    private fun checkLogin(kakaoId:String){
+        val jsonObject = JsonObject().apply {
+            addProperty("kakaoId", kakaoId)
+        }
+        val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), jsonObject.toString())
+        CoroutineScope(Dispatchers.IO).launch {
+            val checkLoginDeferred = async { memberService.login(requestBody) }
+            val checkLoginResponse = checkLoginDeferred.await()
+            if(checkLoginResponse.isSuccessful) {
+                val tokenBody = JSONObject(checkLoginResponse.body()?.string())
+                val accessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
+                dataStore.saveAccessToken(accessToken)
+                dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
+                withContext(Dispatchers.Main){
+                    val intent = Intent(mContext, HomeActivity::class.java)
+                    startActivity(intent)
+                }
+            } else{
+                Log.d("checkLoginResponse fail",checkLoginResponse.errorBody()?.string().toString())
+
+                withContext(Dispatchers.Main){
+                    findNavController().navigate(R.id.action_loginFragment_to_startSetInfoFragment)
+                }
+
+            }
+        }
+    }
 }

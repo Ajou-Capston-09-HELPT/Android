@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class GymEquipment(
     val gymEquipmentId : Int,
     val equipmentName : String,
+    val equipmentNameEng : String,
     val customCount : Int,
     val customSet : Int,
     val customWeight : Int

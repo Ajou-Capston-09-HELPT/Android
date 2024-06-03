@@ -14,10 +14,10 @@ import com.ajou.helpt.train.TrainInfoViewModel
 import com.bumptech.glide.Glide
 
 class TrainGuideFragment : Fragment() {
-    private var _binding : FragmentTrainGuideBinding? = null
+    private var _binding: FragmentTrainGuideBinding? = null
     private val binding get() = _binding!!
     private var mContext: Context? = null
-    private lateinit var viewModel : TrainInfoViewModel
+    private lateinit var viewModel: TrainInfoViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,12 +47,12 @@ class TrainGuideFragment : Fragment() {
             .mapIndexed { index, item -> "${index + 1}. $item" }
             .joinToString(separator = "\n")
         binding.name.text = viewModel.train.value!!.equipmentName
-//        binding.engName.text = viewModel.train.value!!.
+//        binding.engName.text = viewModel.train.value!!.equipmentNameEng
+        binding.engName.text = "one arm dumbbell lateral raise"
         binding.readyGuide.text = item.exerciseDescription
         binding.guide.text = result
         Glide.with(this)
-            .load(R.drawable.band_bent_over_row_img)
+            .load(item.topImage)
             .into(binding.image)
-//        binding.guide.text = Html.fromHtml(resources.getString(R.string.train_guide_band_bent_over_row))
     }
 }

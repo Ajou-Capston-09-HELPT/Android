@@ -1,6 +1,8 @@
 package com.ajou.helpt.mypage.view
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,12 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
+import com.ajou.helpt.auth.view.dialog.LogOutDialog
+import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentMyPageBinding
 import com.ajou.helpt.home.adapter.MyPageViewModel
-import com.ajou.helpt.mypage.ExerciseRecord
+import com.ajou.helpt.mypage.model.ExerciseRecord
 import com.ajou.helpt.mypage.ExerciseRecordAdapter
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.EquipmentService
+import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.network.api.RecordService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +31,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.lang.reflect.Member
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -42,11 +48,18 @@ class MyPageFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var exerciseRecordAdapter: ExerciseRecordAdapter
-    private lateinit var viewModel : MyPageViewModel
+    private lateinit var viewModel: MyPageViewModel
+
+    private lateinit var logOutDialog: LogOutDialog
+    private lateinit var quitDialog: QuitDialog
 
     private val recordService = RetrofitInstance.getInstance().create(RecordService::class.java)
-    private val equipmentService = RetrofitInstance.getInstance().create(EquipmentService::class.java)
+    private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -69,6 +82,20 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.logout.setOnClickListener {
+            logOutDialog = LogOutDialog(mContext!!)
+            logOutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            logOutDialog.show()
+        }
+
+        binding.withdrawal.setOnClickListener {
+            quitDialog = QuitDialog(mContext!!)
+            quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            quitDialog.show()
+        }
+    }
     private fun setupView(view: View) {
         binding.textViewMyPageName2.text = userName
         binding.textViewMyPageProfileCalendarTitle.visibility = View.INVISIBLE
@@ -123,57 +150,28 @@ class MyPageFragment : Fragment() {
 
                 val getExerciseRecordResponse = getExerciseRecordDeferred.await()
 
-                Log.d("ExerciseRecord", "Response: $getExerciseRecordResponse , ${getExerciseRecordResponse.errorBody()?.string()} ")
+                Log.d(
+                    "ExerciseRecord",
+                    "Response: $getExerciseRecordResponse , ${
+                        getExerciseRecordResponse.errorBody()?.string()
+                    } "
+                )
 
                 if (getExerciseRecordResponse.isSuccessful) {
-                    val exerciseRecordResponse = JSONObject(getExerciseRecordResponse.body()?.string())
-
-                    Log.d("ExerciseRecord", "Exercise Record Response: $exerciseRecordResponse")
-                    if (!exerciseRecordResponse.isNull("data")) {
-                        if (exerciseRecordResponse.getJSONArray("data").length() == 0){
-                            withContext(Dispatchers.Main) {
-                                binding.noRecordBg.visibility = View.VISIBLE
-                                binding.noRecordText.visibility = View.VISIBLE
-                                binding.recyclerViewMyPageRecord.visibility = View.GONE
-                            }
-                        }else {
-                            val jsonArray = exerciseRecordResponse.getJSONArray("data")
-                            val exerciseRecords = if (jsonArray != null) {
-                                List(jsonArray.length()) { i ->
-                                    val jsonObject = jsonArray.getJSONObject(i)
-                                    val equipmentResponse = equipmentService.getEquipment(accessToken, jsonObject.getInt("equipmentId"))
-                                    val equipmentResponseBody = equipmentResponse.body()?.string()
-                                    val equipmentName = if (equipmentResponseBody != null) {
-                                        val equipmentJSONObject = JSONObject(equipmentResponseBody)
-                                        Log.d("ExerciseRecord2", "Equipment Response: $equipmentJSONObject")
-                                        equipmentJSONObject.getJSONObject("data").getString("equipmentName")
-                                    } else {
-                                        "장비 이름 없음"
-                                    }
-
-                                    val startTime = jsonObject.getString("startTime")
-                                    val endTime = jsonObject.getString("endTime")
-                                    val duration = calculateDuration(startTime, endTime)
-
-//                                    ExerciseRecord(
-//                                        equipmentName,
-//                                        jsonObject.getInt("count"),
-//                                        jsonObject.getInt("setNumber"),
-//                                        duration
-//                                    )
-                                }
-                            } else {
-                                emptyList()
-                            }
-                            withContext(Dispatchers.Main) {
-                                binding.recyclerViewMyPageRecord.visibility = View.VISIBLE
-//                                exerciseRecordAdapter.submitList(exerciseRecords)
-                                binding.noRecordBg.visibility = View.GONE
-                                binding.noRecordText.visibility = View.GONE
-                            }
+                    val recordBody = getExerciseRecordResponse.body()!!.data
+                    if (recordBody.isEmpty()) {
+                        withContext(Dispatchers.Main) {
+                            binding.noRecordBg.visibility = View.VISIBLE
+                            binding.noRecordText.visibility = View.VISIBLE
+                            binding.recyclerViewMyPageRecord.visibility = View.GONE
                         }
                     } else {
-                        Log.d("ExerciseRecord", "No data in response")
+                        withContext(Dispatchers.Main) {
+                            binding.recyclerViewMyPageRecord.visibility = View.VISIBLE
+                            exerciseRecordAdapter.submitList(recordBody)
+                            binding.noRecordBg.visibility = View.GONE
+                            binding.noRecordText.visibility = View.GONE
+                        }
                     }
                 }
             }

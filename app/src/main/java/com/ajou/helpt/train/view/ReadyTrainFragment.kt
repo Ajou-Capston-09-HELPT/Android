@@ -2,6 +2,7 @@ package com.ajou.helpt.train.view
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +51,7 @@ class ReadyTrainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d("customSetting",viewModel.train.value.toString())
         var setting = listOf<Int>(
             viewModel.train.value!!.customSet,
             viewModel.train.value!!.customWeight,
@@ -63,9 +64,10 @@ class ReadyTrainFragment : Fragment() {
             String.format(resources.getString(R.string.train_setting_count), setting[2])
         binding.weight.text =
             String.format(resources.getString(R.string.train_setting_weight), setting[1])
-        binding.name.text = mContext?.resources?.getString(R.string.train_band_bent_over_row_name)
-        binding.engName.text =
-            mContext?.resources?.getString(R.string.train_band_bent_over_row_eng_name)
+        binding.name.text = viewModel.train.value!!.equipmentName
+        binding.engName.text = "one arm dumbbell lateral raise"
+//        binding.engName.text =
+//            viewModel.train.value!!.equipmentNameEng
         binding.trainSetting.setOnClickListener {
             dialog = TrainSettingDialog(setting) { value ->
                 setting = value
@@ -81,10 +83,12 @@ class ReadyTrainFragment : Fragment() {
                     resources.getString(R.string.train_setting_count),
                     value[2]
                 )
+                Log.d("data check", "${viewModel.train.value} $value")
                 viewModel.setTrain(
                     GymEquipment(
                         viewModel.train.value!!.gymEquipmentId,
                         viewModel.train.value!!.equipmentName,
+                        "one arm dumbbell lateral raise",
                         value[2],
                         value[0],
                         value[1]

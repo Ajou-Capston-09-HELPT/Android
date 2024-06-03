@@ -36,8 +36,6 @@ class HomeFragment : Fragment() {
     private val dataStore = UserDataStore()
     private var accessToken: String? = null
     private var refreshToken: String? = null
-    private lateinit var logOutDialog: LogOutDialog
-    private lateinit var quitDialog: QuitDialog
     private val membershipService =
         RetrofitInstance.getInstance().create(MemberShipService::class.java)
     private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
