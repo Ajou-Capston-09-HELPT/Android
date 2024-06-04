@@ -17,17 +17,12 @@ import com.ajou.helpt.R
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentTrainDoneBinding
 import com.ajou.helpt.home.view.HomeActivity
-import com.ajou.helpt.mypage.model.ExerciseRecord
 import com.ajou.helpt.network.RetrofitInstance
-import com.ajou.helpt.network.api.ExercisePosting
+import com.ajou.helpt.network.model.ExercisePosting
 import com.ajou.helpt.network.api.RecordService
 import com.ajou.helpt.train.TrainInfoViewModel
 import kotlinx.coroutines.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import java.time.LocalDate
-import kotlin.reflect.typeOf
 
 class TrainDoneFragment : Fragment() {
     private var _binding: FragmentTrainDoneBinding? = null
@@ -86,10 +81,8 @@ class TrainDoneFragment : Fragment() {
                 viewModel.train.value!!.customWeight,
                 viewModel.time.value!!,
                 viewModel.rate.value!!,
-                comment!!,null
+                comment!!, null
             )
-            Log.d("postRecord request type check", viewModel.train.value!!.gymEquipmentId.toString())
-            Log.d("postRecord request","data: $data")
             val postRecordDeferred = async { recordService.postRecord(accessToken!!,data) }
             val postRecordResponse = postRecordDeferred.await()
 

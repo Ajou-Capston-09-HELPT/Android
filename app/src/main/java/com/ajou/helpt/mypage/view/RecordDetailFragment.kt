@@ -54,7 +54,7 @@ class RecordDetailFragment : Fragment() {
         _binding = FragmentRecordDetailBinding.inflate(layoutInflater, container, false)
 
         val item = viewModel.selectedItem.value!!
-        binding.title.text = String.format(getString(R.string.record_detail_title),item.recordDate.month, item.recordDate.dayOfMonth)
+//        binding.title.text = String.format(getString(R.string.record_detail_title),item.recordDate.month, item.recordDate.dayOfMonth)
 
         binding.comment.text = viewModel.selectedItem.value!!.comment
         binding.name.text = viewModel.selectedItem.value!!.equipmentName

@@ -1,9 +1,7 @@
 package com.ajou.helpt.network.api
 
-import com.ajou.helpt.auth.Member
-import com.ajou.helpt.mypage.model.ExerciseRecord
 import com.ajou.helpt.network.model.DailyRecordsResponse
-import okhttp3.MultipartBody
+import com.ajou.helpt.network.model.ExercisePosting
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*

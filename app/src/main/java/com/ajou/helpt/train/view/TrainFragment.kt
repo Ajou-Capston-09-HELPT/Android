@@ -344,13 +344,11 @@ class TrainFragment : Fragment() {
 
                                 if (!socketList.contains(103)) {
                                     socketList.add(103)
-//                                        delay(5000)
                                     while (utterState == 0);
                                     utterTTS(contents)
                                     val message = Message.obtain()
                                     message.obj = "runstart"
                                     sendHandler.sendMessage(message)
-//                                        delay(5000)
                                     handler.postDelayed(runnable!!, 500)
                                 }
                             }

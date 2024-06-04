@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@drawable/navigation_train_off"
-        app:layout_constraintBottom_toBottomOf="@+id/bar"
+
         app:layout_constraintEnd_toStartOf="@+id/home"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

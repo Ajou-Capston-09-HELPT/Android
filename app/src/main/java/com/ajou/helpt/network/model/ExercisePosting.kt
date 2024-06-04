@@ -1,9 +1,9 @@
-package com.ajou.helpt.network.api
+package com.ajou.helpt.network.model
 
 import java.time.LocalDate
 
 data class ExercisePosting(
-    val equipmentId: Int,
+    val gymEquipmentId: Int,
     val count: Int,
     val setNumber: Int,
     val weight: Int,

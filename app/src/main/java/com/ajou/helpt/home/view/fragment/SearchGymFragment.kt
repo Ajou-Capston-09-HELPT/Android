@@ -26,7 +26,7 @@ import org.json.JSONObject
 class SearchGymFragment : Fragment() {
     private var _binding : FragmentSearchGymBinding? = null
     private val binding get() = _binding!!
-    private var mContext : Context?= null
+    private var mContext : Context? = null
     private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
     private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
     private val productService = RetrofitInstance.getInstance().create(ProductService::class.java)
@@ -52,6 +52,8 @@ class SearchGymFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken()
             refreshToken = dataStore.getRefreshToken()
+            searchGymCallApi(null)
+            binding.loadingBar.show()
         }
         return binding.root
     }
@@ -61,18 +63,19 @@ class SearchGymFragment : Fragment() {
 
         val link = AdapterToFragment()
         adapter = SearchGymRVAdapter(mContext!!, emptyList(), link)
+        binding.gymRv.adapter = adapter
+        binding.gymRv.layoutManager = LinearLayoutManager(mContext)
 
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
         binding.gym.setOnEditorActionListener { view, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_SEARCH){
-                binding.gymRv.adapter = adapter
-                binding.gymRv.layoutManager = LinearLayoutManager(mContext)
+                binding.loadingBar.show()
                 searchGymCallApi(binding.gym.text.toString())
+//                adapter.filterList(binding.gym.text.toString())
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireActivity().window.decorView.applicationWindowToken, 0)
-                binding.loadingBar.show()
                 return@setOnEditorActionListener true
             } else {
                 return@setOnEditorActionListener false
@@ -81,42 +84,46 @@ class SearchGymFragment : Fragment() {
 
         binding.removeBtn.setOnClickListener {
             binding.gym.setText("")
-
         }
     }
 
-    private fun searchGymCallApi(keyword: String) {
+    private fun searchGymCallApi(keyword: String?) {
         CoroutineScope(Dispatchers.IO).launch {
             val searchDeferred = async { gymService.searchGyms(accessToken!!, keyword) }
             val searchResponse = searchDeferred.await()
             if (searchResponse.isSuccessful) {
-                if (searchResponse.body()?.data?.size != 0) {
-                    withContext(Dispatchers.Main) {
+                val body = searchResponse.body()?.data
+                withContext(Dispatchers.Main) {
+                    if (body?.size != 0) {
+                        Log.d("body size not 0", body.toString())
                         binding.loadingBar.hide()
-                        adapter.updateList(searchResponse.body()?.data!!)
+                        adapter.updateList(body!!)
+                    } else {
+                        Log.d("body size is 0", "")
+                        binding.loadingBar.hide()
+                        adapter.updateList(emptyList())
                     }
-                }else{
                 }
-
             } else {
-                val tokenDeferred = async { memberService.getNewToken(refreshToken!!) }
-                val tokenResponse = tokenDeferred.await()
-                if (tokenResponse.isSuccessful) {
-                    val tokenBody = JSONObject(tokenResponse.body()?.string())
-                    val newAccessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
-                    val newRefreshToken = "Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString()
-                    dataStore.saveAccessToken(newAccessToken)
-                    dataStore.saveRefreshToken(newRefreshToken)
-                    val reSearchDeferred = async { gymService.searchGyms(newAccessToken, keyword) }
-                    val reSearchResponse = reSearchDeferred.await()
-                    if (reSearchResponse.isSuccessful) {
-                    }else{
-                        Log.d("reeeesearchResponse", reSearchResponse.errorBody()?.string().toString())
-                    }
-                } else{
-                    Log.d("tokenBody fail", tokenResponse.errorBody()?.string().toString())
-                }
                 Log.d("searchResponse fail", searchResponse.errorBody()?.string().toString())
+//                val tokenDeferred = async { memberService.getNewToken(refreshToken!!) }
+//                val tokenResponse = tokenDeferred.await()
+//                if (tokenResponse.isSuccessful) {
+//                    val tokenBody = JSONObject(tokenResponse.body()?.string())
+//                    val newAccessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
+//                    val newRefreshToken = "Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString()
+//                    dataStore.saveAccessToken(newAccessToken)
+//                    dataStore.saveRefreshToken(newRefreshToken)
+//                    val reSearchDeferred = async { gymService.searchGyms(newAccessToken, keyword) }
+//                    val reSearchResponse = reSearchDeferred.await()
+//                    if (reSearchResponse.isSuccessful) {
+//                    }else{
+//                        Log.d("reeeesearchResponse", reSearchResponse.errorBody()?.string().toString())
+//                    }
+//                } else{
+//                    Log.d("tokenBody fail", tokenResponse.errorBody()?.string().toString())
+//                }
+
             }
         }
 

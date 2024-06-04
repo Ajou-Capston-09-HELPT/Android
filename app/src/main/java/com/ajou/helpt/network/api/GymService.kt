@@ -15,7 +15,7 @@ interface GymService {
     @GET("gyms")
     suspend fun searchGyms(
         @Header("Authorization") accessToken: String,
-        @Query("name") name: String
+        @Query("name") name: String?
     ): Response<GymResponse>
 
     @GET("gyms/{gymId}")
