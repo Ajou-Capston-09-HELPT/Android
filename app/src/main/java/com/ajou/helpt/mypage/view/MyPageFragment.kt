@@ -159,6 +159,7 @@ class MyPageFragment : Fragment() {
 
                 if (getExerciseRecordResponse.isSuccessful) {
                     val recordBody = getExerciseRecordResponse.body()!!.data
+                    Log.d("recordData","data: ${recordBody}")
                     if (recordBody.isEmpty()) {
                         withContext(Dispatchers.Main) {
                             binding.noRecordBg.visibility = View.VISIBLE

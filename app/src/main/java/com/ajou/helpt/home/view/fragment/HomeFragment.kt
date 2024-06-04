@@ -18,6 +18,7 @@ import com.ajou.helpt.auth.view.dialog.LogOutDialog
 import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
+import com.ajou.helpt.home.view.GymDetailDialog
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.GymService
 import com.ajou.helpt.network.api.MemberService
@@ -126,8 +127,8 @@ class HomeFragment : Fragment() {
             openChatLink()
         }
         binding.ticket.setOnClickListener {
-            val dialog = QRCreateDialogFragment()
-            dialog.show(childFragmentManager, "QRCreateDialog")
+            val dialog = GymDetailDialog()
+            dialog.show(childFragmentManager, "gymDetailSelection")
         }
 
         binding.mainNotice.setOnClickListener {

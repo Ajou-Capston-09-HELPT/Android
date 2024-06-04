@@ -14,6 +14,8 @@
     <string name="home_gym_pay_price">%,d원</string>
     <string name="home_gym_pay_mprice">월 %,d원</string>
 
+    <string name="dialog_gym_name_detail">%s 상세보기</string>
+
 
     <string name="train_init_guide">사용할 운동 기기에 부착된\nQR코드를 찍어주세요</string>
     <string name="train_setting_set">%d 세트</string>

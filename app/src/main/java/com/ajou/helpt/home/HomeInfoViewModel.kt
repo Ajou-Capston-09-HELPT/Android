@@ -60,7 +60,7 @@ class HomeInfoViewModel : ViewModel() {
             val membershipResponse = membershipDeferred.await()
 
             if (membershipResponse.isSuccessful) {
-                if (membershipResponse.body()?.data == null){
+                if (membershipResponse.body()?.data == null) {
                     _hasTicket.value = false
                     dataStore.saveHasTicket(false)
                 }
@@ -77,7 +77,6 @@ class HomeInfoViewModel : ViewModel() {
                     val gymRegisteredResponse = gymRegisteredDeferred.await()
                     if (gymRegisteredResponse.isSuccessful) {
                         setGymRegistered(gymRegisteredResponse.body()!!.data)
-
                     }
                 }
             } else {

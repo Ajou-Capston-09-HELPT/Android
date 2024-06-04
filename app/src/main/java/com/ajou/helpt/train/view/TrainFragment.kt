@@ -50,6 +50,8 @@ class TrainFragment : Fragment() {
     private var takePhoto = false
     private var endRate: Int? = 0
     private var endDirection: Char? = null
+    private var sendThread : Thread? = null
+    private var receiveThread : Thread? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -67,14 +69,12 @@ class TrainFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentTrainBinding.inflate(layoutInflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[TrainInfoViewModel::class.java]
+
         binding.contentsVp.adapter = TrainingViewPagerAdapter(requireActivity() as TrainActivity)
         binding.dotsIndicator.setViewPager2(binding.contentsVp)
         binding.name.text = viewModel.train.value!!.equipmentName
-//        binding.engName.text = "one arm dumbbell lateral raise"
         binding.engName.text = viewModel.train.value!!.equipmentNameEng
 
-//        if (viewModel.train.value!!.equipmentName == "")
-        // TODO 운동 구분하기
         return binding.root
     }
 
@@ -179,10 +179,7 @@ class TrainFragment : Fragment() {
                     }
                 } else {
                     curCount += 1
-                    if (!socketList.contains(108) || !socketList.contains(114) || !socketList.contains(
-                            110
-                        )
-                    ) {
+                    if (!socketList.contains(108) || !socketList.contains(114) || !socketList.contains(110)) {
                         while (utterState == 0);
                         utterTTS(curCount.toString())
                     }
@@ -190,21 +187,19 @@ class TrainFragment : Fragment() {
                     else if (socketList.contains(110)) socketList.remove(110)
                     else if (socketList.contains(114)) socketList.remove(114)
                     handler.postDelayed(this, 3000)
-                    binding.count.text = String.format(
-                        mContext!!.resources.getString(
+                    binding.count.text = String.format(mContext!!.resources.getString(
                             R.string.training_count,
                             curCount,
                             customCount
-                        )
-                    )
+                        ))
                 }
             }
         }
 
-        val receiveThread = ReceiveThread()
-        receiveThread.start()
-        val sendThread = SendThread()
-        sendThread.start()
+        receiveThread = ReceiveThread()
+        receiveThread!!.start()
+        sendThread = SendThread()
+        sendThread!!.start()
 
         binding.chronometer.base = SystemClock.elapsedRealtime() + pauseTime
         binding.chronometer.start()
@@ -212,8 +207,10 @@ class TrainFragment : Fragment() {
         binding.doneBtn.setOnClickListener {
             pauseTime = SystemClock.elapsedRealtime() - binding.chronometer.base
             binding.chronometer.stop()
+            handler.removeCallbacks(runnable!!)
+            sendThread!!.interrupt()
+            receiveThread!!.interrupt()
             val recordTime = getFormattedElapsedTime(pauseTime)
-            Log.d("pauseTime", pauseTime.toString())
             viewModel.setTime(recordTime.toString())
             viewModel.setDoneCount(curCount)
             viewModel.setDoneSet(curSet)
@@ -374,7 +371,7 @@ class TrainFragment : Fragment() {
                         110 -> {
                             val job = CoroutineScope(Dispatchers.IO).launch {
                                 if (takePhoto) {
-                                    val random = Random().nextInt(6)
+                                    val random = Random().nextInt(3)
                                     if (random == 1) {
                                         val contents = "올바른 자세로 잘하고 계십니다."
 //                                Log.d("socket res", "n")
@@ -488,6 +485,12 @@ class TrainFragment : Fragment() {
         }
         if (::tts.isInitialized) {
             shutDownTTS()
+        }
+        if (!sendThread!!.isInterrupted) {
+            sendThread!!.interrupt()
+        }
+        if (!receiveThread!!.isInterrupted) {
+            receiveThread!!.interrupt()
         }
     }
 

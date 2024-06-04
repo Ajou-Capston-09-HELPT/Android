@@ -34,10 +34,10 @@ class ExerciseRecordAdapter(mContext: Context, emptyList: List<Any>, val link: M
 
     override fun onBindViewHolder(holder: ExerciseRecordViewHolder, position: Int) {
         val exerciseRecord = getItem(position)
-//        holder.exerciseName.text = exerciseRecord.exerciseName
+        holder.exerciseName.text = exerciseRecord.equipmentName
         holder.exerciseSets.text = exerciseRecord.setNumber.toString()
         holder.exerciseReps.text = exerciseRecord.count.toString()
-//        holder.exerciseTime.text = exerciseRecord.time
+        holder.exerciseTime.text = exerciseRecord.recordTime
         holder.item.setOnClickListener {
             link.getSelectedItem(exerciseRecord)
         }

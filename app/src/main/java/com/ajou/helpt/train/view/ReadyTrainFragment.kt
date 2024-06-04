@@ -14,6 +14,7 @@ import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentReadyTrainBinding
 import com.ajou.helpt.home.model.GymEquipment
 import com.ajou.helpt.train.TrainInfoViewModel
+import com.bumptech.glide.Glide
 
 class ReadyTrainFragment : Fragment() {
     private var _binding: FragmentReadyTrainBinding? = null
@@ -68,6 +69,9 @@ class ReadyTrainFragment : Fragment() {
 //        binding.engName.text = "one arm dumbbell lateral raise"
         binding.engName.text =
             viewModel.train.value!!.equipmentNameEng
+        Glide.with(mContext!!)
+            .load(viewModel.guide.value!!.topImage)
+            .into(binding.image)
         binding.trainSetting.setOnClickListener {
             dialog = TrainSettingDialog(setting) { value ->
                 setting = value

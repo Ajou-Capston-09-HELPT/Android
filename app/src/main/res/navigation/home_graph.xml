@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_homeFragment_to_QRCreateFragment"
             app:destination="@id/QRCreateFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_gymDetailInfoFragment"
+            app:destination="@id/gymDetailInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/noticeFragment"
@@ -70,5 +73,14 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <dialog
+        android:id="@+id/gymDetailDialog"
+        android:name="com.ajou.helpt.home.view.GymDetailDialog"
+        android:label="dialog_gym_detail"
+        tools:layout="@layout/dialog_gym_detail" >
+        <action
+            android:id="@+id/action_gymDetailDialog_to_gymDetailInfoFragment"
+            app:destination="@id/gymDetailInfoFragment" />
+    </dialog>
 
 </navigation>
