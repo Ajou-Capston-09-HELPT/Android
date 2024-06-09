@@ -84,6 +84,9 @@ class GymDetailInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val item = args.item
 
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.gymName.text = item.gymRegisteredInfo.gymName
         binding.address.text = item.gymRegisteredInfo.address.fullAddress

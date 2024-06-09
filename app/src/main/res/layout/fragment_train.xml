@@ -64,7 +64,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="밴드 벤트 오버 로우"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -75,7 +74,6 @@
             android:id="@+id/engName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Band Bent Over Row"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/backBtn"
@@ -116,7 +114,7 @@
             android:max="100"
             android:background="@drawable/train_circular_progress_bg"
             android:progressDrawable="@drawable/train_circular_progress"
-            app:layout_constraintBottom_toTopOf="@+id/trainBtn"
+            app:layout_constraintBottom_toTopOf="@+id/doneBtn"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -148,7 +146,7 @@
             app:layout_constraintTop_toBottomOf="@+id/set" />
 
         <Button
-            android:id="@+id/trainBtn"
+            android:id="@+id/doneBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -163,6 +161,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/testImg"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toTopOf="@+id/contentsVp"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

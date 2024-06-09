@@ -37,4 +37,9 @@ class SearchGymRVAdapter(val context: Context, var list : List<GymRegisteredInfo
         list = newList
         notifyDataSetChanged()
     }
+
+    fun filterList(keyword: String){
+        list = list.filter { it.gymName.contains(keyword) || it.address.fullAddress.contains(keyword) || it.address.detailAddress.contains(keyword) }
+        notifyDataSetChanged()
+    }
 }

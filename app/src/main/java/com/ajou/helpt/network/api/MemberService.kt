@@ -1,29 +1,28 @@
 package com.ajou.helpt.network.api
 
 import com.ajou.helpt.auth.Member
-import com.ajou.helpt.mypage.profile.MyInfo
+import com.ajou.helpt.mypage.model.MyInfo
 import com.ajou.helpt.network.model.MemberInfoResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.*
 
 interface MemberService {
-//    @POST("members/update")
-//    fun updateMember(
-//
-//    )
 //    @POST("members/register")
-//    fun registerMember(
-//
-//    )
+//    suspend fun register(
+//        @Body memberInfo : Member
+//    ): Response<ResponseBody>
+
     @POST("members/register")
     suspend fun register(
-        @Body memberInfo : Member
+        @Body memberInfo : Member,
+    ): Response<ResponseBody>
+
+    @POST("members/login")
+    suspend fun login(
+        @Body body : RequestBody
     ): Response<ResponseBody>
 
     @POST("api/auth/token/refresh")

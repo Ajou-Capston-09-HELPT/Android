@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.ajou.helpt.auth.view.dialog.LogOutDialog
 import com.ajou.helpt.auth.view.dialog.QuitDialog
 import com.ajou.helpt.databinding.FragmentHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
+import com.ajou.helpt.home.view.GymDetailDialog
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.GymService
 import com.ajou.helpt.network.api.MemberService
@@ -36,8 +38,6 @@ class HomeFragment : Fragment() {
     private val dataStore = UserDataStore()
     private var accessToken: String? = null
     private var refreshToken: String? = null
-    private lateinit var logOutDialog: LogOutDialog
-    private lateinit var quitDialog: QuitDialog
     private val membershipService =
         RetrofitInstance.getInstance().create(MemberShipService::class.java)
     private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
@@ -128,8 +128,8 @@ class HomeFragment : Fragment() {
             openChatLink()
         }
         binding.ticket.setOnClickListener {
-            val dialog = QRCreateDialogFragment()
-            dialog.show(childFragmentManager, "QRCreateDialog")
+            val dialog = GymDetailDialog()
+            dialog.show(childFragmentManager, "gymDetailSelection")
         }
 
         binding.mainNotice.setOnClickListener {
@@ -143,6 +143,13 @@ class HomeFragment : Fragment() {
             val chatLinkResponse = chatLinkDeferred.await()
             if (chatLinkResponse.isSuccessful) {
                 val url = JSONObject(chatLinkResponse.body()?.string()).getJSONObject("data").getString("chatLink").toString()
+                if(url == "null"){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(mContext, "채팅 링크가 등록되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+                        return@withContext
+                    }
+                    return@launch
+                }
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }else{

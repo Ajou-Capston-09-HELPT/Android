@@ -6,5 +6,7 @@ data class Member(
     val gender : String,
     val height : Int,
     val weight : Int,
-    val kakaoId : String
+    val kakaoId : String,
+    val profileImage: String,
+    val birthDate : String
 )

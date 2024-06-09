@@ -5,7 +5,7 @@
     <string name="auth_set_greet2">회원님께 더 좋은 서비스를\n제공하기 위해 몇 가지 확인할 게 있어요</string>
     <string name="auth_set_sex">성별을 선택해주세요</string>
     <string name="auth_set_physic">키와 몸무게를 입력해주세요</string>
-    <string name="auth_set_info">생년월일과 전화번호를 입력해주세요</string>
+    <string name="auth_set_info">생년월일을 입력해주세요</string>
 
 
     <string name="home_greet">어서 오세요, %s님!\n오늘도 즐겁게 운동해볼까요?</string>
@@ -13,6 +13,8 @@
     <string name="home_gym_pay_title">%d개월 회원권</string>
     <string name="home_gym_pay_price">%,d원</string>
     <string name="home_gym_pay_mprice">월 %,d원</string>
+
+    <string name="dialog_gym_name_detail">%s 상세보기</string>
 
 
     <string name="train_init_guide">사용할 운동 기기에 부착된\nQR코드를 찍어주세요</string>
@@ -48,7 +50,9 @@
 
     <string name="training_count">%1$d/%2$d회</string>
     <string name="train_done_result">%1$s\t\t%2$d세트\t\t%3$d회</string>
-    <string name="train_done_percent">%d%</string>
+    <string name="train_done_percent">%s %</string>
+    <string name="record_detail_title">%1$d월 %2$d일 나의 운동</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="stringMyPageTitle">마이 페이지</string>

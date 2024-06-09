@@ -38,7 +38,7 @@ jobs:
       run: echo "${{ secrets.NETWORK_SECURITY_CONFIG }}" | base64 --decode > ./app/src/main/res/xml/network_security_config.xml
       
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --stacktrace --info
 
     - name: Run unit tests
       run: ./gradlew test

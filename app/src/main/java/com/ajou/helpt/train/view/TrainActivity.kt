@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ajou.helpt.databinding.ActivityTrainBinding
 import com.ajou.helpt.home.view.HomeActivity
-import com.ajou.helpt.mypage.MyPageActivity
+import com.ajou.helpt.mypage.view.MyPageActivity
 
 class TrainActivity : AppCompatActivity() {
 

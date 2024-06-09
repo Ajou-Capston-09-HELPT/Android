@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mypage.MyPageFragment">
+    tools:context=".mypage.view.MyPageFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,27 +65,53 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewMyPageTitle" />
 
+        <TextView
+            android:id="@+id/withdrawal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="탈퇴하기"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginEnd="14dp"
+            android:paddingBottom="12dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/logout"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewMyPageProfile" />
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="로그아웃"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:paddingBottom="12dp"
+            android:layout_marginTop="10dp"
+            android:paddingEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewMyPageProfile" />
+
         <ImageView
             android:id="@+id/imageViewMyPageProfileEllipse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:src="@drawable/ellipse_profile"
+            app:layout_constraintBottom_toBottomOf="@id/imageViewMyPageProfile"
             app:layout_constraintStart_toStartOf="@id/imageViewMyPageProfile"
-            app:layout_constraintTop_toTopOf="@id/imageViewMyPageProfile"
-            app:layout_constraintBottom_toBottomOf="@id/imageViewMyPageProfile" />
+            app:layout_constraintTop_toTopOf="@id/imageViewMyPageProfile" />
 
         <ImageView
             android:id="@+id/imageViewMyPageProfileUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/user_light"
-            app:layout_constraintStart_toStartOf="@id/imageViewMyPageProfileEllipse"
-            app:layout_constraintTop_toTopOf="@id/imageViewMyPageProfileEllipse"
             app:layout_constraintBottom_toBottomOf="@id/imageViewMyPageProfileEllipse"
-            app:layout_constraintEnd_toEndOf="@id/imageViewMyPageProfileEllipse" />
+            app:layout_constraintEnd_toEndOf="@id/imageViewMyPageProfileEllipse"
+            app:layout_constraintStart_toStartOf="@id/imageViewMyPageProfileEllipse"
+            app:layout_constraintTop_toTopOf="@id/imageViewMyPageProfileEllipse" />
 
         <TextView
             android:id="@+id/textViewMyPageProfileName"
@@ -102,59 +129,101 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="32dp"
-            android:src="@drawable/rectangle_profile_bg"
+            android:background="@drawable/rectangle_profile_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewMyPageName2" />
 
-        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-            android:id="@+id/calendarViewMyPage"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginEnd="48dp"
-            app:mcv_selectionColor="#3BB9B6"
-            app:mcv_showOtherDates="all"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/imageViewMyPageProfileCalendarBackground" />
-
-        <TextView
-            android:id="@+id/textViewMyPageProfileCalendarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="24dp"
-            android:text="@string/stringMyPageProfileCalendarTitle"
-            android:textAppearance="@style/styleMyPageProfileCalendarTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendarViewMyPage" />
-
-        <TextView
-            android:id="@+id/textViewMyPageProfileCalendarTitle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="4dp"
-            android:text="@string/stringMyPageProfileCalendarTitle2"
-            android:textAppearance="@style/styleMyPageProfileCalendarTitle"
-            app:layout_constraintStart_toEndOf="@id/textViewMyPageProfileCalendarTitle"
-            app:layout_constraintTop_toBottomOf="@id/calendarViewMyPage" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMyPageRecord"
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingTop="12dp"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewMyPageProfileCalendarTitle"/>
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewMyPageProfileCalendarBackground"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewMyPageProfileCalendarBackground"
+            app:layout_constraintStart_toStartOf="@+id/imageViewMyPageProfileCalendarBackground"
+            app:layout_constraintTop_toTopOf="@+id/imageViewMyPageProfileCalendarBackground">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/calendarViewMyPage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginEnd="48dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:mcv_selectionColor="#3BB9B6"
+                    app:mcv_showOtherDates="all" />
+
+                <TextView
+                    android:id="@+id/textViewMyPageProfileCalendarTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/stringMyPageProfileCalendarTitle"
+                    android:textAppearance="@style/styleMyPageProfileCalendarTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/calendarViewMyPage" />
+
+                <TextView
+                    android:id="@+id/textViewMyPageProfileCalendarTitle2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/stringMyPageProfileCalendarTitle2"
+                    android:textAppearance="@style/styleMyPageProfileCalendarTitle"
+                    app:layout_constraintStart_toEndOf="@id/textViewMyPageProfileCalendarTitle"
+                    app:layout_constraintTop_toBottomOf="@id/calendarViewMyPage" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewMyPageRecord"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="24dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewMyPageProfileCalendarTitle" />
+
+                <ImageView
+                    android:id="@+id/noRecordBg"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle_record_bg"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewMyPageProfileCalendarTitle" />
+                <TextView
+                    android:id="@+id/noRecordText"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="이날은 운동기록이 없어요...😥"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintTop_toTopOf="@id/noRecordBg"
+                    app:layout_constraintBottom_toBottomOf="@id/noRecordBg"
+                    app:layout_constraintStart_toStartOf="@id/noRecordBg"
+                    app:layout_constraintEnd_toEndOf="@id/noRecordBg"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

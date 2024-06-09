@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.auth.view.UserInfoViewModel
 import com.ajou.helpt.databinding.FragmentSetPhysicInfoBinding
@@ -20,6 +21,7 @@ import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.auth.Member
+import com.ajou.helpt.getMultipartFile
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
@@ -60,6 +62,10 @@ class SetPhysicInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         var weight: Int = 0
         var height: Int = 0
+
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
         binding.height.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -116,14 +122,14 @@ class SetPhysicInfoFragment : Fragment() {
         }
 
         binding.nextBtn.setOnClickListener {
-            // TODO 추후에 서버에 내용 전송하는 부분 넣기
             callLoginApi(weight, height)
         }
     }
 
     private fun callLoginApi(weight: Int, height: Int) {
-        Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId")
-        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!)
+        Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId birth ${viewModel.birth.value.toString()}")
+        val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!,viewModel.img.value!!,viewModel.birth.value.toString())
+        binding.loadingBar.show()
         CoroutineScope(Dispatchers.IO).launch{
             val loginDeferred = async {memberService.register(memberInfo) }
             val loginResponse = loginDeferred.await()
@@ -132,6 +138,7 @@ class SetPhysicInfoFragment : Fragment() {
                 dataStore.saveAccessToken("Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString())
                 dataStore.saveRefreshToken("Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString())
                 withContext(Dispatchers.Main){
+                    binding.loadingBar.hide()
                     val intent = Intent(mContext, HomeActivity::class.java)
                     startActivity(intent)
                 }

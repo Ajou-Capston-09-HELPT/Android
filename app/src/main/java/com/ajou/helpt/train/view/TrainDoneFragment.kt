@@ -2,7 +2,6 @@ package com.ajou.helpt.train.view
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Paint
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -15,8 +14,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentTrainDoneBinding
 import com.ajou.helpt.home.view.HomeActivity
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.model.ExercisePosting
+import com.ajou.helpt.network.api.RecordService
+import com.ajou.helpt.train.TrainInfoViewModel
+import kotlinx.coroutines.*
+import java.time.LocalDate
 
 class TrainDoneFragment : Fragment() {
     private var _binding: FragmentTrainDoneBinding? = null
@@ -24,6 +30,10 @@ class TrainDoneFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var callback: OnBackPressedCallback
     private lateinit var viewModel: TrainInfoViewModel
+    private val dataStore = UserDataStore()
+    private var accessToken: String? = null
+    private var comment: String? = null
+    private val recordService = RetrofitInstance.getInstance().create(RecordService::class.java)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,6 +57,41 @@ class TrainDoneFragment : Fragment() {
         // Inflate the layout for this fragment
         viewModel = ViewModelProvider(requireActivity())[TrainInfoViewModel::class.java]
         _binding = FragmentTrainDoneBinding.inflate(layoutInflater, container, false)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            accessToken = dataStore.getAccessToken()
+            val today = LocalDate.now()
+
+            if (viewModel.rate.value!! < 50) {
+                comment = "자세 정확도가 낮습니다. 자세 정확도에 유의해주세요"
+            } else if(viewModel.rate.value!! > 85) {
+                comment = "올바른 자세로 운동을 잘해내고 있습니다!"
+            } else if(viewModel.direction.value == 'l'){
+                comment = "자세가 왼쪽으로 치우쳐진 경향이 있습니다."
+            } else if (viewModel.direction.value == 'r'){
+                comment = "자세가 오른쪽으로 치우쳐진 경향이 있습니다."
+            } else{
+                comment = "한쪽으로 치우치지 않고 잘하고 있습니다."
+            }
+
+            val data = ExercisePosting(
+                viewModel.train.value!!.gymEquipmentId,
+                viewModel.doneCount.value!!,
+                viewModel.doneSet.value!!,
+                viewModel.train.value!!.customWeight,
+                viewModel.time.value!!,
+                viewModel.rate.value!!,
+                comment!!, null
+            )
+            val postRecordDeferred = async { recordService.postRecord(accessToken!!,data) }
+            val postRecordResponse = postRecordDeferred.await()
+
+            if (postRecordResponse.isSuccessful) {
+                Log.d("postRecordResponse","success")
+            } else {
+                Log.d("postRecordResponse fail",postRecordResponse.errorBody()?.string().toString())
+            }
+        }
         return binding.root
     }
 
@@ -64,17 +109,26 @@ class TrainDoneFragment : Fragment() {
             val intent = Intent(mContext, HomeActivity::class.java)
             startActivity(intent)
         }
-        binding.name.text = mContext?.resources?.getString(R.string.train_band_bent_over_row_name)
+        binding.name.text = viewModel.train.value!!.equipmentName
+//        binding.engName.text = "one arm dumbbell lateral raise"
         binding.engName.text =
-            mContext?.resources?.getString(R.string.train_band_bent_over_row_eng_name)
-        binding.result.text = mContext?.resources?.getString(R.string.train_done_result, viewModel.time.value, viewModel.doneSet.value, viewModel.doneCount.value)
-//        binding.rate.text = mContext?.resources?.getString(R.string.train_done_percent,) // rate를 pi 서버에서 받아서 추가하기
-        
+            viewModel.train.value!!.equipmentNameEng
+        binding.result.text = mContext?.resources?.getString(
+            R.string.train_done_result,
+            viewModel.time.value,
+            viewModel.doneSet.value,
+            viewModel.doneCount.value
+        )
+        val stringRate = "${viewModel.rate.value}%"
+        binding.rate.text = stringRate
+
+
     }
 
     override fun onDetach() {
         super.onDetach()
         callback.remove()
     }
+
 
 }

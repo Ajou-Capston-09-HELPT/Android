@@ -1,8 +1,6 @@
 package com.ajou.helpt.train.view
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,12 +11,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
-import com.ajou.helpt.auth.view.dialog.LogOutDialog
-import com.ajou.helpt.auth.view.dialog.SelectBirthDialog
 import com.ajou.helpt.databinding.FragmentReadyTrainBinding
 import com.ajou.helpt.home.model.GymEquipment
-import java.text.SimpleDateFormat
-import java.util.*
+import com.ajou.helpt.train.TrainInfoViewModel
+import com.bumptech.glide.Glide
 
 class ReadyTrainFragment : Fragment() {
     private var _binding: FragmentReadyTrainBinding? = null
@@ -56,7 +52,7 @@ class ReadyTrainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d("customSetting",viewModel.train.value.toString())
         var setting = listOf<Int>(
             viewModel.train.value!!.customSet,
             viewModel.train.value!!.customWeight,
@@ -69,9 +65,13 @@ class ReadyTrainFragment : Fragment() {
             String.format(resources.getString(R.string.train_setting_count), setting[2])
         binding.weight.text =
             String.format(resources.getString(R.string.train_setting_weight), setting[1])
-        binding.name.text = mContext?.resources?.getString(R.string.train_band_bent_over_row_name)
+        binding.name.text = viewModel.train.value!!.equipmentName
+//        binding.engName.text = "one arm dumbbell lateral raise"
         binding.engName.text =
-            mContext?.resources?.getString(R.string.train_band_bent_over_row_eng_name)
+            viewModel.train.value!!.equipmentNameEng
+        Glide.with(mContext!!)
+            .load(viewModel.guide.value!!.topImage)
+            .into(binding.image)
         binding.trainSetting.setOnClickListener {
             dialog = TrainSettingDialog(setting) { value ->
                 setting = value
@@ -87,10 +87,12 @@ class ReadyTrainFragment : Fragment() {
                     resources.getString(R.string.train_setting_count),
                     value[2]
                 )
+                Log.d("data check", "${viewModel.train.value} $value")
                 viewModel.setTrain(
                     GymEquipment(
                         viewModel.train.value!!.gymEquipmentId,
                         viewModel.train.value!!.equipmentName,
+                        "one arm dumbbell lateral raise",
                         value[2],
                         value[0],
                         value[1]
