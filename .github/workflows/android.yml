@@ -32,7 +32,7 @@ jobs:
       run: echo "${{ secrets.API_KEY }}" | tr -d '\r' > ./app/apikey.properties
 
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --stacktrace --info
 
     - name: Run unit tests
       run: ./gradlew test
