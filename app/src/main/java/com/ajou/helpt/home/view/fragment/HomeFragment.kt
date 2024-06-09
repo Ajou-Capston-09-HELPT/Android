@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -142,6 +143,13 @@ class HomeFragment : Fragment() {
             val chatLinkResponse = chatLinkDeferred.await()
             if (chatLinkResponse.isSuccessful) {
                 val url = JSONObject(chatLinkResponse.body()?.string()).getJSONObject("data").getString("chatLink").toString()
+                if(url == "null"){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(mContext, "채팅 링크가 등록되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+                        return@withContext
+                    }
+                    return@launch
+                }
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }else{
