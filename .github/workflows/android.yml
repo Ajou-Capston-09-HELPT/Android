@@ -29,7 +29,10 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Create apikey.properties
-      run: echo "${{ secrets.API_KEY }}" | tr -d '\r' > ./app/apikey.properties
+      run: echo "${{ secrets.API_KEY }}" | tr -d '\r' > ./apikey.properties
+
+    - name: Create google-services.json
+      run: echo "${{ secrets.GOOGLE_SERVICES}}" | tr -d '\r' > ./app/google-services.json
 
     - name: Build with Gradle
       run: ./gradlew build
