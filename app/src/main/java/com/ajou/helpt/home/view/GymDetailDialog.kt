@@ -35,6 +35,7 @@ class GymDetailDialog : DialogFragment() {
     private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
     private val productService = RetrofitInstance.getInstance().create(ProductService::class.java)
     private var gymDetailInfo : Gym? = null
+    private lateinit var qrDialog : QRCreateDialogFragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -94,9 +95,19 @@ class GymDetailDialog : DialogFragment() {
         }
 
         binding.enterBtn.setOnClickListener {
+            qrDialog = QRCreateDialogFragment()
+            qrDialog.show(requireActivity().supportFragmentManager, "QRCreateDialog")
             dialog?.dismiss()
-            val qrDialog = QRCreateDialogFragment()
-            qrDialog.show(childFragmentManager, "QRCreateDialog")
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dialog?.dismiss()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+//        dialog?.dismiss()
+//        if (::qrDialog.isInitialized) qrDialog.dismiss()
     }
 }

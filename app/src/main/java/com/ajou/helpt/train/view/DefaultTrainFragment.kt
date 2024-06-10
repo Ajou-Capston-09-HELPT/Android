@@ -1,12 +1,20 @@
 package com.ajou.helpt.train.view
 
+import android.Manifest
+import android.app.DownloadManager
 import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +33,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DefaultTrainFragment : Fragment() {
     private var _binding: FragmentDefaultTrainBinding? = null
@@ -65,12 +75,9 @@ class DefaultTrainFragment : Fragment() {
         binding.qrCode.setOnClickListener {
             qrScan()
         }
-        binding.backBtn.setOnClickListener {
-//            downloadImgFromUrl("https://www.google.com/imgres?q=%ED%83%9C%EC%97%B0&imgurl=https%3A%2F%2Fcdn.slist.kr%2Fnews%2Fphoto%2F202107%2F265403_441389_657.jpg&imgrefurl=https%3A%2F%2Fwww.slist.kr%2Fnews%2FarticleView.html%3Fidxno%3D265403&docid=yQahqf2S7Ph4xM&tbnid=u0QAykxZ6lEchM&vet=12ahUKEwjP8t3r3byGAxV2ZPUHHRIxDXYQM3oECGMQAA..i&w=600&h=400&hcb=2&ved=2ahUKEwjP8t3r3byGAxV2ZPUHHRIxDXYQM3oECGMQAA")
-        }
 
-        viewModel.train.observe(viewLifecycleOwner, Observer {
-            if (viewModel.train.value != null) {
+        viewModel.guide.observe(viewLifecycleOwner, Observer {
+            if (viewModel.train.value != null && viewModel.guide.value != null) {
                 findNavController().navigate(R.id.action_defaultTrainFragment_to_readyTrainFragment)
             }
         })
@@ -118,45 +125,4 @@ class DefaultTrainFragment : Fragment() {
         }
     }
 
-//    private fun downloadImgFromUrl(url: String) {
-//        Log.d("checkPermission","")
-//        if (checkPermission()) {
-//            val fileName =
-//                "/${getString(R.string.app_name)}/${SimpleDateFormat("yyyyMMddHHmmss").format(Date())}.jpg" // 이미지 파일 명
-//
-//
-//            val req = DownloadManager.Request(Uri.parse(url))
-//
-//            req.setTitle(fileName) // 제목
-//                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED) // 알림 설정
-//                .setMimeType("image/*")
-//                .setDestinationInExternalPublicDir(
-//                    Environment.DIRECTORY_PICTURES,
-//                    fileName
-//                )
-//
-//            val manager = mContext!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//
-//            manager.enqueue(req)
-//        } else requestPermission()
-//    }
-//
-//    private fun checkPermission() =
-//        (ContextCompat.checkSelfPermission(mContext!!, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                == PackageManager.PERMISSION_GRANTED)
-//                &&
-//                (ContextCompat.checkSelfPermission(mContext!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        == PackageManager.PERMISSION_GRANTED)
-//
-//    private fun requestPermission() {
-//        Log.d("requestPermission","")
-//        ActivityCompat.requestPermissions(
-//            requireActivity(),
-//            arrayOf(
-//                Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE
-//            ),
-//            0
-//        )
-//    }
 }

@@ -10,7 +10,9 @@ import androidx.lifecycle.Observer
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.ActivityHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
+import com.ajou.helpt.home.view.fragment.NoticeFragment
 import com.ajou.helpt.mypage.view.MyPageActivity
+import com.ajou.helpt.setOnSingleClickListener
 import com.ajou.helpt.train.view.TrainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,22 +27,50 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        var hasTicket = false
 
-        binding.train.setOnClickListener {
-            if (viewModel.hasTicket.value == true){
+        CoroutineScope(Dispatchers.IO).launch {
+            hasTicket = dataStore.getHasTicket()
+        }
+        val extra = intent.getStringExtra("Notification")
+        if (extra != null && extra == "notice") {
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainerView.id, NoticeFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+        binding.train.setOnSingleClickListener {
+            if (hasTicket) {
                 val intent = Intent(this, TrainActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "회원권을 먼저 등록해주세요",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "회원권을 먼저 등록해주세요", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.trainTxt.setOnSingleClickListener {
+            if (hasTicket) {
+                val intent = Intent(this, TrainActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "회원권을 먼저 등록해주세요", Toast.LENGTH_SHORT).show()
             }
         }
 
-        binding.home.setOnClickListener {
+        binding.home.setOnSingleClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+        binding.homeTxt.setOnSingleClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
 
-        binding.my.setOnClickListener {
+        binding.my.setOnSingleClickListener {
+            val intent = Intent(this, MyPageActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.myTxt.setOnSingleClickListener {
             val intent = Intent(this, MyPageActivity::class.java)
             startActivity(intent)
         }

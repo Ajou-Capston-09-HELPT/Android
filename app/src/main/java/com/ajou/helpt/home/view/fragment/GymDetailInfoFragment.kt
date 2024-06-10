@@ -45,8 +45,7 @@ class GymDetailInfoFragment : Fragment() {
     private val paymentService = RetrofitInstance.getInstance().create(PaymentService::class.java)
     private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
     private var accessToken: String? = null
-    private var productId : Int? = null
-    private var link : String? = null
+    private var productId: Int? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -60,12 +59,15 @@ class GymDetailInfoFragment : Fragment() {
             args.item.gymRegisteredInfo.address.longitude,
             args.item.gymRegisteredInfo.address.latitude
         )
+
         CoroutineScope(Dispatchers.IO).launch {
             accessToken = dataStore.getAccessToken().toString()
-            val linkDeferred = async { gymService.getGymChatLink(accessToken!!, args.item.gymRegisteredInfo.gymId) }
-            val linkResponse = linkDeferred.await()
-            if (linkResponse.isSuccessful) {
-                link = JSONObject(linkResponse.body()?.string()).getJSONObject("data").getString("chatLink")
+            val hasTicket = dataStore.getHasTicket()
+            if (!hasTicket) {
+                withContext(Dispatchers.Main) {
+                    binding.linkBtn.visibility = View.VISIBLE
+                    binding.registBtn.visibility = View.VISIBLE
+                }
             }
         }
 

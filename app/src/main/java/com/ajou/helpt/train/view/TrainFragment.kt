@@ -15,16 +15,27 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.BuildConfig
 import com.ajou.helpt.R
+import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.FragmentTrainBinding
+import com.ajou.helpt.network.PiRetrofitInstance
+import com.ajou.helpt.network.RetrofitInstance
+import com.ajou.helpt.network.api.PiService
+import com.ajou.helpt.network.api.RecordService
+import com.ajou.helpt.network.model.ExercisePosting
 import com.ajou.helpt.train.TrainInfoViewModel
 import com.ajou.helpt.train.adapter.TrainingViewPagerAdapter
 import kotlinx.coroutines.*
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.io.OutputStream
 import java.net.Socket
 import java.net.SocketException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TrainFragment : Fragment() {
@@ -47,11 +58,18 @@ class TrainFragment : Fragment() {
     private var runnable: Runnable? = null
     private val socketList = mutableListOf<Int>()
     private var utterState = 0
-    private var takePhoto = false
     private var endRate: Int? = 0
     private var endDirection: Char? = null
     private var sendThread : Thread? = null
     private var receiveThread : Thread? = null
+    private var exerciseId : Int? = -1
+    private var comment: String? = null
+    private var standByList = mutableListOf<Int>()
+    private val dataStore = UserDataStore()
+    private val recordService = RetrofitInstance.getInstance().create(RecordService::class.java)
+
+    private val piService = PiRetrofitInstance.getInstance().create(PiService::class.java)
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -102,14 +120,33 @@ class TrainFragment : Fragment() {
                     .filter { v -> v.name.equals("ko-KR-SMTl05") }
                     .findFirst()
                     .orElse(null)
+
                 tts.voice = voice
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e("TTS", "해당 언어는 지원되지 않습니다.")
                     return@OnInitListener
                 } else {
-                    val contents =
-                        "원 암 덤벨 레터럴 레이즈 운동을 시작하겠습니다. 한 손에 덤벨을 들고 어깨너비로 서주세요. 그런 다음, 가슴을 열고 허리를 세워 주세요."
-//                    val contents = "밴드벤트 운동을 시작하겠습니다. 먼저, 발의 위치를 확인하겠습니다. 두 발을 어깨너비로 두세요"
+                    var contents = ""
+                    when (viewModel.train.value!!.equipmentName) {
+                        "밴드 벤트 오버 로우" -> {
+                            exerciseId = 0
+                            contents = "밴드벤트 운동을 시작하겠습니다. 먼저, 발의 위치를 확인하겠습니다. 두 발을 어깨너비로 두세요"
+//                            utterTTS(contents)
+                            // TODO utterTTS(contents)를 when 밖으로 빼도 정상작동하는지 확인해보기
+                        }
+                        "덤벨 프론트 레이즈" -> {
+                            exerciseId = 1
+                            contents =
+                                "덤벨 프론트 레이즈 운동을 시작하겠습니다. 양손에 덤벨을 들고 어깨너비로 서주세요. 그런 다음, 가슴을 열고 허리를 세워 주세요."
+//                            utterTTS(contents)
+                        }
+                        "원 암 덤벨 레터럴 레이즈" -> {
+                            exerciseId = 2
+                            contents =
+                                "원 암 덤벨 레터럴 레이즈 운동을 시작하겠습니다. 한 손에 덤벨을 들고 어깨너비로 서주세요. 그런 다음, 가슴을 열고 허리를 세워 주세요."
+//                            utterTTS(contents)
+                        }
+                    }
                     utterTTS(contents)
                 }
                 tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
@@ -124,13 +161,13 @@ class TrainFragment : Fragment() {
                         if (pendingText != null) {
                             speakText(pendingText!!)
                             pendingText = null
-
                         }
                     }
 
                     override fun onError(p0: String?) {
                         isSpeaking = false
                         pendingText = null
+                        utterState = 1
                         shutDownTTS()
                     }
                 })
@@ -206,22 +243,78 @@ class TrainFragment : Fragment() {
 
         binding.doneBtn.setOnClickListener {
             pauseTime = SystemClock.elapsedRealtime() - binding.chronometer.base
+            val recordTime = getFormattedElapsedTime(pauseTime)
             binding.chronometer.stop()
             handler.removeCallbacks(runnable!!)
             sendThread!!.interrupt()
             receiveThread!!.interrupt()
-            val recordTime = getFormattedElapsedTime(pauseTime)
-            viewModel.setTime(recordTime.toString())
-            viewModel.setDoneCount(curCount)
-            viewModel.setDoneSet(curSet)
-            if (curSet == customSet && curCount == customCount) {
-                viewModel.setRate(endRate!!)
-                viewModel.setDirection(endDirection!!)
-            } else {
-                viewModel.setRate(0)
-                viewModel.setDirection('b')
+            CoroutineScope(Dispatchers.IO).launch {
+                val accessToken = dataStore.getAccessToken()
+                val imgDeferred = async { piService.getImg() }
+                val imgResponse = imgDeferred.await()
+                if (imgResponse.isSuccessful) {
+                    val imgBody = imgResponse.body()
+                    val imgByte = imgBody?.byteStream()
+                    val imgBitmap = BitmapFactory.decodeStream(imgByte)
+                    if (viewModel.rate.value!! < 50) {
+                        comment = "자세 정확도가 낮습니다. 자세 정확도에 유의해주세요"
+                    } else if(viewModel.rate.value!! > 85) {
+                        comment = "올바른 자세로 운동을 잘해내고 있습니다!"
+                    } else if(viewModel.direction.value == 'l'){
+                        comment = "자세가 왼쪽으로 치우쳐진 경향이 있습니다."
+                    } else if (viewModel.direction.value == 'r'){
+                        comment = "자세가 오른쪽으로 치우쳐진 경향이 있습니다."
+                    } else{
+                        comment = "한쪽으로 치우치지 않고 잘하고 있습니다."
+                    }
+
+                    val data = ExercisePosting(
+                        viewModel.train.value!!.gymEquipmentId,
+                        curCount,
+                        curSet,
+                        viewModel.train.value!!.customWeight,
+                        recordTime,
+                        endRate!!,
+                        comment!!, null
+                    )
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    imgBitmap.compress(Bitmap.CompressFormat.PNG, 20, byteArrayOutputStream)
+                    val requestBody: RequestBody = RequestBody.create(
+                        "image/*".toMediaTypeOrNull(),
+                        byteArrayOutputStream.toByteArray()
+                    )
+                    val fileName =
+                        "${getString(R.string.app_name)}_${SimpleDateFormat("MMddHHmm").format(Date())}.png"
+                    val img: MultipartBody.Part =
+                        MultipartBody.Part.createFormData("snapshotFile", fileName, requestBody)
+
+                    val postRecordDeferred = async { recordService.postRecord(accessToken!!,data, img) }
+                    val postRecordResponse = postRecordDeferred.await()
+                    val message = Message.obtain()
+                    message.obj = "socketclose"
+                    sendHandler.sendMessage(message)
+                    if (postRecordResponse.isSuccessful) {
+
+                        withContext(Dispatchers.Main) {
+                            viewModel.setTime(recordTime)
+                            viewModel.setDoneCount(curCount)
+                            viewModel.setDoneSet(curSet)
+                            if (curSet == customSet && curCount == customCount) {
+                                viewModel.setRate(endRate!!)
+                                viewModel.setDirection(endDirection!!)
+                            } else {
+                                viewModel.setRate(0)
+                                viewModel.setDirection('b')
+                            }
+                            findNavController().navigate(R.id.action_trainFragment_to_trainDoneFragment)
+                        }
+                    } else {
+                        Log.d("postRecordResponse fail",postRecordResponse.errorBody()?.string().toString())
+                    }
+                } else {
+                    Log.d("imgResponse fail", imgResponse.errorBody()?.string().toString())
+                }
             }
-            findNavController().navigate(R.id.action_trainFragment_to_trainDoneFragment)
         }
 
         binding.backBtn.setOnClickListener {
@@ -240,20 +333,9 @@ class TrainFragment : Fragment() {
                 Log.d("socket", socket.toString())
                 while (true) {
                     while (socket?.getInputStream()?.available()!! < 0);
-                    val buffer = ByteArray(1024 * 1024)
+                    val buffer = ByteArray(5)
                     socket?.getInputStream()!!.read(buffer)
 
-                    // 데이터 읽기
-//                    val buffer = ByteArray(1024 * 1024) // 1 MB buffer
-//                    var totalBytesRead = 0
-//                    var bytesRead: Int
-//
-//                    while (inputStream.read(buffer, totalBytesRead, buffer.size - totalBytesRead).also { bytesRead = it } != -1) {
-//                        totalBytesRead += bytesRead
-//                        if (totalBytesRead >= buffer.size) {
-//                            break
-//                        }
-//                    }
                     when (buffer[0].toInt()) {
                         0 -> break
                         97 -> {
@@ -286,7 +368,6 @@ class TrainFragment : Fragment() {
                                         val message = Message.obtain()
                                         message.obj = "handcheckstart"
                                         sendHandler.sendMessage(message)
-//                                        delay(5000)
                                         Log.d("sendMessage", "98")
                                     }
                                 }
@@ -300,7 +381,6 @@ class TrainFragment : Fragment() {
                                 withContext(Dispatchers.IO) {
                                     if (!socketList.contains(99)) {
                                         socketList.add(99)
-//                                        delay(5000)
                                         while (utterState == 0);
                                         utterTTS(contents)
                                         delay(500)
@@ -308,8 +388,6 @@ class TrainFragment : Fragment() {
                                         val message = Message.obtain()
                                         message.obj = "runstart"
                                         sendHandler.sendMessage(message)
-                                        Log.d("sendMessage", "99")
-//                                        delay(5000)
                                         handler.postDelayed(runnable!!, 500)
                                     }
                                 }
@@ -320,19 +398,23 @@ class TrainFragment : Fragment() {
                             Log.d("socket buffer", string)
                             endDirection = string[1]
                             viewModel.setDirection(endDirection!!)
-                            val message = Message.obtain()
                             endRate = string.substring(2..3).toString().toInt()
                             viewModel.setRate(endRate!!)
                             viewModel.setDoneCount(curCount)
                             viewModel.setDoneSet(curSet)
-                            Log.d("socket buffer test", "$endRate")
-                            message.obj = "socketclose"
-                            sendHandler.sendMessage(message)
-                            socket?.close()
+
                             Log.d("socket res", "close")
                         }
                         101 -> Log.d("socket res", "notfound 101")
-                        102 -> Log.d("socket res", "standby 102")
+                        102 -> {
+                            standByList.add(1)
+                            if (standByList.size == 12) {
+                                standByList = mutableListOf()
+                                val contents = "자세를 확인해주세요"
+                                utterTTS(contents)
+                            }
+                            Log.d("socket res", "standby 102")
+                        }
                         103 -> {
                             val job = CoroutineScope(Dispatchers.IO).launch {
                                 val contents =
@@ -362,60 +444,37 @@ class TrainFragment : Fragment() {
                                     socketList.add(108)
                                     while (utterState == 0);
                                     utterTTS(contents)
-//                                        speakText(contents)
-//                                        delay(1000)
                                 }
                             }
                             job.cancel()
                         }
                         110 -> {
                             val job = CoroutineScope(Dispatchers.IO).launch {
-                                if (takePhoto) {
-                                    val random = Random().nextInt(3)
-                                    if (random == 1) {
-                                        val contents = "올바른 자세로 잘하고 계십니다."
+                                val random = Random().nextInt(4)
+                                if (random == 1) {
+                                    val contents = "올바른 자세로 잘하고 계십니다."
 //                                Log.d("socket res", "n")
-                                        if (socketList.contains(103) && !socketList.contains(108) && !socketList.contains(
-                                                110
-                                            ) && !socketList.contains(114)
-                                        ) {
-                                            socketList.add(110)
-                                            while (utterState == 0);
-                                            utterTTS(contents)
-                                        }
+                                    if (socketList.contains(103) && !socketList.contains(108) && !socketList.contains(
+                                            110
+                                        ) && !socketList.contains(114)
+                                    ) {
+                                        socketList.add(110)
+                                        while (utterState == 0);
+                                        utterTTS(contents)
                                     }
                                 }
-//                                else {
-//                                    val img = buffer.copyOfRange(1, buffer.size)
-//                                    Log.d("socket buffer ", img.toString())
-//                                    takePhoto = true
-//                                    if (img != null) {
-//                                        val bmp: Bitmap =
-//                                            BitmapFactory.decodeByteArray(img, 0, img.size)
-//                                        withContext(Dispatchers.Main) {
-//                                            binding.testImg.setImageBitmap(bmp)
-//                                        }
-//
-//                                    } else {
-//                                        Log.d("socket img", "null")
-//                                    }
-//
-//                                }
                             }
                             job.cancel()
                         }
                         114 -> {
                             val job = CoroutineScope(Dispatchers.IO).launch {
                                 val contents = "오른쪽으로 치우쳐 있습니다."
-//                                    delay(1000)
                                 if (!socketList.contains(103) && !socketList.contains(
                                         108
                                     ) && !socketList.contains(110) && !socketList.contains(114)
                                 ) {
                                     socketList.add(114)
                                     utterTTS(contents)
-//                                        speakText(contents)
-//                                        delay(1000)
                                 }
                             }
                             job.cancel()
@@ -433,7 +492,6 @@ class TrainFragment : Fragment() {
         }
     }
 
-    //
     inner class SendThread : Thread() {
         private lateinit var dataOutputStream: DataOutputStream
         private lateinit var outputStream: OutputStream
@@ -507,7 +565,6 @@ class TrainFragment : Fragment() {
             pendingText = text
         } else {
             speakText(text)
-
         }
     }
 
@@ -515,11 +572,6 @@ class TrainFragment : Fragment() {
         tts.speak(text, TextToSpeech.QUEUE_ADD, null, "UTTERANCE_ID")
 
     }
-
-//    private fun speakTextAdd(text: String) {
-//        Log.d("socket text","add $text")
-//        tts.speak(text, TextToSpeech.QUEUE_ADD, null, "UTTERANCE_ID")
-//    }
 
     private fun getFormattedElapsedTime(elapsedMillis: Long): String {
         val totalSeconds = elapsedMillis / 1000

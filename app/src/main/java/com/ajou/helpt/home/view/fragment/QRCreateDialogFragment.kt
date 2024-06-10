@@ -56,7 +56,6 @@ class QRCreateDialogFragment : DialogFragment() {
             val qrResponse = qrDeferred.await()
             if(qrResponse.isSuccessful){
                 val qrBody = JSONObject(qrResponse.body()?.string())
-                Log.d("qrResponse success",qrBody.toString())
                 val qrToken = "Bearer " +qrBody.getJSONObject("data").getString("qrToken").toString()
                 val barcodeEncoder = BarcodeEncoder()
                 val bitmap = barcodeEncoder.encodeBitmap(qrToken, BarcodeFormat.QR_CODE, 400, 400)
@@ -73,10 +72,18 @@ class QRCreateDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         binding.exitBtn.setOnClickListener {
             dismiss()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dialog?.dismiss()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dialog?.dismiss()
     }
 }

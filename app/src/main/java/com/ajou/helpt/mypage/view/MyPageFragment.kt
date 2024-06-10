@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,6 +78,7 @@ class MyPageFragment : Fragment() {
             setupView(binding.root)
             setupRecyclerView(binding.root)
             clickCalendarDate(binding.root)
+            getAttendance()
         }
         clickProfileEditButton(binding.root)
         return binding.root
@@ -95,6 +97,12 @@ class MyPageFragment : Fragment() {
             quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             quitDialog.show()
         }
+
+        viewModel.selectedItem.observe(viewLifecycleOwner, Observer {
+            if (viewModel.selectedItem.value != null) {
+                findNavController().navigate(R.id.action_myPageFragment_to_recordDetailFragment)
+            }
+        })
     }
     private fun setupView(view: View) {
         binding.textViewMyPageName2.text = userName
@@ -123,7 +131,6 @@ class MyPageFragment : Fragment() {
                 date.month,
                 date.day
             )
-            Log.d("FormattedDate", "Formatted date string: $resourceFormattedDate")
             binding.textViewMyPageProfileCalendarTitle.text = resourceFormattedDate
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -200,6 +207,19 @@ class MyPageFragment : Fragment() {
         val hours = (durationMillis / (1000 * 60 * 60)) % 24
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    private fun getAttendance(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val attendanceDeferred = async { memberService.getMyAttendance(accessToken) }
+            val attendanceResponse = attendanceDeferred.await()
+            if (attendanceResponse.isSuccessful) {
+                val body = JSONObject(attendanceResponse.body()?.string()).getString("data").toString()
+                Log.d("attendanceResponse success","$body")
+            }else{
+                Log.d("attendanceResponse fail",attendanceResponse.errorBody()?.string().toString())
+            }
+        }
     }
 
     inner class DataSelection {

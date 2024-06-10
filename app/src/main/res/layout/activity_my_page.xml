@@ -41,13 +41,14 @@
 
     <TextView
         android:id="@+id/trainTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="운동"
-        android:textColor="#C9C9C9"
+        android:textColor="@color/gray_off"
         android:textSize="14sp"
         android:textStyle="bold"
         android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/train"
         app:layout_constraintStart_toStartOf="@+id/train" />
@@ -65,13 +66,14 @@
 
     <TextView
         android:id="@+id/homeTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="홈"
         android:textStyle="bold"
-        android:textColor="#C9C9C9"
+        android:textColor="@color/gray_off"
         android:textSize="14sp"
         android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/home"
         app:layout_constraintStart_toStartOf="@+id/home"
@@ -90,13 +92,14 @@
 
     <TextView
         android:id="@+id/myTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="마이"
         android:textColor="@color/primary"
         android:textSize="14sp"
         android:textStyle="bold"
         android:paddingBottom="4dp"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/my"
         app:layout_constraintStart_toStartOf="@+id/my"

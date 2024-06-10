@@ -32,8 +32,7 @@ class TrainDoneFragment : Fragment() {
     private lateinit var viewModel: TrainInfoViewModel
     private val dataStore = UserDataStore()
     private var accessToken: String? = null
-    private var comment: String? = null
-    private val recordService = RetrofitInstance.getInstance().create(RecordService::class.java)
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -62,35 +61,6 @@ class TrainDoneFragment : Fragment() {
             accessToken = dataStore.getAccessToken()
             val today = LocalDate.now()
 
-            if (viewModel.rate.value!! < 50) {
-                comment = "자세 정확도가 낮습니다. 자세 정확도에 유의해주세요"
-            } else if(viewModel.rate.value!! > 85) {
-                comment = "올바른 자세로 운동을 잘해내고 있습니다!"
-            } else if(viewModel.direction.value == 'l'){
-                comment = "자세가 왼쪽으로 치우쳐진 경향이 있습니다."
-            } else if (viewModel.direction.value == 'r'){
-                comment = "자세가 오른쪽으로 치우쳐진 경향이 있습니다."
-            } else{
-                comment = "한쪽으로 치우치지 않고 잘하고 있습니다."
-            }
-
-            val data = ExercisePosting(
-                viewModel.train.value!!.gymEquipmentId,
-                viewModel.doneCount.value!!,
-                viewModel.doneSet.value!!,
-                viewModel.train.value!!.customWeight,
-                viewModel.time.value!!,
-                viewModel.rate.value!!,
-                comment!!, null
-            )
-            val postRecordDeferred = async { recordService.postRecord(accessToken!!,data) }
-            val postRecordResponse = postRecordDeferred.await()
-
-            if (postRecordResponse.isSuccessful) {
-                Log.d("postRecordResponse","success")
-            } else {
-                Log.d("postRecordResponse fail",postRecordResponse.errorBody()?.string().toString())
-            }
         }
         return binding.root
     }
