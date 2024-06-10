@@ -78,6 +78,7 @@ class MyPageFragment : Fragment() {
             setupView(binding.root)
             setupRecyclerView(binding.root)
             clickCalendarDate(binding.root)
+            getAttendance()
         }
         clickProfileEditButton(binding.root)
         return binding.root
@@ -206,6 +207,19 @@ class MyPageFragment : Fragment() {
         val hours = (durationMillis / (1000 * 60 * 60)) % 24
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+    private fun getAttendance(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val attendanceDeferred = async { memberService.getMyAttendance(accessToken) }
+            val attendanceResponse = attendanceDeferred.await()
+            if (attendanceResponse.isSuccessful) {
+                val body = JSONObject(attendanceResponse.body()?.string()).getString("data").toString()
+                Log.d("attendanceResponse success","$body")
+            }else{
+                Log.d("attendanceResponse fail",attendanceResponse.errorBody()?.string().toString())
+            }
+        }
     }
 
     inner class DataSelection {

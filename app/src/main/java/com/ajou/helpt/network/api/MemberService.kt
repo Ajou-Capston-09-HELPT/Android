@@ -46,4 +46,9 @@ interface MemberService {
         @Body memberInfo : MyInfo
     ): Response<ResponseBody>
 
+    @GET("members/attendance")
+    suspend fun getMyAttendance(
+        @Header("Authorization") accessToken : String
+    ): Response<ResponseBody>
+
 }

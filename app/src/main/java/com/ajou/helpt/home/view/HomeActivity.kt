@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.ActivityHomeBinding
 import com.ajou.helpt.home.HomeInfoViewModel
+import com.ajou.helpt.home.view.fragment.NoticeFragment
 import com.ajou.helpt.mypage.view.MyPageActivity
 import com.ajou.helpt.setOnSingleClickListener
 import com.ajou.helpt.train.view.TrainActivity
@@ -27,8 +28,16 @@ class HomeActivity : AppCompatActivity() {
         _binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         var hasTicket = false
+
         CoroutineScope(Dispatchers.IO).launch {
             hasTicket = dataStore.getHasTicket()
+        }
+        val extra = intent.getStringExtra("Notification")
+        if (extra != null && extra == "notice") {
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainerView.id, NoticeFragment())
+                .addToBackStack(null)
+                .commit()
         }
         binding.train.setOnSingleClickListener {
             if (hasTicket) {

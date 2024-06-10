@@ -78,6 +78,7 @@ class RecordDetailFragment : Fragment() {
         binding.name.text = viewModel.selectedItem.value!!.equipmentName
         binding.result.text = String.format(getString(R.string.train_done_result), item.recordTime, item.setNumber, item.count)
         binding.rate.text = String.format(getString(R.string.train_done_percent), item.successRate)
+
         return binding.root
     }
 
