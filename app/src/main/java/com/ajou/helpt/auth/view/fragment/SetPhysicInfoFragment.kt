@@ -127,7 +127,6 @@ class SetPhysicInfoFragment : Fragment() {
     }
 
     private fun callLoginApi(weight: Int, height: Int) {
-        Log.d("UserData","userName $userName  sex ${viewModel.sex.value}  height $height  weight $weight  kakaoId $kakaoId birth ${viewModel.birth.value.toString()}")
         val memberInfo = Member(null,userName!!,viewModel.sex.value.toString(),height, weight,kakaoId!!,viewModel.img.value!!,viewModel.birth.value.toString())
         binding.loadingBar.show()
         CoroutineScope(Dispatchers.IO).launch{

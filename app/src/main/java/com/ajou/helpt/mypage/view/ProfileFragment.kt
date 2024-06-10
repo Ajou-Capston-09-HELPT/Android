@@ -140,7 +140,6 @@ class ProfileFragment : Fragment() {
                     weight = weight,
                     kakaoId = kakaoId!!
                 )
-                Log.d("ProfileFragment", "Member: $member")
 
                 if (accessToken.isNotEmpty()) {
                     val memberInfoDeferred =
@@ -148,7 +147,6 @@ class ProfileFragment : Fragment() {
                     val memberInfoResponse = memberInfoDeferred.await()
                     if (memberInfoResponse.isSuccessful) {
                         val info = JSONObject(memberInfoResponse.body()!!.string())
-                        Log.d("ProfileFragment", "Member info: ${info}")
                         withContext(Dispatchers.Main){
                             Toast.makeText(requireContext(), "프로필이 변경되었습니다.", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()

@@ -44,7 +44,6 @@ class SplashActivity : AppCompatActivity() {
                     val newTokenResponse = memberService.getNewToken(refreshToken)
                     if (newTokenResponse.isSuccessful) {
                         val tokenBody = JSONObject(newTokenResponse.body()?.string())
-                        Log.d("tokenBody", tokenBody.toString())
 
                         finalAccessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
                         finalRefreshToken = "Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString()
@@ -56,12 +55,10 @@ class SplashActivity : AppCompatActivity() {
             }
             withContext(Dispatchers.Main) {
                 if (finalAccessToken.isNotEmpty() && finalRefreshToken.isNotEmpty() && finalAccessToken != "null" && finalRefreshToken != "null") {
-                    Log.d("Login!", finalAccessToken)
                     val intent = Intent(this@SplashActivity, HomeActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 } else {
-                    Log.d("Login 필요!", "")
                     val intent = Intent(this@SplashActivity, AuthActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)

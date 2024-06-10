@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ajou.helpt.UserDataStore
 import com.ajou.helpt.databinding.ActivityMyPageBinding
 import com.ajou.helpt.home.view.HomeActivity
+import com.ajou.helpt.setOnSingleClickListener
 import com.ajou.helpt.train.view.TrainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,15 @@ class MyPageActivity : AppCompatActivity() {
             hasTicket = dataStore.getHasTicket()
         }
 
-        binding.train.setOnClickListener {
+        binding.train.setOnSingleClickListener {
+            if (hasTicket){
+                val intent = Intent(this, TrainActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "회원권을 먼저 등록해주세요", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.trainTxt.setOnSingleClickListener {
             if (hasTicket){
                 val intent = Intent(this, TrainActivity::class.java)
                 startActivity(intent)
@@ -36,12 +45,21 @@ class MyPageActivity : AppCompatActivity() {
             }
         }
 
-        binding.home.setOnClickListener {
+        binding.home.setOnSingleClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+        binding.homeTxt.setOnSingleClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
 
-        binding.my.setOnClickListener {
+        binding.my.setOnSingleClickListener {
+            val intent = Intent(this, MyPageActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.myTxt.setOnSingleClickListener {
             val intent = Intent(this, MyPageActivity::class.java)
             startActivity(intent)
         }

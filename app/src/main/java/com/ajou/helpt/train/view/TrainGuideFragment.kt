@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.ajou.helpt.R
 import com.ajou.helpt.databinding.FragmentTrainGuideBinding
 import com.ajou.helpt.train.TrainInfoViewModel
@@ -54,5 +55,9 @@ class TrainGuideFragment : Fragment() {
         Glide.with(this)
             .load(item.topImage)
             .into(binding.image)
+
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }

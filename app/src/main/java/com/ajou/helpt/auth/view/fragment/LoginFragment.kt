@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,8 @@ import com.ajou.helpt.databinding.FragmentLoginBinding
 import com.ajou.helpt.home.view.HomeActivity
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -58,10 +61,10 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.nextBtn.setOnClickListener {
             // 카카오톡 설치 확인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(mContext!!)) {
-                Log.d(ContentValues.TAG, "유저가 카카오톡 설치했음")
                 // 카카오톡 로그인
                 UserApiClient.instance.loginWithKakaoTalk(mContext!!) { token, error ->
                     // 로그인 실패 부분
@@ -73,8 +76,6 @@ class LoginFragment : Fragment() {
                         }
                         // 다른 오류
                         else {
-                            Log.d(ContentValues.TAG, "${error.message}")
-                            Log.d(ContentValues.TAG, "유저가 카카오톡으로 로그인하기 실패함")
                             UserApiClient.instance.loginWithKakaoAccount(
                                 mContext!!,
                                 callback = mCallback
@@ -88,7 +89,6 @@ class LoginFragment : Fragment() {
                                 dataStore.saveUserName(user?.kakaoAccount?.profile?.nickname.toString())
                                 dataStore.saveKakaoId(user?.id.toString())
                                 viewModel.setImg(user?.kakaoAccount?.profile?.profileImageUrl.toString())
-                                Log.d("user imageurl",user?.kakaoAccount?.profile?.profileImageUrl.toString())
                                 checkLogin(user?.id.toString())
                             }
                         }
@@ -101,7 +101,6 @@ class LoginFragment : Fragment() {
                     }
                 }
             } else {
-                Log.d(ContentValues.TAG, "유저가 카카오톡 설치안가")
                 UserApiClient.instance.loginWithKakaoAccount(
                     mContext!!,
                     callback = mCallback
@@ -142,8 +141,13 @@ class LoginFragment : Fragment() {
     } // TODO 구체적인 오류 메세지로 변경하기
 
     private fun checkLogin(kakaoId:String){
+        var fcmDeviceToken = ""
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            fcmDeviceToken = task.result
+        })
         val jsonObject = JsonObject().apply {
             addProperty("kakaoId", kakaoId)
+            addProperty("deviceToken", fcmDeviceToken)
         }
         val requestBody = RequestBody.create("application/json".toMediaTypeOrNull(), jsonObject.toString())
         CoroutineScope(Dispatchers.IO).launch {

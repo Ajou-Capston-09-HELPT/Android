@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -23,6 +24,8 @@ import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.GymService
 import com.ajou.helpt.network.api.MemberService
 import com.ajou.helpt.network.api.MemberShipService
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -43,6 +46,7 @@ class HomeFragment : Fragment() {
     private val gymService = RetrofitInstance.getInstance().create(GymService::class.java)
     private lateinit var viewModel: HomeInfoViewModel
     private var name: String? = null
+    private lateinit var dialog : GymDetailDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,6 +58,7 @@ class HomeFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             name = dataStore.getUserName().toString()
             accessToken = dataStore.getAccessToken()
+            val kakaoId = dataStore.getKakaoId()
         }
     }
 
@@ -64,7 +69,6 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[HomeInfoViewModel::class.java]
-
         viewModel.hasTicket.observe(viewLifecycleOwner, Observer {
             if (viewModel.hasTicket.value == false) {
                 binding.greetMsg.text =
@@ -89,7 +93,7 @@ class HomeFragment : Fragment() {
                 var startDate = sf.parse(viewModel.membership.value!!.startDate)
                 var endDate = sf.parse(viewModel.membership.value!!.endDate)
                 var calDate =
-                    "${ceil(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
+                    "${round(((((endDate.time - startDate.time) / (60 * 60 * 24 * 1000))).toDouble() / 30)).toInt()}개월 회원권"
                 val period =
                     "${viewModel.membership.value!!.startDate} ~ ${viewModel.membership.value!!.endDate}"
                 val attendDate = "출석 ${viewModel.membership.value!!.attendanceDate}일"
@@ -127,7 +131,7 @@ class HomeFragment : Fragment() {
             openChatLink()
         }
         binding.ticket.setOnClickListener {
-            val dialog = GymDetailDialog()
+            dialog = GymDetailDialog()
             dialog.show(childFragmentManager, "gymDetailSelection")
         }
 
@@ -136,7 +140,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun openChatLink(){
+    private fun openChatLink() {
         CoroutineScope(Dispatchers.IO).launch {
             val chatLinkDeferred = async { gymService.getGymChatLink(accessToken!!, viewModel.gymRegistered.value!!.gymId) }
             val chatLinkResponse = chatLinkDeferred.await()
@@ -148,5 +152,15 @@ class HomeFragment : Fragment() {
                 Log.d("chatLinkResponse",chatLinkResponse.errorBody()?.string().toString())
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::dialog.isInitialized) dialog.dismiss()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::dialog.isInitialized) dialog.dismiss()
     }
 }

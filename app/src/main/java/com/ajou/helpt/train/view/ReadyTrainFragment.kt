@@ -52,7 +52,7 @@ class ReadyTrainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("customSetting",viewModel.train.value.toString())
+
         var setting = listOf<Int>(
             viewModel.train.value!!.customSet,
             viewModel.train.value!!.customWeight,
@@ -66,7 +66,7 @@ class ReadyTrainFragment : Fragment() {
         binding.weight.text =
             String.format(resources.getString(R.string.train_setting_weight), setting[1])
         binding.name.text = viewModel.train.value!!.equipmentName
-//        binding.engName.text = "one arm dumbbell lateral raise"
+
         binding.engName.text =
             viewModel.train.value!!.equipmentNameEng
         Glide.with(mContext!!)
@@ -87,7 +87,6 @@ class ReadyTrainFragment : Fragment() {
                     resources.getString(R.string.train_setting_count),
                     value[2]
                 )
-                Log.d("data check", "${viewModel.train.value} $value")
                 viewModel.setTrain(
                     GymEquipment(
                         viewModel.train.value!!.gymEquipmentId,
@@ -98,7 +97,6 @@ class ReadyTrainFragment : Fragment() {
                         value[1]
                     )
                 )
-
             }
             dialog.show(requireActivity().supportFragmentManager, "setting")
         }
@@ -112,10 +110,6 @@ class ReadyTrainFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             viewModel.setTrain(null)
             findNavController().popBackStack()
-        }
-
-        binding.name.setOnClickListener {
-            findNavController().navigate(R.id.action_readyTrainFragment_to_trainDoneFragment)
         }
     }
 

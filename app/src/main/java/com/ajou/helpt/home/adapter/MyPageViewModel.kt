@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.ajou.helpt.mypage.model.ExerciseRecord
 
 class MyPageViewModel : ViewModel() {
-    private val _selectedItem = MutableLiveData<ExerciseRecord>()
-    val selectedItem : LiveData<ExerciseRecord>
+    private val _selectedItem = MutableLiveData<ExerciseRecord?>()
+    val selectedItem : LiveData<ExerciseRecord?>
         get() = _selectedItem
 
 
-    fun setSelectedItem(data: ExerciseRecord){
+    fun setSelectedItem(data: ExerciseRecord?) {
         _selectedItem.postValue(data)
     }
 }

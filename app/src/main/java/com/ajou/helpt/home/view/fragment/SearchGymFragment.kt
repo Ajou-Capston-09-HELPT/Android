@@ -95,35 +95,15 @@ class SearchGymFragment : Fragment() {
                 val body = searchResponse.body()?.data
                 withContext(Dispatchers.Main) {
                     if (body?.size != 0) {
-                        Log.d("body size not 0", body.toString())
                         binding.loadingBar.hide()
                         adapter.updateList(body!!)
                     } else {
-                        Log.d("body size is 0", "")
                         binding.loadingBar.hide()
                         adapter.updateList(emptyList())
                     }
                 }
             } else {
                 Log.d("searchResponse fail", searchResponse.errorBody()?.string().toString())
-//                val tokenDeferred = async { memberService.getNewToken(refreshToken!!) }
-//                val tokenResponse = tokenDeferred.await()
-//                if (tokenResponse.isSuccessful) {
-//                    val tokenBody = JSONObject(tokenResponse.body()?.string())
-//                    val newAccessToken = "Bearer " + tokenBody.getJSONObject("data").getString("accessToken").toString()
-//                    val newRefreshToken = "Bearer " + tokenBody.getJSONObject("data").getString("refreshToken").toString()
-//                    dataStore.saveAccessToken(newAccessToken)
-//                    dataStore.saveRefreshToken(newRefreshToken)
-//                    val reSearchDeferred = async { gymService.searchGyms(newAccessToken, keyword) }
-//                    val reSearchResponse = reSearchDeferred.await()
-//                    if (reSearchResponse.isSuccessful) {
-//                    }else{
-//                        Log.d("reeeesearchResponse", reSearchResponse.errorBody()?.string().toString())
-//                    }
-//                } else{
-//                    Log.d("tokenBody fail", tokenResponse.errorBody()?.string().toString())
-//                }
-
             }
         }
 

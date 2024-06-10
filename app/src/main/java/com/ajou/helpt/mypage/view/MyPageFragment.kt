@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -95,6 +96,12 @@ class MyPageFragment : Fragment() {
             quitDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             quitDialog.show()
         }
+
+        viewModel.selectedItem.observe(viewLifecycleOwner, Observer {
+            if (viewModel.selectedItem.value != null) {
+                findNavController().navigate(R.id.action_myPageFragment_to_recordDetailFragment)
+            }
+        })
     }
     private fun setupView(view: View) {
         binding.textViewMyPageName2.text = userName
@@ -123,7 +130,6 @@ class MyPageFragment : Fragment() {
                 date.month,
                 date.day
             )
-            Log.d("FormattedDate", "Formatted date string: $resourceFormattedDate")
             binding.textViewMyPageProfileCalendarTitle.text = resourceFormattedDate
 
             CoroutineScope(Dispatchers.IO).launch {

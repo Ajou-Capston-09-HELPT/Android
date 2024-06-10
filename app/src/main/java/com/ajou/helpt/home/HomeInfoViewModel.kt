@@ -52,22 +52,27 @@ class HomeInfoViewModel : ViewModel() {
     fun setNotice(data: NoticeData) {
         _notice.postValue(data)
     }
+    fun setHasTicket(data: Boolean) {
+        _hasTicket.value = data
+    }
+
+    val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        isError.postValue(true) // isError를 추적하다가 isError일 경우 dialog 뷰에서 띄우기
+    }
 
     init {
         viewModelScope.launch {
             accessToken = dataStore.getAccessToken().toString()
             val membershipDeferred = async { membershipService.getMembershipDetail(accessToken!!) }
             val membershipResponse = membershipDeferred.await()
-
             if (membershipResponse.isSuccessful) {
                 if (membershipResponse.body()?.data == null) {
-                    _hasTicket.value = false
+                    setHasTicket(false)
                     dataStore.saveHasTicket(false)
                 }
                 else {
-//                    setMembershipData(membershipResponse.body()!!.data)
-                    _membership.value = membershipResponse.body()!!.data
-                    _hasTicket.value = true
+                    setMembership(membershipResponse.body()!!.data)
+                    setHasTicket(true)
                     dataStore.saveHasTicket(true)
                     dataStore.saveGymId(membershipResponse.body()!!.data.gymId)
                 }
@@ -77,6 +82,8 @@ class HomeInfoViewModel : ViewModel() {
                     val gymRegisteredResponse = gymRegisteredDeferred.await()
                     if (gymRegisteredResponse.isSuccessful) {
                         setGymRegistered(gymRegisteredResponse.body()!!.data)
+                    }else{
+                        Log.d("gymRegisterdResponse fail",gymRegisteredResponse.errorBody()?.string().toString())
                     }
                 }
             } else {
@@ -85,19 +92,4 @@ class HomeInfoViewModel : ViewModel() {
         }
     }
 
-    fun setHasTicket(data: Boolean) {
-        _hasTicket.postValue(data)
-    }
-
-    fun setRegisterValue(data: GymRegisteredInfo) {
-        _gymRegistered.postValue(data)
-    }
-
-    fun setMembershipData(data: Membership) {
-        _membership.postValue(data)
-    }
-
-    val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        isError.postValue(true) // isError를 추적하다가 isError일 경우 dialog 뷰에서 띄우기
-    }
 }
