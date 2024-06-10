@@ -22,6 +22,7 @@ import com.ajou.helpt.databinding.FragmentProfileBinding
 import com.ajou.helpt.mypage.model.MyInfo
 import com.ajou.helpt.network.RetrofitInstance
 import com.ajou.helpt.network.api.MemberService
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -39,6 +40,11 @@ class ProfileFragment : Fragment() {
     private val memberService = RetrofitInstance.getInstance().create(MemberService::class.java)
     private val dataStore = UserDataStore()
     private lateinit var accessToken: String
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,17 +64,23 @@ class ProfileFragment : Fragment() {
                     async { memberService.getMyInfo(accessToken) }
                 val memberInfoResponse = memberInfoDeferred.await()
                 if (memberInfoResponse.isSuccessful) {
-                    val member = memberInfoResponse.body()!!.data
-                    Log.d("member data",member.toString())
-                    val translateGender = when(member.gender){
-                        "WOMEN" -> "여성"
-                        "MAN" -> "남성"
-                        else -> member.gender
+                    withContext(Dispatchers.Main){
+                        val member = memberInfoResponse.body()!!.data
+                        val translateGender = when(member.gender){
+                            "WOMEN" -> "여성"
+                            "MAN" -> "남성"
+                            else -> member.gender
+                        }
+                        binding.birth.text = member.birthDate
+                        binding.tvNameContent.text = member.userName
+                        binding.tvGenderContent.text = translateGender
+                        binding.tvHeightContent.text = member.height.toString() + " cm"
+                        binding.tvWeightContent.text = member.weight.toString() + " kg"
+                        Glide.with(mContext!!)
+                            .load(member.profileImage)
+                            .centerCrop()
+                            .into(binding.civProfileImage)
                     }
-                    binding.tvNameContent.text = member.userName
-                    binding.tvGenderContent.text = translateGender
-                    binding.tvHeightContent.text = member.height.toString() + " cm"
-                    binding.tvWeightContent.text = member.weight.toString() + " kg"
                 }
                 else{
                     Log.d("myInfo fail",memberInfoResponse.errorBody()?.string().toString())

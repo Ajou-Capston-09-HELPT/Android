@@ -9,6 +9,6 @@ data class MemberInfo(
     val height : Int,
     val weight : Int,
     val kakaoId : String,
-//    val profileImage: String,
-//    val birthDate: LocalDate
+    val profileImage: String,
+    val birthDate: String
 )
